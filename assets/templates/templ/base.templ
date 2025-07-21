@@ -1,0 +1,50 @@
+package templates
+
+import (
+	"fmt"
+	"time"
+)
+
+type PageData struct {
+	Version string
+}
+
+templ Base(title string, data PageData, meta templ.Component, content templ.Component) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8"/>
+			<title>{ title }</title>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			if meta != nil {
+				@meta
+			}
+			<link rel="stylesheet" href={ fmt.Sprintf("/static/css/main.css?version=%s", data.Version) }/>
+		</head>
+		<body>
+			<header>
+				<h1><a href="/">Example header</a></h1>
+				@Nav()
+			</header>
+			<main>
+				@content
+			</main>
+			@Footer(data)
+		</body>
+	</html>
+}
+
+templ Nav() {
+	<nav>
+		<a href="#">Example link</a>
+		<a href="#">Example link</a>
+	</nav>
+}
+
+templ Footer(data PageData) {
+	<footer>
+		&copy; { fmt.Sprintf("%d", time.Now().Year()) }
+		<br/>
+		Version: { data.Version }
+	</footer>
+}

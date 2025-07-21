@@ -1,0 +1,180 @@
+version: "3"
+
+# Usage: go-task <task-name>
+# Install Task: https://taskfile.dev/installation/
+
+vars:
+    BUILD_DIR: /tmp/bin
+    APP_NAME: web
+
+tasks:
+    help:
+        desc: Print this help message
+        cmds:
+            - go-task --list
+
+    # ==================================================================================== #
+    # TEMPL
+    # ==================================================================================== #
+
+    templ:generate:
+        desc: Generate templ files
+        cmds:
+            - templ generate
+        sources:
+            - "assets/**/*.templ"
+        generates:
+            - "assets/**/*_templ.go"
+
+    templ:watch:
+        desc: Watch and regenerate templ files on changes
+        cmds:
+            - templ generate --watch
+
+    # ==================================================================================== #
+    # QUALITY CONTROL
+    # ==================================================================================== #
+
+    audit:
+        desc: Run quality control checks
+        deps: [test]
+        cmds:
+            - go mod tidy -diff
+            - go mod verify
+            - test -z "$(gofmt -l .)"
+            - go vet ./...
+            - go run honnef.co/go/tools/cmd/staticcheck@latest -checks=all,-ST1000,-U1000 ./...
+            - go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+
+    test:
+        desc: Run all tests
+        deps: [templ:generate]
+        cmds:
+            - go test -v -race -buildvcs ./...
+
+    test:cover:
+        desc: Run all tests and display coverage
+        deps: [templ:generate]
+        cmds:
+            - go test -v -race -buildvcs -coverprofile=/tmp/coverage.out ./...
+            - go tool cover -html=/tmp/coverage.out
+
+    upgradeable:
+        desc: List direct dependencies that have upgrades available
+        cmds:
+            - go run github.com/oligot/go-mod-upgrade@latest
+
+    # ==================================================================================== #
+    # DEVELOPMENT
+    # ==================================================================================== #
+
+    tidy:
+        desc: Tidy modfiles and format .go files
+        cmds:
+            - go mod tidy -v
+            - go fmt ./...
+
+    build:
+        desc: Build the cmd/web application
+        deps: [templ:generate]
+        cmds:
+            - go build -o={{.BUILD_DIR}}/{{.APP_NAME}} ./cmd/web
+        sources:
+            - "**/*.go"
+            - "**/*_templ.go"
+        generates:
+            - "{{.BUILD_DIR}}/{{.APP_NAME}}"
+
+    run:
+        desc: Run the cmd/web application
+        deps: [build]
+        cmds:
+            - "{{.BUILD_DIR}}/{{.APP_NAME}}"
+
+    run:live:
+        desc: Run the application with reloading on file changes
+        cmds:
+            - |
+                go run github.com/cosmtrek/air@v1.43.0 \
+                  --build.cmd "go-task build" --build.bin "{{.BUILD_DIR}}/{{.APP_NAME}}" --build.delay "100" \
+                  --build.exclude_dir "" \
+                  --build.include_ext "go, templ, tpl, tmpl, html, css, scss, js, ts, sql, jpeg, jpg, gif, png, bmp, svg, webp, ico" \
+                  --misc.clean_on_exit "true"
+
+    dev:
+        desc: Run development server with templ watching and live reload
+        cmds:
+            - |
+                echo "Starting development server with templ watching..."
+                templ generate --watch &
+                TEMPL_PID=$!
+
+                trap "kill $TEMPL_PID 2>/dev/null || true" EXIT
+
+                go run github.com/cosmtrek/air@v1.43.0 \
+                  --build.cmd "go-task build" --build.bin "{{.BUILD_DIR}}/{{.APP_NAME}}" --build.delay "100" \
+                  --build.exclude_dir "" \
+                  --build.include_ext "go, templ, tpl, tmpl, html, css, scss, js, ts, sql, jpeg, jpg, gif, png, bmp, svg, webp, ico" \
+                  --misc.clean_on_exit "true"
+
+    # ==================================================================================== #
+    # SQL MIGRATIONS
+    # ==================================================================================== #
+
+    migrations:new:
+        desc: Create a new database migration (usage - go-task migrations:new NAME=migration_name)
+        cmds:
+            - go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest create -seq -ext=.sql -dir=./assets/migrations {{.NAME}}
+        requires:
+            vars: [NAME]
+
+    migrations:up:
+        desc: Apply all up database migrations
+        cmds:
+            - go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest -path=./assets/migrations -database="postgres://{{.DB_DSN}}" up
+        requires:
+            vars: [DB_DSN]
+
+    migrations:down:
+        desc: Apply all down database migrations
+        cmds:
+            - go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest -path=./assets/migrations -database="postgres://{{.DB_DSN}}" down
+        requires:
+            vars: [DB_DSN]
+
+    migrations:goto:
+        desc: Migrate to a specific version number (usage - go-task migrations:goto VERSION=123)
+        cmds:
+            - go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest -path=./assets/migrations -database="postgres://{{.DB_DSN}}" goto {{.VERSION}}
+        requires:
+            vars: [DB_DSN, VERSION]
+
+    migrations:force:
+        desc: Force database migration (usage - go-task migrations:force VERSION=123)
+        cmds:
+            - go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest -path=./assets/migrations -database="postgres://{{.DB_DSN}}" force {{.VERSION}}
+        requires:
+            vars: [DB_DSN, VERSION]
+
+    migrations:version:
+        desc: Print the current in-use migration version
+        cmds:
+            - go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest -path=./assets/migrations -database="postgres://{{.DB_DSN}}" version
+        requires:
+            vars: [DB_DSN]
+
+    # ==================================================================================== #
+    # CLEANUP
+    # ==================================================================================== #
+
+    clean:
+        desc: Clean build artifacts and generated files
+        cmds:
+            - rm -rf {{.BUILD_DIR}}/{{.APP_NAME}}
+            - find . -name "*_templ.go" -type f -delete
+
+    clean:all:
+        desc: Clean everything including dependencies
+        deps: [clean]
+        cmds:
+            - go clean -modcache

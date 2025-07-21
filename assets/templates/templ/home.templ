@@ -1,0 +1,9 @@
+package templates
+
+templ Home() {
+	<p>This is an example page.</p>
+}
+
+templ HomePage(data PageData) {
+	@Base("Example page", data, nil, Home())
+}
