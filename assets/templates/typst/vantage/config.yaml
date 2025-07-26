@@ -1,0 +1,299 @@
+name: "Vantage CV"
+description: "ATS friendly simple Typst CV template"
+version: "1.0.0"
+author: "Sardor ML"
+features:
+  - "Two-column layout"
+  - "Customizable icons"
+  - "Responsive design"
+  - "ATS friendly"
+
+main_function: "vantage-cv"
+
+data_extractor:
+  name_path: ["contacts", "name"]
+  email_path: ["contacts", "email"]
+  fallback_name: "Unknown"
+
+fields:
+  contacts:
+    type: object
+    required: true
+    label: "Contact Information"
+    description: "Your personal contact details"
+    fields:
+      name:
+        type: string
+        required: true
+        label: "Full Name"
+        description: "Your full name as it should appear on the CV"
+      title:
+        type: string
+        required: true
+        label: "Professional Title"
+        description: "Your current job title or desired position"
+      email:
+        type: string
+        required: true
+        label: "Email Address"
+        pattern: "^[^@]+@[^@]+\\.[^@]+$"
+        description: "Your professional email address"
+      address:
+        type: string
+        required: false
+        label: "Address"
+        description: "Your current address or city, country"
+      location:
+        type: string
+        required: false
+        label: "Location"
+        description: "Your current location (city, country)"
+      linkedin:
+        type: object
+        required: false
+        label: "LinkedIn Profile"
+        fields:
+          url:
+            type: string
+            required: true
+            label: "LinkedIn URL"
+            pattern: "^https?://.*linkedin\\.com.*"
+          displayText:
+            type: string
+            required: true
+            label: "Display Text"
+            default: "linkedin"
+      github:
+        type: object
+        required: false
+        label: "GitHub Profile"
+        fields:
+          url:
+            type: string
+            required: true
+            label: "GitHub URL"
+            pattern: "^https?://.*github\\.com.*"
+          displayText:
+            type: string
+            required: true
+            label: "Display Text"
+            default: "@username"
+      website:
+        type: object
+        required: false
+        label: "Personal Website"
+        fields:
+          url:
+            type: string
+            required: true
+            label: "Website URL"
+            pattern: "^https?://.*"
+          displayText:
+            type: string
+            required: true
+            label: "Display Text"
+            default: "www.example.com"
+
+  position:
+    type: string
+    required: true
+    label: "Target Position"
+    description: "The position you are applying for"
+
+  tagline:
+    type: text
+    required: false
+    label: "Professional Summary"
+    description: "A brief summary of your professional background and goals"
+
+  jobs:
+    type: array
+    required: false
+    label: "Work Experience"
+    description: "Your professional work history"
+    items:
+      type: object
+      fields:
+        position:
+          type: string
+          required: true
+          label: "Job Title"
+        company:
+          type: object
+          required: true
+          label: "Company"
+          fields:
+            name:
+              type: string
+              required: true
+              label: "Company Name"
+            link:
+              type: string
+              required: false
+              label: "Company Website"
+              pattern: "^https?://.*"
+        product:
+          type: object
+          required: false
+          label: "Product/Project"
+          fields:
+            name:
+              type: string
+              required: true
+              label: "Product Name"
+            link:
+              type: string
+              required: false
+              label: "Product URL"
+              pattern: "^https?://.*"
+        description:
+          type: array
+          required: false
+          label: "Job Description"
+          description: "List of achievements and responsibilities"
+          items:
+            type: text
+        from:
+          type: string
+          required: true
+          label: "Start Date"
+          description: "Format: YYYY Mon. (e.g., 2023 Mar.)"
+        to:
+          type: string
+          required: true
+          label: "End Date"
+          description: "Format: YYYY Mon. or 'present'"
+        tags:
+          type: array
+          required: false
+          label: "Technologies/Skills"
+          description: "Technologies and skills used in this role"
+          items:
+            type: string
+        location:
+          type: string
+          required: false
+          label: "Job Location"
+
+  objective:
+    type: text
+    required: false
+    label: "Career Objective"
+    description: "Your career goals and what you're looking for"
+
+  education:
+    type: array
+    required: false
+    label: "Education"
+    description: "Your educational background"
+    items:
+      type: object
+      fields:
+        place:
+          type: object
+          required: true
+          label: "Institution"
+          fields:
+            name:
+              type: string
+              required: true
+              label: "Institution Name"
+            link:
+              type: string
+              required: false
+              label: "Institution Website"
+              pattern: "^https?://.*"
+        degree:
+          type: string
+          required: true
+          label: "Degree"
+          description: "e.g., B.Sc., M.A., Ph.D."
+        major:
+          type: string
+          required: true
+          label: "Field of Study"
+          description: "Your major or field of study"
+        track:
+          type: string
+          required: false
+          label: "Track/Specialization"
+        from:
+          type: string
+          required: true
+          label: "Start Year"
+          pattern: "^\\d{4}$"
+        to:
+          type: string
+          required: true
+          label: "End Year"
+          pattern: "^\\d{4}$"
+        location:
+          type: string
+          required: false
+          label: "Location"
+
+  technical_expertise:
+    type: array
+    required: false
+    label: "Technical Expertise"
+    description: "Your technical skills with proficiency levels"
+    items:
+      type: object
+      fields:
+        name:
+          type: string
+          required: true
+          label: "Technology/Skill"
+        level:
+          type: integer
+          required: true
+          label: "Proficiency Level"
+          description: "Rate your proficiency from 1 (beginner) to 5 (expert)"
+          min: 1
+          max: 5
+
+  skills:
+    type: array
+    required: false
+    label: "Skills"
+    description: "General skills and technologies you're familiar with"
+    items:
+      type: string
+
+  methodology:
+    type: array
+    required: false
+    label: "Methodologies"
+    description: "Development methodologies and approaches you're familiar with"
+    items:
+      type: string
+
+  tools:
+    type: array
+    required: false
+    label: "Tools"
+    description: "Software tools and platforms you use"
+    items:
+      type: string
+
+  achievements:
+    type: array
+    required: false
+    label: "Achievements & Certifications"
+    description: "Your notable achievements and certifications"
+    items:
+      type: object
+      fields:
+        name:
+          type: string
+          required: true
+          label: "Achievement/Certification Name"
+        description:
+          type: text
+          required: true
+          label: "Description"
+          description: "Details about the achievement or certification"
+
+template_files:
+  - "template.typ"
+  - "vantage-typst.typ"

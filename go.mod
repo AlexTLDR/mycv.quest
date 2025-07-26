@@ -3,6 +3,7 @@ module github.com/AlexTLDR/mycv.quest
 go 1.24.0
 
 require (
+	github.com/BurntSushi/toml v1.3.2
 	github.com/a-h/templ v0.3.920
 	github.com/alexedwards/scs/postgresstore v0.0.0-20250417082927-ab20b3feb5e9
 	github.com/alexedwards/scs/v2 v2.9.0
