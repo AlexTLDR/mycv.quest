@@ -11,7 +11,17 @@ type PageData struct {
 
 templ Base(title string, data PageData, meta templ.Component, content templ.Component, scripts ...templ.Component) {
 	<!DOCTYPE html>
-	<html lang="en">
+	<html
+		lang="en"
+		x-data="{
+		darkMode: localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches),
+		toggleTheme() {
+			this.darkMode = !this.darkMode;
+			localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
+		}
+	}"
+		x-bind:class="{ 'dark': darkMode }"
+	>
 		<head>
 			<meta charset="utf-8"/>
 			<title>{ title }</title>
@@ -23,11 +33,25 @@ templ Base(title string, data PageData, meta templ.Component, content templ.Comp
 		</head>
 		<body class="min-h-screen bg-background text-foreground">
 			<header class="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-				<div class="container mx-auto flex h-14 items-center px-4">
-					<h1 class="mr-6 text-lg font-semibold">
-						<a href="/" class="hover:text-primary transition-colors">MyCV.Quest</a>
-					</h1>
-					@Nav()
+				<div class="container mx-auto flex h-14 items-center justify-between px-4">
+					<div class="flex items-center">
+						<h1 class="mr-6 text-lg font-semibold">
+							<a href="/" class="hover:text-primary transition-colors">MyCV.Quest</a>
+						</h1>
+						@Nav()
+					</div>
+					<button
+						@click="toggleTheme()"
+						class="p-2 rounded-md hover:bg-accent transition-colors"
+						:title="darkMode ? 'Switch to light mode' : 'Switch to dark mode'"
+					>
+						<svg x-show="!darkMode" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+						</svg>
+						<svg x-show="darkMode" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+						</svg>
+					</button>
 				</div>
 			</header>
 			<main class="flex-1">

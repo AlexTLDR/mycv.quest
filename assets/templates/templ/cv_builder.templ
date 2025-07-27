@@ -15,7 +15,7 @@ templ CVBuilderScripts() {
 templ CVBuilder() {
 	<div class="container mx-auto p-6 max-w-4xl">
 		<div class="mb-8">
-			<h1 class="text-3xl font-bold text-foreground mb-2">CV Builder</h1>
+			<h1 class="text-3xl font-bold bg-gradient-to-r from-primary to-violet-600 bg-clip-text text-transparent mb-2">CV Builder</h1>
 			<p class="text-muted-foreground">Create your professional CV with our easy-to-use builder</p>
 		</div>
 		<form
@@ -43,11 +43,11 @@ templ CVBuilder() {
 		>
 			<!-- Personal Information Section -->
 			@card.Card(card.Props{
-				Class: "p-6",
+				Class: "p-6 border-l-4 border-l-primary",
 			}) {
 				@card.Header() {
 					@card.Title() {
-						Personal Information
+						<span class="text-primary">Personal Information</span>
 					}
 					@card.Description() {
 						Enter your basic personal details
@@ -126,10 +126,12 @@ templ CVBuilder() {
 				}
 			}
 			<!-- Professional Summary Section -->
-			@card.Card() {
+			@card.Card(card.Props{
+				Class: "border-l-4 border-l-primary",
+			}) {
 				@card.Header() {
 					@card.Title() {
-						Professional Summary
+						<span class="text-primary">Professional Summary</span>
 					}
 					@card.Description() {
 						Write a brief overview of your professional background
@@ -153,10 +155,12 @@ templ CVBuilder() {
 				}
 			}
 			<!-- Work Experience Section -->
-			@card.Card() {
+			@card.Card(card.Props{
+				Class: "border-l-4 border-l-primary",
+			}) {
 				@card.Header() {
 					@card.Title() {
-						Work Experience
+						<span class="text-primary">Work Experience</span>
 					}
 					@card.Description() {
 						Add your work history and achievements
@@ -234,17 +238,22 @@ templ CVBuilder() {
 						</template>
 					</div>
 					<div class="mt-4">
-						<button type="button" @click="addWorkExperience()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+						<button type="button" @click="addWorkExperience()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary hover:text-primary h-10 px-4 py-2">
+							<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+							</svg>
 							Add Work Experience
 						</button>
 					</div>
 				}
 			}
 			<!-- Education Section -->
-			@card.Card() {
+			@card.Card(card.Props{
+				Class: "border-l-4 border-l-primary",
+			}) {
 				@card.Header() {
 					@card.Title() {
-						Education
+						<span class="text-primary">Education</span>
 					}
 					@card.Description() {
 						Add your educational background
@@ -312,17 +321,22 @@ templ CVBuilder() {
 						</template>
 					</div>
 					<div class="mt-4">
-						<button type="button" @click="addEducation()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+						<button type="button" @click="addEducation()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary hover:text-primary h-10 px-4 py-2">
+							<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+							</svg>
 							Add Education
 						</button>
 					</div>
 				}
 			}
 			<!-- Skills Section -->
-			@card.Card() {
+			@card.Card(card.Props{
+				Class: "border-l-4 border-l-primary",
+			}) {
 				@card.Header() {
 					@card.Title() {
-						Skills
+						<span class="text-primary">Skills</span>
 					}
 					@card.Description() {
 						List your technical and professional skills
@@ -345,16 +359,23 @@ templ CVBuilder() {
 				}
 			}
 			<!-- Action Buttons -->
-			<div class="flex gap-4 justify-end">
+			<div class="flex gap-4 justify-end pt-6 border-t border-border">
 				@button.Button(button.Props{
 					Variant: button.VariantOutline,
 					Type:    button.TypeButton,
 				}) {
+					<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+					</svg>
 					Preview CV
 				}
 				@button.Button(button.Props{
 					Type: button.TypeSubmit,
 				}) {
+					<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+					</svg>
 					Generate CV
 				}
 			</div>
