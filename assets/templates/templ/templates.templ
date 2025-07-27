@@ -6,11 +6,13 @@ import (
 )
 
 type TemplateInfo struct {
-	ID          string
-	Name        string
-	Description string
-	Version     string
-	Author      string
+	ID           string
+	Name         string
+	Description  string
+	Version      string
+	Author       string
+	PreviewImage string
+	Repository   string
 }
 
 templ Templates(templates []TemplateInfo) {
@@ -19,16 +21,24 @@ templ Templates(templates []TemplateInfo) {
 			<h1 class="text-4xl font-bold bg-gradient-to-r from-primary to-violet-600 bg-clip-text text-transparent mb-4">CV Templates</h1>
 			<p class="text-xl text-muted-foreground max-w-2xl mx-auto">Choose from our collection of professional CV templates designed to make you stand out</p>
 		</div>
-		<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 items-stretch">
 			for _, template := range templates {
 				@card.Card(card.Props{
-					Class: "group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20",
+					Class: "group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 h-full",
 				}) {
-					@card.Content() {
-						<div class="p-6">
-							<!-- Template Preview Area -->
-							<div class="bg-gradient-to-br from-muted/50 to-muted/30 rounded-xl p-8 mb-6 min-h-[280px] flex items-center justify-center border border-border/50">
-								<div class="text-center">
+					@card.Content(card.ContentProps{
+						Class: "flex flex-col h-full",
+					}) {
+						<!-- Template Preview Area -->
+						<div class="bg-gradient-to-br from-muted/50 to-muted/30 rounded-xl mb-6 min-h-[280px] flex items-center justify-center border border-border/50 overflow-hidden">
+							if template.PreviewImage != "" {
+								<img
+									src={ "/static/templates/" + template.ID + "/" + template.PreviewImage }
+									alt={ "Preview of " + template.Name }
+									class="w-full h-full object-cover rounded-lg"
+									onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+								/>
+								<div class="text-center hidden">
 									<div class="w-20 h-24 mx-auto mb-4 bg-primary/10 rounded-lg border-2 border-dashed border-primary/30 flex items-center justify-center">
 										<svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -37,37 +47,49 @@ templ Templates(templates []TemplateInfo) {
 									<p class="text-sm font-medium text-foreground">Preview Available Soon</p>
 									<p class="text-xs text-muted-foreground mt-1">{ template.ID }.typ</p>
 								</div>
-							</div>
-							<!-- Template Info -->
-							<div class="mb-6">
-								<h3 class="text-2xl font-bold text-primary mb-2">{ template.Name }</h3>
-								<p class="text-muted-foreground mb-4 leading-relaxed">{ template.Description }</p>
-								<div class="flex items-center justify-between text-sm">
-									<div class="space-y-1">
-										<div class="flex items-center gap-2">
-											<span class="text-muted-foreground">Version:</span>
-											<span class="font-semibold text-foreground">{ template.Version }</span>
-										</div>
-										<div class="flex items-center gap-2">
-											<span class="text-muted-foreground">Author:</span>
-											<span class="font-semibold text-foreground">{ template.Author }</span>
-										</div>
+							} else {
+								<div class="text-center p-8">
+									<div class="w-20 h-24 mx-auto mb-4 bg-primary/10 rounded-lg border-2 border-dashed border-primary/30 flex items-center justify-center">
+										<svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+										</svg>
+									</div>
+									<p class="text-sm font-medium text-foreground">Preview Available Soon</p>
+									<p class="text-xs text-muted-foreground mt-1">{ template.ID }.typ</p>
+								</div>
+							}
+						</div>
+						<!-- Template Info -->
+						<div class="mb-6 flex-grow">
+							<h3 class="text-2xl font-bold text-primary mb-2">{ template.Name }</h3>
+							<p class="text-muted-foreground mb-4 leading-relaxed">{ template.Description }</p>
+							<div class="flex items-center justify-between text-sm">
+								<div class="space-y-1">
+									<div class="flex items-center gap-2">
+										<span class="text-muted-foreground">Version:</span>
+										<span class="font-semibold text-foreground">{ template.Version }</span>
+									</div>
+									<div class="flex items-center gap-2">
+										<span class="text-muted-foreground">Author:</span>
+										<span class="font-semibold text-foreground">{ template.Author }</span>
 									</div>
 								</div>
 							</div>
-							<!-- Action Buttons -->
-							<div class="flex gap-3">
-								<a href={ templ.URL("/cv-builder?template=" + template.ID) } class="flex-1">
-									@button.Button(button.Props{
-										Class: "w-full text-base py-3",
-										Type:  button.TypeButton,
-									}) {
-										<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-										</svg>
-										Use This Template
-									}
-								</a>
+						</div>
+						<!-- Action Buttons -->
+						<div class="flex gap-3">
+							<a href={ templ.URL("/cv-builder?template=" + template.ID) } class="flex-1">
+								@button.Button(button.Props{
+									Class: "w-full text-base py-3",
+									Type:  button.TypeButton,
+								}) {
+									<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+									</svg>
+									Use This Template
+								}
+							</a>
+							<a href={ templ.URL("/templates/" + template.ID + "/preview") } target="_blank" rel="noopener noreferrer">
 								@button.Button(button.Props{
 									Variant: button.VariantOutline,
 									Type:    button.TypeButton,
@@ -78,7 +100,20 @@ templ Templates(templates []TemplateInfo) {
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
 									</svg>
 								}
-							</div>
+							</a>
+							if template.Repository != "" {
+								<a href={ templ.URL(template.Repository) } target="_blank" rel="noopener noreferrer">
+									@button.Button(button.Props{
+										Variant: button.VariantOutline,
+										Type:    button.TypeButton,
+										Class:   "px-4 py-3",
+									}) {
+										<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+										</svg>
+									}
+								</a>
+							}
 						</div>
 					}
 				}

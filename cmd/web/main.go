@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/AlexTLDR/mycv.quest/internal/cv"
 	"github.com/AlexTLDR/mycv.quest/internal/database"
 	"github.com/AlexTLDR/mycv.quest/internal/env"
 	"github.com/AlexTLDR/mycv.quest/internal/smtp"
@@ -65,6 +66,7 @@ type application struct {
 	logger         *slog.Logger
 	mailer         *smtp.Mailer
 	sessionManager *scs.SessionManager
+	cvService      *cv.Service
 
 	wg sync.WaitGroup
 }
@@ -113,12 +115,19 @@ func run(logger *slog.Logger) error {
 	sessionManager.Cookie.Name = cfg.session.cookieName
 	sessionManager.Cookie.Secure = true
 
+	// Initialize CV service
+	cvService, err := cv.NewService("assets/templates/typst", "tmp/cv-output")
+	if err != nil {
+		return err
+	}
+
 	app := &application{
 		config:         cfg,
 		db:             db,
 		logger:         logger,
 		mailer:         mailer,
 		sessionManager: sessionManager,
+		cvService:      cvService,
 	}
 
 	return app.serveHTTP()

@@ -13,11 +13,25 @@ import (
 )
 
 type Template struct {
-	ID          string `yaml:"-"`
-	Name        string `yaml:"name"`
-	Description string `yaml:"description"`
-	Version     string `yaml:"version"`
-	Author      string `yaml:"author"`
+	ID           string `yaml:"-"`
+	Name         string `yaml:"name"`
+	Description  string `yaml:"description"`
+	Version      string `yaml:"version"`
+	Author       string `yaml:"author"`
+	PreviewImage string `yaml:"-"`
+	Repository   string `yaml:"-"`
+}
+
+type TemplateMetadata struct {
+	PreviewImage string   `yaml:"preview_image"`
+	Repository   string   `yaml:"repository"`
+	Thumbnail    string   `yaml:"thumbnail"`
+	Tags         []string `yaml:"tags"`
+	License      string   `yaml:"license"`
+	Difficulty   string   `yaml:"difficulty"`
+	UpdatedAt    string   `yaml:"updated_at"`
+	Featured     bool     `yaml:"featured"`
+	Category     string   `yaml:"category"`
 }
 
 func (app *application) getAvailableTemplates() ([]Template, error) {
@@ -49,6 +63,17 @@ func (app *application) getAvailableTemplates() ([]Template, error) {
 			}
 
 			template.ID = templateID
+
+			// Try to read metadata.yaml file for additional info
+			metadataPath := filepath.Join(filepath.Dir(path), "metadata.yaml")
+			if metadataData, err := fs.ReadFile(assets.EmbeddedFiles, metadataPath); err == nil {
+				var metadata TemplateMetadata
+				if err := yaml.Unmarshal(metadataData, &metadata); err == nil {
+					template.PreviewImage = metadata.PreviewImage
+					template.Repository = metadata.Repository
+				}
+			}
+
 			templates = append(templates, template)
 		}
 

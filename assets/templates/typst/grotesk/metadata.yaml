@@ -1,0 +1,18 @@
+# Template metadata for web interface
+# This file contains additional information about the template
+# that is not part of the core template configuration
+
+preview_image: "preview.png"
+repository: "https://github.com/askarphedinson/grotesk-cv"
+thumbnail: "thumbnail.png"
+tags:
+  - "modern"
+  - "clean"
+  - "two-column"
+  - "professional"
+  - "typography"
+license: "MIT"
+difficulty: "beginner"
+updated_at: "2024-01-15"
+featured: true
+category: "professional"
