@@ -2,6 +2,9 @@ package templates
 
 import (
 	"fmt"
+	"github.com/AlexTLDR/mycv.quest/components/button"
+	"github.com/AlexTLDR/mycv.quest/components/drawer"
+	"github.com/AlexTLDR/mycv.quest/components/icon"
 	"time"
 )
 
@@ -11,17 +14,7 @@ type PageData struct {
 
 templ Base(title string, data PageData, meta templ.Component, content templ.Component, scripts ...templ.Component) {
 	<!DOCTYPE html>
-	<html
-		lang="en"
-		x-data="{
-		darkMode: localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches),
-		toggleTheme() {
-			this.darkMode = !this.darkMode;
-			localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
-		}
-	}"
-		x-bind:class="{ 'dark': darkMode }"
-	>
+	<html lang="en">
 		<head>
 			<meta charset="utf-8"/>
 			<title>{ title }</title>
@@ -32,59 +25,175 @@ templ Base(title string, data PageData, meta templ.Component, content templ.Comp
 			<link rel="stylesheet" href={ fmt.Sprintf("/static/css/main.css?version=%s", data.Version) }/>
 		</head>
 		<body class="min-h-screen bg-background text-foreground">
-			<header class="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-				<div class="container mx-auto flex h-14 items-center justify-between px-4">
-					<div class="flex items-center">
-						<h1 class="mr-6 text-lg font-semibold">
-							<a href="/" class="hover:text-primary transition-colors">MyCV.Quest</a>
-						</h1>
-						@Nav()
+			<div class="min-h-screen bg-background">
+				<!-- Mobile Drawer -->
+				@drawer.Content(drawer.ContentProps{
+					ID:       "mobile-nav-drawer",
+					Position: drawer.PositionLeft,
+					Class:    "w-64",
+				}) {
+					@Sidebar(data, "mobile")
+				}
+				<!-- Desktop Layout -->
+				<div class="flex h-screen">
+					<!-- Fixed Sidebar -->
+					<aside class="hidden lg:block w-64 bg-card border-r">
+						@Sidebar(data, "desktop")
+					</aside>
+					<!-- Main Content -->
+					<div class="flex-1 flex flex-col">
+						<!-- Fixed Header - Mobile Only for Menu -->
+						<header class="lg:hidden h-16 bg-background border-b px-6 flex items-center">
+							<div class="w-full flex items-center justify-between">
+								<div class="flex items-center gap-4">
+									<!-- Mobile Menu -->
+									@drawer.Trigger(drawer.TriggerProps{
+										For: "mobile-nav-drawer",
+									}) {
+										@button.Button(button.Props{
+											Variant: button.VariantOutline,
+											Size:    button.SizeIcon,
+										}) {
+											@icon.Menu(icon.Props{Size: 20})
+										}
+									}
+								</div>
+							</div>
+						</header>
+						<!-- Scrollable Content -->
+						<main class="flex-1 overflow-y-auto">
+							@content
+						</main>
 					</div>
-					<button
-						@click="toggleTheme()"
-						class="p-2 rounded-md hover:bg-accent transition-colors"
-						:title="darkMode ? 'Switch to light mode' : 'Switch to dark mode'"
-					>
-						<svg x-show="!darkMode" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-						</svg>
-						<svg x-show="darkMode" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-						</svg>
-					</button>
 				</div>
-			</header>
-			<main class="flex-1">
-				@content
-			</main>
-			@Footer(data)
+			</div>
+			@drawer.Script()
 			if len(scripts) > 0 {
 				for _, script := range scripts {
 					@script
 				}
 			}
-			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+			<script>
+				// Theme management without Alpine.js
+				(function() {
+					function initTheme() {
+						const theme = localStorage.getItem('theme') ||
+							(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+
+
+						if (theme === 'dark') {
+							document.documentElement.classList.add('dark');
+						} else {
+							document.documentElement.classList.remove('dark');
+						}
+
+						updateThemeIcon(theme === 'dark');
+					}
+
+					function toggleTheme() {
+						const isDark = document.documentElement.classList.contains('dark');
+						const newTheme = isDark ? 'light' : 'dark';
+
+
+
+						if (newTheme === 'dark') {
+							document.documentElement.classList.add('dark');
+						} else {
+							document.documentElement.classList.remove('dark');
+						}
+
+						localStorage.setItem('theme', newTheme);
+						updateThemeIcon(newTheme === 'dark');
+					}
+
+					function updateThemeIcon(isDark) {
+						// Update both mobile and desktop icons
+						const prefixes = ['mobile', 'desktop'];
+
+						prefixes.forEach(prefix => {
+							const moonIcon = document.getElementById(prefix + '-moon-icon');
+							const sunIcon = document.getElementById(prefix + '-sun-icon');
+
+
+
+							if (moonIcon && sunIcon) {
+								if (isDark) {
+									// In dark mode, show sun icon (to switch to light)
+									moonIcon.style.display = 'none';
+									sunIcon.style.display = 'block';
+
+								} else {
+									// In light mode, show moon icon (to switch to dark)
+									moonIcon.style.display = 'block';
+									sunIcon.style.display = 'none';
+
+								}
+							} else {
+
+							}
+						});
+					}
+
+					// Make toggleTheme globally available
+					window.toggleTheme = toggleTheme;
+
+					// Initialize theme when DOM is ready
+					if (document.readyState === 'loading') {
+						document.addEventListener('DOMContentLoaded', initTheme);
+					} else {
+						initTheme();
+					}
+				})();
+			</script>
 		</body>
 	</html>
 }
 
-templ Nav() {
-	<nav class="flex items-center space-x-6 text-sm font-medium">
-		<a href="/" class="transition-colors hover:text-foreground/80 text-foreground/60">Home</a>
-		<a href="/cv-builder" class="transition-colors hover:text-foreground/80 text-foreground/60">CV Builder</a>
-		<a href="/templates" class="transition-colors hover:text-foreground/80 text-foreground/60">Templates</a>
-	</nav>
-}
-
-templ Footer(data PageData) {
-	<footer class="border-t py-6 md:py-0">
-		<div class="container mx-auto flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row px-4">
-			<div class="text-center text-sm leading-loose text-muted-foreground md:text-left">
-				&copy; { fmt.Sprintf("%d", time.Now().Year()) } MyCV.Quest. Built with Go and templ.
+templ Sidebar(data PageData, idPrefix string) {
+	<div class="h-full flex flex-col">
+		<!-- Logo Area -->
+		<div class="h-16 px-6 flex items-center border-b">
+			<h1 class="text-lg font-semibold">
+				<a href="/" class="hover:text-primary transition-colors">MyCV.Quest</a>
+			</h1>
+		</div>
+		<!-- Navigation -->
+		<nav class="flex-1 p-4 space-y-2">
+			<a href="/" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground">
+				@icon.House(icon.Props{Size: 18})
+				Home
+			</a>
+			<a href="/cv-builder" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground">
+				@icon.File(icon.Props{Size: 18})
+				CV Builder
+			</a>
+			<a href="/templates" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground">
+				@icon.File(icon.Props{Size: 18})
+				Templates
+			</a>
+		</nav>
+		<!-- Footer -->
+		<div class="p-4 border-t space-y-3">
+			<!-- Theme Toggle -->
+			<div class="flex justify-center">
+				<button
+					onclick="toggleTheme()"
+					class="p-2 rounded-md hover:bg-accent transition-colors"
+					title="Toggle theme"
+				>
+					<svg id={ idPrefix + "-moon-icon" } class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+					</svg>
+					<svg id={ idPrefix + "-sun-icon" } class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+					</svg>
+				</button>
 			</div>
-			<div class="text-center text-sm text-muted-foreground md:text-right">
-				Version: { data.Version }
+			<div class="text-center text-xs text-muted-foreground space-y-1">
+				<div>&copy; { fmt.Sprintf("%d", time.Now().Year()) } MyCV.Quest</div>
+				<div>Version: { data.Version }</div>
 			</div>
 		</div>
-	</footer>
+	</div>
 }

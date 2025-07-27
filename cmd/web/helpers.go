@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"net/http"
@@ -23,15 +24,15 @@ type Template struct {
 }
 
 type TemplateMetadata struct {
-	PreviewImage string   `yaml:"preview_image"`
-	Repository   string   `yaml:"repository"`
-	Thumbnail    string   `yaml:"thumbnail"`
-	Tags         []string `yaml:"tags"`
-	License      string   `yaml:"license"`
-	Difficulty   string   `yaml:"difficulty"`
-	UpdatedAt    string   `yaml:"updated_at"`
-	Featured     bool     `yaml:"featured"`
-	Category     string   `yaml:"category"`
+	PreviewImage string   `json:"preview_image"`
+	Repository   string   `json:"repository"`
+	Thumbnail    string   `json:"thumbnail"`
+	Tags         []string `json:"tags"`
+	License      string   `json:"license"`
+	Difficulty   string   `json:"difficulty"`
+	UpdatedAt    string   `json:"updated_at"`
+	Featured     bool     `json:"featured"`
+	Category     string   `json:"category"`
 }
 
 func (app *application) getAvailableTemplates() ([]Template, error) {
@@ -64,11 +65,11 @@ func (app *application) getAvailableTemplates() ([]Template, error) {
 
 			template.ID = templateID
 
-			// Try to read metadata.yaml file for additional info
-			metadataPath := filepath.Join(filepath.Dir(path), "metadata.yaml")
+			// Try to read metadata.json file for additional info
+			metadataPath := filepath.Join(filepath.Dir(path), "metadata.json")
 			if metadataData, err := fs.ReadFile(assets.EmbeddedFiles, metadataPath); err == nil {
 				var metadata TemplateMetadata
-				if err := yaml.Unmarshal(metadataData, &metadata); err == nil {
+				if err := json.Unmarshal(metadataData, &metadata); err == nil {
 					template.PreviewImage = metadata.PreviewImage
 					template.Repository = metadata.Repository
 				}

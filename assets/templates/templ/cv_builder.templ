@@ -19,7 +19,100 @@ type Template struct {
 }
 
 templ CVBuilderScripts() {
-	// No scripts needed - using Alpine.js from base template
+	<script>
+		// Simple form management without Alpine.js
+		function addWorkExperience() {
+			const container = document.getElementById('work-experience-container');
+			const count = container.children.length;
+			const newExperience = createWorkExperienceItem(count);
+			container.appendChild(newExperience);
+		}
+
+		function addEducation() {
+			const container = document.getElementById('education-container');
+			const count = container.children.length;
+			const newEducation = createEducationItem(count);
+			container.appendChild(newEducation);
+		}
+
+		function removeWorkExperience(button) {
+			const container = document.getElementById('work-experience-container');
+			if (container.children.length > 1) {
+				button.closest('.work-experience-item').remove();
+			}
+		}
+
+		function removeEducation(button) {
+			const container = document.getElementById('education-container');
+			if (container.children.length > 1) {
+				button.closest('.education-item').remove();
+			}
+		}
+
+		function createWorkExperienceItem(index) {
+			const div = document.createElement('div');
+			div.className = 'work-experience-item border rounded-lg p-4';
+			div.innerHTML = `
+				<div class="flex justify-between items-center mb-4">
+					<h4 class="text-sm font-medium text-muted-foreground">Work Experience ${index + 1}</h4>
+					<button type="button" onclick="removeWorkExperience(this)" class="text-red-500 hover:text-red-700 text-sm">Remove</button>
+				</div>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+					<div>
+						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Job Title</label>
+						<input type="text" name="workExperience[${index}][jobTitle]" placeholder="e.g., Software Engineer" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+					</div>
+					<div>
+						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Company</label>
+						<input type="text" name="workExperience[${index}][company]" placeholder="Company name" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+					</div>
+					<div>
+						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Start Date</label>
+						<input type="date" name="workExperience[${index}][startDate]" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+					</div>
+					<div>
+						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">End Date</label>
+						<input type="date" name="workExperience[${index}][endDate]" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+					</div>
+				</div>
+				<div>
+					<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Job Description</label>
+					<textarea name="workExperience[${index}][description]" rows="3" class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="Describe your responsibilities and achievements..."></textarea>
+				</div>
+			`;
+			return div;
+		}
+
+		function createEducationItem(index) {
+			const div = document.createElement('div');
+			div.className = 'education-item border rounded-lg p-4';
+			div.innerHTML = `
+				<div class="flex justify-between items-center mb-4">
+					<h4 class="text-sm font-medium text-muted-foreground">Education ${index + 1}</h4>
+					<button type="button" onclick="removeEducation(this)" class="text-red-500 hover:text-red-700 text-sm">Remove</button>
+				</div>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<div>
+						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Degree</label>
+						<input type="text" name="education[${index}][degree]" placeholder="e.g., Bachelor of Science" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+					</div>
+					<div>
+						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Field of Study</label>
+						<input type="text" name="education[${index}][field]" placeholder="e.g., Computer Science" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+					</div>
+					<div>
+						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">School/University</label>
+						<input type="text" name="education[${index}][school]" placeholder="Institution name" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+					</div>
+					<div>
+						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Graduation Year</label>
+						<input type="number" name="education[${index}][graduationYear]" placeholder="2024" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+					</div>
+				</div>
+			`;
+			return div;
+		}
+	</script>
 }
 
 templ CVBuilder(templates []Template) {
@@ -28,30 +121,7 @@ templ CVBuilder(templates []Template) {
 			<h1 class="text-3xl font-bold bg-gradient-to-r from-primary to-violet-600 bg-clip-text text-transparent mb-2">CV Builder</h1>
 			<p class="text-muted-foreground">Create your professional CV with our easy-to-use builder</p>
 		</div>
-		<form
-			class="space-y-8"
-			x-data="{
-			workExperiences: [{}],
-			educations: [{}],
-			selectedTemplate: new URLSearchParams(window.location.search).get('template') || '',
-			addWorkExperience() {
-				this.workExperiences.push({});
-			},
-			addEducation() {
-				this.educations.push({});
-			},
-			removeWorkExperience(index) {
-				if (this.workExperiences.length > 1) {
-					this.workExperiences.splice(index, 1);
-				}
-			},
-			removeEducation(index) {
-				if (this.educations.length > 1) {
-					this.educations.splice(index, 1);
-				}
-			}
-		}"
-		>
+		<form class="space-y-8" method="post" action="/cv-builder">
 			<!-- Personal Information Section -->
 			@card.Card(card.Props{
 				Class: "p-6 border-l-4 border-l-primary",
@@ -144,12 +214,11 @@ templ CVBuilder(templates []Template) {
 							<select
 								id="template"
 								name="template"
-								x-model="selectedTemplate"
 								class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 							>
-								<option value="">Select a template...</option>
+								<option value="">Select a template</option>
 								for _, template := range templates {
-									<option value={ template.ID }>{ template.Name } - { template.Description }</option>
+									<option value={ template.ID }>{ template.Name }</option>
 								}
 							</select>
 						}
@@ -198,78 +267,68 @@ templ CVBuilder(templates []Template) {
 					}
 				}
 				@card.Content() {
-					<div id="work-experience-list" class="space-y-4">
-						<template x-for="(experience, index) in workExperiences" :key="index">
-							<div class="work-experience-item border rounded-lg p-4">
-								<div class="flex justify-between items-center mb-4" x-show="workExperiences.length > 1">
-									<h4 class="text-sm font-medium text-muted-foreground" x-text="`Work Experience ${index + 1}`"></h4>
-									<button type="button" @click="removeWorkExperience(index)" class="text-red-500 hover:text-red-700 text-sm">Remove</button>
-								</div>
-								<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-									@form.Item() {
-										@label.Label(label.Props{}) {
-											Job Title
-										}
-										<input
-											type="text"
-											:name="`workExperience[${index}][jobTitle]`"
-											:id="`jobTitle-${index}`"
-											placeholder="e.g., Software Engineer"
-											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-										/>
-									}
-									@form.Item() {
-										@label.Label(label.Props{}) {
-											Company
-										}
-										<input
-											type="text"
-											:name="`workExperience[${index}][company]`"
-											:id="`company-${index}`"
-											placeholder="Company name"
-											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-										/>
-									}
-									@form.Item() {
-										@label.Label(label.Props{}) {
-											Start Date
-										}
-										<input
-											type="date"
-											:name="`workExperience[${index}][startDate]`"
-											:id="`startDate-${index}`"
-											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-										/>
-									}
-									@form.Item() {
-										@label.Label(label.Props{}) {
-											End Date
-										}
-										<input
-											type="date"
-											:name="`workExperience[${index}][endDate]`"
-											:id="`endDate-${index}`"
-											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-										/>
-									}
-								</div>
+					<div id="work-experience-container" class="space-y-4">
+						<!-- Initial work experience item -->
+						<div class="work-experience-item border rounded-lg p-4">
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
 								@form.Item() {
 									@label.Label(label.Props{}) {
-										Job Description
+										Job Title
 									}
-									<textarea
-										:name="`workExperience[${index}][description]`"
-										:id="`description-${index}`"
-										rows="3"
-										class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-										placeholder="Describe your responsibilities and achievements..."
-									></textarea>
+									<input
+										type="text"
+										name="workExperience[0][jobTitle]"
+										placeholder="e.g., Software Engineer"
+										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+									/>
+								}
+								@form.Item() {
+									@label.Label(label.Props{}) {
+										Company
+									}
+									<input
+										type="text"
+										name="workExperience[0][company]"
+										placeholder="Company name"
+										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+									/>
+								}
+								@form.Item() {
+									@label.Label(label.Props{}) {
+										Start Date
+									}
+									<input
+										type="date"
+										name="workExperience[0][startDate]"
+										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+									/>
+								}
+								@form.Item() {
+									@label.Label(label.Props{}) {
+										End Date
+									}
+									<input
+										type="date"
+										name="workExperience[0][endDate]"
+										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+									/>
 								}
 							</div>
-						</template>
+							@form.Item() {
+								@label.Label(label.Props{}) {
+									Job Description
+								}
+								<textarea
+									name="workExperience[0][description]"
+									rows="3"
+									class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+									placeholder="Describe your responsibilities and achievements..."
+								></textarea>
+							}
+						</div>
 					</div>
 					<div class="mt-4">
-						<button type="button" @click="addWorkExperience()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary hover:text-primary h-10 px-4 py-2">
+						<button type="button" onclick="addWorkExperience()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary hover:text-primary h-10 px-4 py-2">
 							<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
 							</svg>
@@ -291,68 +350,59 @@ templ CVBuilder(templates []Template) {
 					}
 				}
 				@card.Content() {
-					<div id="education-list" class="space-y-4">
-						<template x-for="(education, index) in educations" :key="index">
-							<div class="education-item border rounded-lg p-4">
-								<div class="flex justify-between items-center mb-4" x-show="educations.length > 1">
-									<h4 class="text-sm font-medium text-muted-foreground" x-text="`Education ${index + 1}`"></h4>
-									<button type="button" @click="removeEducation(index)" class="text-red-500 hover:text-red-700 text-sm">Remove</button>
-								</div>
-								<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-									@form.Item() {
-										@label.Label(label.Props{}) {
-											Degree
-										}
-										<input
-											type="text"
-											:name="`education[${index}][degree]`"
-											:id="`degree-${index}`"
-											placeholder="e.g., Bachelor of Science"
-											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-										/>
+					<div id="education-container" class="space-y-4">
+						<!-- Initial education item -->
+						<div class="education-item border rounded-lg p-4">
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+								@form.Item() {
+									@label.Label(label.Props{}) {
+										Degree
 									}
-									@form.Item() {
-										@label.Label(label.Props{}) {
-											Field of Study
-										}
-										<input
-											type="text"
-											:name="`education[${index}][field]`"
-											:id="`field-${index}`"
-											placeholder="e.g., Computer Science"
-											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-										/>
+									<input
+										type="text"
+										name="education[0][degree]"
+										placeholder="e.g., Bachelor of Science"
+										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+									/>
+								}
+								@form.Item() {
+									@label.Label(label.Props{}) {
+										Field of Study
 									}
-									@form.Item() {
-										@label.Label(label.Props{}) {
-											School/University
-										}
-										<input
-											type="text"
-											:name="`education[${index}][school]`"
-											:id="`school-${index}`"
-											placeholder="Institution name"
-											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-										/>
+									<input
+										type="text"
+										name="education[0][field]"
+										placeholder="e.g., Computer Science"
+										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+									/>
+								}
+								@form.Item() {
+									@label.Label(label.Props{}) {
+										School/University
 									}
-									@form.Item() {
-										@label.Label(label.Props{}) {
-											Graduation Year
-										}
-										<input
-											type="number"
-											:name="`education[${index}][graduationYear]`"
-											:id="`graduationYear-${index}`"
-											placeholder="2024"
-											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-										/>
+									<input
+										type="text"
+										name="education[0][school]"
+										placeholder="Institution name"
+										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+									/>
+								}
+								@form.Item() {
+									@label.Label(label.Props{}) {
+										Graduation Year
 									}
-								</div>
+									<input
+										type="number"
+										name="education[0][graduationYear]"
+										placeholder="2024"
+										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+									/>
+								}
 							</div>
-						</template>
+						</div>
 					</div>
 					<div class="mt-4">
-						<button type="button" @click="addEducation()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary hover:text-primary h-10 px-4 py-2">
+						<button type="button" onclick="addEducation()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary hover:text-primary h-10 px-4 py-2">
 							<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
 							</svg>
