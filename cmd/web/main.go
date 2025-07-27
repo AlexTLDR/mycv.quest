@@ -9,7 +9,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AlexTLDR/mycv.quest/internal/cv"
 	"github.com/AlexTLDR/mycv.quest/internal/database"
 	"github.com/AlexTLDR/mycv.quest/internal/env"
 	"github.com/AlexTLDR/mycv.quest/internal/smtp"
@@ -66,8 +65,8 @@ type application struct {
 	logger         *slog.Logger
 	mailer         *smtp.Mailer
 	sessionManager *scs.SessionManager
-	cvService      *cv.Service
-	wg             sync.WaitGroup
+
+	wg sync.WaitGroup
 }
 
 func run(logger *slog.Logger) error {
@@ -120,11 +119,6 @@ func run(logger *slog.Logger) error {
 		logger:         logger,
 		mailer:         mailer,
 		sessionManager: sessionManager,
-	}
-
-	// Initialize CV service
-	if err := app.initializeCVService(); err != nil {
-		return err
 	}
 
 	return app.serveHTTP()

@@ -8,11 +8,19 @@ import (
 	"github.com/AlexTLDR/mycv.quest/components/label"
 )
 
+type Template struct {
+	ID          string
+	Name        string
+	Description string
+	Version     string
+	Author      string
+}
+
 templ CVBuilderScripts() {
 	// No scripts needed - using Alpine.js from base template
 }
 
-templ CVBuilder() {
+templ CVBuilder(templates []Template) {
 	<div class="container mx-auto p-6 max-w-4xl">
 		<div class="mb-8">
 			<h1 class="text-3xl font-bold bg-gradient-to-r from-primary to-violet-600 bg-clip-text text-transparent mb-2">CV Builder</h1>
@@ -23,6 +31,7 @@ templ CVBuilder() {
 			x-data="{
 			workExperiences: [{}],
 			educations: [{}],
+			selectedTemplate: new URLSearchParams(window.location.search).get('template') || '',
 			addWorkExperience() {
 				this.workExperiences.push({});
 			},
@@ -121,6 +130,26 @@ templ CVBuilder() {
 								Name:        "address",
 								Placeholder: "Enter your full address",
 							})
+						}
+					</div>
+					<div class="mt-4">
+						@form.Item() {
+							@label.Label(label.Props{
+								For: "template",
+							}) {
+								CV Template
+							}
+							<select
+								id="template"
+								name="template"
+								x-model="selectedTemplate"
+								class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+							>
+								<option value="">Select a template...</option>
+								for _, template := range templates {
+									<option value={ template.ID }>{ template.Name } - { template.Description }</option>
+								}
+							</select>
 						}
 					</div>
 				}
@@ -383,6 +412,6 @@ templ CVBuilder() {
 	</div>
 }
 
-templ CVBuilderPage(data PageData) {
-	@Base("CV Builder - MyCV.Quest", data, nil, CVBuilder(), CVBuilderScripts())
+templ CVBuilderPage(data PageData, templates []Template) {
+	@Base("CV Builder - MyCV.Quest", data, nil, CVBuilder(templates), CVBuilderScripts())
 }
