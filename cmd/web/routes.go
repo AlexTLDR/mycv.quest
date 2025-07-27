@@ -11,8 +11,10 @@ func (app *application) routes() http.Handler {
 
 	fileServer := http.FileServer(http.FS(assets.EmbeddedFiles))
 	mux.Handle("GET /static/", fileServer)
+	mux.Handle("GET /assets/", fileServer)
 
 	mux.HandleFunc("GET /{$}", app.home)
+	mux.HandleFunc("GET /cv-builder", app.cvBuilder)
 
 	mux.Handle("GET /basic-auth-protected", app.requireBasicAuthentication(http.HandlerFunc(app.protected)))
 

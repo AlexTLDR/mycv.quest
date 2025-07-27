@@ -29,7 +29,7 @@ func Home() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<p>This is an example page.</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"container mx-auto px-4 py-16\"><div class=\"text-center\"><h1 class=\"text-4xl font-bold tracking-tight text-foreground sm:text-6xl\">Build Your Professional CV</h1><p class=\"mt-6 text-lg leading-8 text-muted-foreground\">Create stunning, professional CVs with our easy-to-use builder. Choose from multiple templates and export to PDF.</p><div class=\"mt-10 flex items-center justify-center gap-x-6\"><a href=\"/cv-builder\" class=\"rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary\">Start Building</a> <a href=\"/templates\" class=\"text-sm font-semibold leading-6 text-foreground\">View Templates <span aria-hidden=\"true\">→</span></a></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -58,7 +58,7 @@ func HomePage(data PageData) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = Base("Example page", data, nil, Home()).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Base("MyCV.Quest - Professional CV Builder", data, nil, Home()).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

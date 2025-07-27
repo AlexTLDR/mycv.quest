@@ -19,3 +19,12 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 func (app *application) protected(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("This is a protected handler"))
 }
+
+func (app *application) cvBuilder(w http.ResponseWriter, r *http.Request) {
+	data := app.newTemplateData(r)
+
+	err := response.Component(w, http.StatusOK, templates.CVBuilderPage(data))
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+}

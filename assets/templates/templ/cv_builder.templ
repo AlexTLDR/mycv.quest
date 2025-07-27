@@ -1,0 +1,367 @@
+package templates
+
+import (
+	"github.com/AlexTLDR/mycv.quest/components/button"
+	"github.com/AlexTLDR/mycv.quest/components/card"
+	"github.com/AlexTLDR/mycv.quest/components/form"
+	"github.com/AlexTLDR/mycv.quest/components/input"
+	"github.com/AlexTLDR/mycv.quest/components/label"
+)
+
+templ CVBuilderScripts() {
+	// No scripts needed - using Alpine.js from base template
+}
+
+templ CVBuilder() {
+	<div class="container mx-auto p-6 max-w-4xl">
+		<div class="mb-8">
+			<h1 class="text-3xl font-bold text-foreground mb-2">CV Builder</h1>
+			<p class="text-muted-foreground">Create your professional CV with our easy-to-use builder</p>
+		</div>
+		<form
+			class="space-y-8"
+			x-data="{
+			workExperiences: [{}],
+			educations: [{}],
+			addWorkExperience() {
+				this.workExperiences.push({});
+			},
+			addEducation() {
+				this.educations.push({});
+			},
+			removeWorkExperience(index) {
+				if (this.workExperiences.length > 1) {
+					this.workExperiences.splice(index, 1);
+				}
+			},
+			removeEducation(index) {
+				if (this.educations.length > 1) {
+					this.educations.splice(index, 1);
+				}
+			}
+		}"
+		>
+			<!-- Personal Information Section -->
+			@card.Card(card.Props{
+				Class: "p-6",
+			}) {
+				@card.Header() {
+					@card.Title() {
+						Personal Information
+					}
+					@card.Description() {
+						Enter your basic personal details
+					}
+				}
+				@card.Content() {
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+						@form.Item() {
+							@label.Label(label.Props{
+								For: "firstName",
+							}) {
+								First Name
+							}
+							@input.Input(input.Props{
+								Type:        input.TypeText,
+								ID:          "firstName",
+								Name:        "firstName",
+								Placeholder: "Enter your first name",
+							})
+						}
+						@form.Item() {
+							@label.Label(label.Props{
+								For: "lastName",
+							}) {
+								Last Name
+							}
+							@input.Input(input.Props{
+								Type:        input.TypeText,
+								ID:          "lastName",
+								Name:        "lastName",
+								Placeholder: "Enter your last name",
+							})
+						}
+						@form.Item() {
+							@label.Label(label.Props{
+								For: "email",
+							}) {
+								Email
+							}
+							@input.Input(input.Props{
+								Type:        input.TypeEmail,
+								ID:          "email",
+								Name:        "email",
+								Placeholder: "your.email@example.com",
+							})
+						}
+						@form.Item() {
+							@label.Label(label.Props{
+								For: "phone",
+							}) {
+								Phone
+							}
+							@input.Input(input.Props{
+								Type:        input.TypeTel,
+								ID:          "phone",
+								Name:        "phone",
+								Placeholder: "+1 (555) 123-4567",
+							})
+						}
+					</div>
+					<div class="mt-4">
+						@form.Item() {
+							@label.Label(label.Props{
+								For: "address",
+							}) {
+								Address
+							}
+							@input.Input(input.Props{
+								Type:        input.TypeText,
+								ID:          "address",
+								Name:        "address",
+								Placeholder: "Enter your full address",
+							})
+						}
+					</div>
+				}
+			}
+			<!-- Professional Summary Section -->
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Professional Summary
+					}
+					@card.Description() {
+						Write a brief overview of your professional background
+					}
+				}
+				@card.Content() {
+					@form.Item() {
+						@label.Label(label.Props{
+							For: "summary",
+						}) {
+							Summary
+						}
+						<textarea
+							id="summary"
+							name="summary"
+							rows="4"
+							class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+							placeholder="Describe your professional background, key skills, and career objectives..."
+						></textarea>
+					}
+				}
+			}
+			<!-- Work Experience Section -->
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Work Experience
+					}
+					@card.Description() {
+						Add your work history and achievements
+					}
+				}
+				@card.Content() {
+					<div id="work-experience-list" class="space-y-4">
+						<template x-for="(experience, index) in workExperiences" :key="index">
+							<div class="work-experience-item border rounded-lg p-4">
+								<div class="flex justify-between items-center mb-4" x-show="workExperiences.length > 1">
+									<h4 class="text-sm font-medium text-muted-foreground" x-text="`Work Experience ${index + 1}`"></h4>
+									<button type="button" @click="removeWorkExperience(index)" class="text-red-500 hover:text-red-700 text-sm">Remove</button>
+								</div>
+								<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+									@form.Item() {
+										@label.Label(label.Props{}) {
+											Job Title
+										}
+										<input
+											type="text"
+											:name="`workExperience[${index}][jobTitle]`"
+											:id="`jobTitle-${index}`"
+											placeholder="e.g., Software Engineer"
+											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+										/>
+									}
+									@form.Item() {
+										@label.Label(label.Props{}) {
+											Company
+										}
+										<input
+											type="text"
+											:name="`workExperience[${index}][company]`"
+											:id="`company-${index}`"
+											placeholder="Company name"
+											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+										/>
+									}
+									@form.Item() {
+										@label.Label(label.Props{}) {
+											Start Date
+										}
+										<input
+											type="date"
+											:name="`workExperience[${index}][startDate]`"
+											:id="`startDate-${index}`"
+											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+										/>
+									}
+									@form.Item() {
+										@label.Label(label.Props{}) {
+											End Date
+										}
+										<input
+											type="date"
+											:name="`workExperience[${index}][endDate]`"
+											:id="`endDate-${index}`"
+											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+										/>
+									}
+								</div>
+								@form.Item() {
+									@label.Label(label.Props{}) {
+										Job Description
+									}
+									<textarea
+										:name="`workExperience[${index}][description]`"
+										:id="`description-${index}`"
+										rows="3"
+										class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+										placeholder="Describe your responsibilities and achievements..."
+									></textarea>
+								}
+							</div>
+						</template>
+					</div>
+					<div class="mt-4">
+						<button type="button" @click="addWorkExperience()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+							Add Work Experience
+						</button>
+					</div>
+				}
+			}
+			<!-- Education Section -->
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Education
+					}
+					@card.Description() {
+						Add your educational background
+					}
+				}
+				@card.Content() {
+					<div id="education-list" class="space-y-4">
+						<template x-for="(education, index) in educations" :key="index">
+							<div class="education-item border rounded-lg p-4">
+								<div class="flex justify-between items-center mb-4" x-show="educations.length > 1">
+									<h4 class="text-sm font-medium text-muted-foreground" x-text="`Education ${index + 1}`"></h4>
+									<button type="button" @click="removeEducation(index)" class="text-red-500 hover:text-red-700 text-sm">Remove</button>
+								</div>
+								<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+									@form.Item() {
+										@label.Label(label.Props{}) {
+											Degree
+										}
+										<input
+											type="text"
+											:name="`education[${index}][degree]`"
+											:id="`degree-${index}`"
+											placeholder="e.g., Bachelor of Science"
+											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+										/>
+									}
+									@form.Item() {
+										@label.Label(label.Props{}) {
+											Field of Study
+										}
+										<input
+											type="text"
+											:name="`education[${index}][field]`"
+											:id="`field-${index}`"
+											placeholder="e.g., Computer Science"
+											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+										/>
+									}
+									@form.Item() {
+										@label.Label(label.Props{}) {
+											School/University
+										}
+										<input
+											type="text"
+											:name="`education[${index}][school]`"
+											:id="`school-${index}`"
+											placeholder="Institution name"
+											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+										/>
+									}
+									@form.Item() {
+										@label.Label(label.Props{}) {
+											Graduation Year
+										}
+										<input
+											type="number"
+											:name="`education[${index}][graduationYear]`"
+											:id="`graduationYear-${index}`"
+											placeholder="2024"
+											class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+										/>
+									}
+								</div>
+							</div>
+						</template>
+					</div>
+					<div class="mt-4">
+						<button type="button" @click="addEducation()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+							Add Education
+						</button>
+					</div>
+				}
+			}
+			<!-- Skills Section -->
+			@card.Card() {
+				@card.Header() {
+					@card.Title() {
+						Skills
+					}
+					@card.Description() {
+						List your technical and professional skills
+					}
+				}
+				@card.Content() {
+					@form.Item() {
+						@label.Label(label.Props{
+							For: "skills",
+						}) {
+							Skills (comma-separated)
+						}
+						@input.Input(input.Props{
+							Type:        input.TypeText,
+							ID:          "skills",
+							Name:        "skills",
+							Placeholder: "JavaScript, Python, React, Node.js, SQL...",
+						})
+					}
+				}
+			}
+			<!-- Action Buttons -->
+			<div class="flex gap-4 justify-end">
+				@button.Button(button.Props{
+					Variant: button.VariantOutline,
+					Type:    button.TypeButton,
+				}) {
+					Preview CV
+				}
+				@button.Button(button.Props{
+					Type: button.TypeSubmit,
+				}) {
+					Generate CV
+				}
+			</div>
+		</form>
+	</div>
+}
+
+templ CVBuilderPage(data PageData) {
+	@Base("CV Builder - MyCV.Quest", data, nil, CVBuilder(), CVBuilderScripts())
+}

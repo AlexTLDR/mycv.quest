@@ -9,7 +9,7 @@ type PageData struct {
 	Version string
 }
 
-templ Base(title string, data PageData, meta templ.Component, content templ.Component) {
+templ Base(title string, data PageData, meta templ.Component, content templ.Component, scripts ...templ.Component) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -21,30 +21,47 @@ templ Base(title string, data PageData, meta templ.Component, content templ.Comp
 			}
 			<link rel="stylesheet" href={ fmt.Sprintf("/static/css/main.css?version=%s", data.Version) }/>
 		</head>
-		<body>
-			<header>
-				<h1><a href="/">Example header</a></h1>
-				@Nav()
+		<body class="min-h-screen bg-background text-foreground">
+			<header class="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+				<div class="container mx-auto flex h-14 items-center px-4">
+					<h1 class="mr-6 text-lg font-semibold">
+						<a href="/" class="hover:text-primary transition-colors">MyCV.Quest</a>
+					</h1>
+					@Nav()
+				</div>
 			</header>
-			<main>
+			<main class="flex-1">
 				@content
 			</main>
 			@Footer(data)
+			if len(scripts) > 0 {
+				for _, script := range scripts {
+					@script
+				}
+			}
+			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 		</body>
 	</html>
 }
 
 templ Nav() {
-	<nav>
-		<a href="#">Example link</a>
-		<a href="#">Example link</a>
+	<nav class="flex items-center space-x-6 text-sm font-medium">
+		<a href="/" class="transition-colors hover:text-foreground/80 text-foreground/60">Home</a>
+		<a href="/cv-builder" class="transition-colors hover:text-foreground/80 text-foreground/60">CV Builder</a>
+		<a href="/templates" class="transition-colors hover:text-foreground/80 text-foreground/60">Templates</a>
+		<a href="/api/cv/templates" class="transition-colors hover:text-foreground/80 text-foreground/60">API</a>
 	</nav>
 }
 
 templ Footer(data PageData) {
-	<footer>
-		&copy; { fmt.Sprintf("%d", time.Now().Year()) }
-		<br/>
-		Version: { data.Version }
+	<footer class="border-t py-6 md:py-0">
+		<div class="container mx-auto flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row px-4">
+			<div class="text-center text-sm leading-loose text-muted-foreground md:text-left">
+				&copy; { fmt.Sprintf("%d", time.Now().Year()) } MyCV.Quest. Built with Go and templ.
+			</div>
+			<div class="text-center text-sm text-muted-foreground md:text-right">
+				Version: { data.Version }
+			</div>
+		</div>
 	</footer>
 }

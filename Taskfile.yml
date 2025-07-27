@@ -32,6 +32,52 @@ tasks:
             - templ generate --watch
 
     # ==================================================================================== #
+    # CSS
+    # ==================================================================================== #
+
+    css:build:
+        desc: Build CSS from input.css using Tailwind
+        cmds:
+            - ./tailwindcss -i ./assets/css/input.css -o ./assets/static/css/main.css
+        sources:
+            - "assets/css/input.css"
+            - "assets/**/*.templ"
+            - "components/**/*.templ"
+        generates:
+            - "assets/static/css/main.css"
+
+    css:watch:
+        desc: Watch and rebuild CSS on changes
+        cmds:
+            - ./tailwindcss -i ./assets/css/input.css -o ./assets/static/css/main.css --watch
+
+    # ==================================================================================== #
+    # TEMPLUI
+    # ==================================================================================== #
+
+    ui:init:
+        desc: Initialize templui in the project
+        cmds:
+            - templui init
+
+    ui:add:
+        desc: Add templui components (usage - go-task ui:add COMPONENTS="button card input")
+        cmds:
+            - templui add {{.COMPONENTS}}
+        requires:
+            vars: [COMPONENTS]
+
+    ui:list:
+        desc: List available templui components
+        cmds:
+            - templui list
+
+    ui:upgrade:
+        desc: Upgrade templui CLI to latest version
+        cmds:
+            - templui upgrade
+
+    # ==================================================================================== #
     # QUALITY CONTROL
     # ==================================================================================== #
 
@@ -76,12 +122,13 @@ tasks:
 
     build:
         desc: Build the cmd/web application
-        deps: [templ:generate]
+        deps: [templ:generate, css:build]
         cmds:
             - go build -o={{.BUILD_DIR}}/{{.APP_NAME}} ./cmd/web
         sources:
             - "**/*.go"
             - "**/*_templ.go"
+            - "assets/static/css/main.css"
         generates:
             - "{{.BUILD_DIR}}/{{.APP_NAME}}"
 
@@ -102,18 +149,33 @@ tasks:
                   --misc.clean_on_exit "true"
 
     dev:
-        desc: Run development server with templ watching and live reload
+        desc: Run development server with templ and CSS watching and live reload
         cmds:
             - |
-                echo "Starting development server with templ watching..."
+                echo "Starting development server with templ and CSS watching..."
+
+                # Start templ watching in background
                 templ generate --watch &
                 TEMPL_PID=$!
 
-                trap "kill $TEMPL_PID 2>/dev/null || true" EXIT
+                # Start CSS watching in background
+                ./tailwindcss -i ./assets/css/input.css -o ./assets/static/css/main.css --watch &
+                CSS_PID=$!
 
+                # Cleanup function
+                cleanup() {
+                    echo "Stopping development server..."
+                    kill $TEMPL_PID 2>/dev/null || true
+                    kill $CSS_PID 2>/dev/null || true
+                    exit 0
+                }
+
+                trap cleanup EXIT INT TERM
+
+                # Start air for Go live reload
                 go run github.com/cosmtrek/air@v1.43.0 \
                   --build.cmd "go-task build" --build.bin "{{.BUILD_DIR}}/{{.APP_NAME}}" --build.delay "100" \
-                  --build.exclude_dir "" \
+                  --build.exclude_dir "node_modules,tmp,.git" \
                   --build.include_ext "go, templ, tpl, tmpl, html, css, scss, js, ts, sql, jpeg, jpg, gif, png, bmp, svg, webp, ico" \
                   --misc.clean_on_exit "true"
 
@@ -172,6 +234,7 @@ tasks:
         cmds:
             - rm -rf {{.BUILD_DIR}}/{{.APP_NAME}}
             - find . -name "*_templ.go" -type f -delete
+            - rm -f assets/static/css/main.css
 
     clean:all:
         desc: Clean everything including dependencies
