@@ -77,7 +77,7 @@ templ Templates(templates []TemplateInfo) {
 							</div>
 						</div>
 						<!-- Action Buttons -->
-						<div class="flex gap-3">
+						<div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
 							<a href={ templ.URL("/cv-builder?template=" + template.ID) } class="flex-1">
 								@button.Button(button.Props{
 									Class: "w-full text-base py-3",
@@ -89,31 +89,33 @@ templ Templates(templates []TemplateInfo) {
 									Use This Template
 								}
 							</a>
-							<a href={ templ.URL("/templates/" + template.ID + "/preview") } target="_blank" rel="noopener noreferrer">
-								@button.Button(button.Props{
-									Variant: button.VariantOutline,
-									Type:    button.TypeButton,
-									Class:   "px-4 py-3",
-								}) {
-									<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-									</svg>
-								}
-							</a>
-							if template.Repository != "" {
-								<a href={ templ.URL(template.Repository) } target="_blank" rel="noopener noreferrer">
+							<div class="flex gap-2 sm:gap-3 sm:flex-shrink-0">
+								<a href={ templ.URL("/templates/" + template.ID + "/preview") } target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-none">
 									@button.Button(button.Props{
 										Variant: button.VariantOutline,
 										Type:    button.TypeButton,
-										Class:   "px-4 py-3",
+										Class:   "w-full sm:w-auto px-4 py-3",
 									}) {
 										<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
 										</svg>
 									}
 								</a>
-							}
+								if template.Repository != "" {
+									<a href={ templ.URL(template.Repository) } target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-none">
+										@button.Button(button.Props{
+											Variant: button.VariantOutline,
+											Type:    button.TypeButton,
+											Class:   "w-full sm:w-auto px-4 py-3",
+										}) {
+											<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+											</svg>
+										}
+									</a>
+								}
+							</div>
 						</div>
 					}
 				}

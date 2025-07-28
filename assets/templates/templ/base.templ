@@ -14,7 +14,17 @@ type PageData struct {
 
 templ Base(title string, data PageData, meta templ.Component, content templ.Component, scripts ...templ.Component) {
 	<!DOCTYPE html>
-	<html lang="en">
+	<html
+		lang="en"
+		x-data="{
+		darkMode: localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches),
+		toggleTheme() {
+			this.darkMode = !this.darkMode;
+			localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
+		}
+	}"
+		x-bind:class="{ 'dark': darkMode }"
+	>
 		<head>
 			<meta charset="utf-8"/>
 			<title>{ title }</title>
@@ -32,13 +42,13 @@ templ Base(title string, data PageData, meta templ.Component, content templ.Comp
 					Position: drawer.PositionLeft,
 					Class:    "w-64",
 				}) {
-					@Sidebar(data, "mobile")
+					@Sidebar(data)
 				}
 				<!-- Desktop Layout -->
 				<div class="flex h-screen">
 					<!-- Fixed Sidebar -->
 					<aside class="hidden lg:block w-64 bg-card border-r">
-						@Sidebar(data, "desktop")
+						@Sidebar(data)
 					</aside>
 					<!-- Main Content -->
 					<div class="flex-1 flex flex-col">
@@ -73,84 +83,12 @@ templ Base(title string, data PageData, meta templ.Component, content templ.Comp
 					@script
 				}
 			}
-			<script>
-				// Theme management without Alpine.js
-				(function() {
-					function initTheme() {
-						const theme = localStorage.getItem('theme') ||
-							(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-
-
-
-						if (theme === 'dark') {
-							document.documentElement.classList.add('dark');
-						} else {
-							document.documentElement.classList.remove('dark');
-						}
-
-						updateThemeIcon(theme === 'dark');
-					}
-
-					function toggleTheme() {
-						const isDark = document.documentElement.classList.contains('dark');
-						const newTheme = isDark ? 'light' : 'dark';
-
-
-
-						if (newTheme === 'dark') {
-							document.documentElement.classList.add('dark');
-						} else {
-							document.documentElement.classList.remove('dark');
-						}
-
-						localStorage.setItem('theme', newTheme);
-						updateThemeIcon(newTheme === 'dark');
-					}
-
-					function updateThemeIcon(isDark) {
-						// Update both mobile and desktop icons
-						const prefixes = ['mobile', 'desktop'];
-
-						prefixes.forEach(prefix => {
-							const moonIcon = document.getElementById(prefix + '-moon-icon');
-							const sunIcon = document.getElementById(prefix + '-sun-icon');
-
-
-
-							if (moonIcon && sunIcon) {
-								if (isDark) {
-									// In dark mode, show sun icon (to switch to light)
-									moonIcon.style.display = 'none';
-									sunIcon.style.display = 'block';
-
-								} else {
-									// In light mode, show moon icon (to switch to dark)
-									moonIcon.style.display = 'block';
-									sunIcon.style.display = 'none';
-
-								}
-							} else {
-
-							}
-						});
-					}
-
-					// Make toggleTheme globally available
-					window.toggleTheme = toggleTheme;
-
-					// Initialize theme when DOM is ready
-					if (document.readyState === 'loading') {
-						document.addEventListener('DOMContentLoaded', initTheme);
-					} else {
-						initTheme();
-					}
-				})();
-			</script>
+			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 		</body>
 	</html>
 }
 
-templ Sidebar(data PageData, idPrefix string) {
+templ Sidebar(data PageData) {
 	<div class="h-full flex flex-col">
 		<!-- Logo Area -->
 		<div class="h-16 px-6 flex items-center border-b">
@@ -178,14 +116,14 @@ templ Sidebar(data PageData, idPrefix string) {
 			<!-- Theme Toggle -->
 			<div class="flex justify-center">
 				<button
-					onclick="toggleTheme()"
+					@click="toggleTheme()"
 					class="p-2 rounded-md hover:bg-accent transition-colors"
-					title="Toggle theme"
+					:title="darkMode ? 'Switch to light mode' : 'Switch to dark mode'"
 				>
-					<svg id={ idPrefix + "-moon-icon" } class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<svg x-show="!darkMode" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
 					</svg>
-					<svg id={ idPrefix + "-sun-icon" } class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+					<svg x-show="darkMode" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
 					</svg>
 				</button>
