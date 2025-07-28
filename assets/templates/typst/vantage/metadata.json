@@ -1,0 +1,18 @@
+{
+    "preview_image": "preview.png",
+    "repository": "https://github.com/sardorml/vantage-typst",
+    "thumbnail": "thumbnail.png",
+    "tags": [
+        "ats-friendly",
+        "simple",
+        "two-column",
+        "icons",
+        "responsive",
+        "clean"
+    ],
+    "license": "MIT",
+    "difficulty": "beginner",
+    "updated_at": "2024-01-15",
+    "featured": true,
+    "category": "ats-optimized"
+}

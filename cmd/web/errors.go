@@ -57,6 +57,10 @@ func (app *application) badRequest(w http.ResponseWriter, r *http.Request, err e
 	http.Error(w, err.Error(), http.StatusBadRequest)
 }
 
+func (app *application) clientError(w http.ResponseWriter, status int) {
+	http.Error(w, http.StatusText(status), status)
+}
+
 func (app *application) basicAuthenticationRequired(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
 

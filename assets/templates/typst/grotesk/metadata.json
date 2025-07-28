@@ -1,0 +1,11 @@
+{
+    "preview_image": "preview.png",
+    "repository": "https://github.com/AsiSkarp/grotesk-cv",
+    "thumbnail": "thumbnail.png",
+    "tags": ["modern", "clean", "two-column", "professional", "typography"],
+    "license": "MIT",
+    "difficulty": "beginner",
+    "updated_at": "2024-01-15",
+    "featured": true,
+    "category": "professional"
+}

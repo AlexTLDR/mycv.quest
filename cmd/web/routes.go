@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/AlexTLDR/mycv.quest/assets"
 )
@@ -9,28 +10,58 @@ import (
 func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 
-	fileServer := http.FileServer(http.FS(assets.EmbeddedFiles))
+	// Create a wrapper that fixes MIME types for JavaScript files
+	fileServer := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Set correct MIME type for JavaScript files
+		if strings.HasSuffix(r.URL.Path, ".js") {
+			w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+		}
+
+		// Create a custom ResponseWriter that prevents the file server from overriding our Content-Type
+		wrappedWriter := &mimePreservingWriter{
+			ResponseWriter: w,
+			isJS:           strings.HasSuffix(r.URL.Path, ".js"),
+		}
+
+		http.FileServer(http.FS(assets.EmbeddedFiles)).ServeHTTP(wrappedWriter, r)
+	})
+
 	mux.Handle("GET /static/", fileServer)
-	mux.Handle("GET /assets/", fileServer)
+	mux.Handle("GET /assets/", http.StripPrefix("/assets/", fileServer))
+
+	// Serve template static files (preview images, etc.)
+	templateFileServer := http.StripPrefix("/static/templates/", http.FileServer(http.Dir("assets/templates/typst/")))
+	mux.Handle("GET /static/templates/", templateFileServer)
 
 	mux.HandleFunc("GET /{$}", app.home)
 	mux.HandleFunc("GET /cv-builder", app.cvBuilder)
+	mux.HandleFunc("GET /templates", app.templates)
+	mux.HandleFunc("GET /templates/{id}/preview", app.templatePreview)
 
 	mux.Handle("GET /basic-auth-protected", app.requireBasicAuthentication(http.HandlerFunc(app.protected)))
 
-	// CV API routes
-	mux.HandleFunc("GET /api/cv/templates", app.listTemplates)
-	mux.HandleFunc("GET /api/cv/templates/{id}", app.getTemplate)
-	mux.HandleFunc("GET /api/cv/templates/{id}/form", app.getTemplateForm)
-	mux.HandleFunc("GET /api/cv/templates/{id}/sample", app.getTemplateSample)
-	mux.HandleFunc("GET /api/cv/templates/{id}/metadata", app.getTemplateMetadata)
-	mux.HandleFunc("GET /api/cv/templates/{id}/debug", app.debugTemplate)
-	mux.HandleFunc("POST /api/cv/templates/{id}/validate", app.validateTemplateData)
-	mux.HandleFunc("POST /api/cv/templates/{id}/generate", app.generateCV)
-	mux.HandleFunc("POST /api/cv/templates/{id}/preview", app.generateCVPreview)
-	mux.HandleFunc("GET /api/cv/templates/{id}/quick", app.quickGenerate)
-	mux.HandleFunc("POST /api/cv/convert", app.convertData)
-	mux.HandleFunc("GET /api/cv/system/typst", app.validateTypstInstallation)
-
 	return app.logAccess(app.recoverPanic(app.securityHeaders(app.sessionManager.LoadAndSave(mux))))
+}
+
+// mimePreservingWriter prevents the file server from overriding our MIME type for JS files
+type mimePreservingWriter struct {
+	http.ResponseWriter
+	isJS          bool
+	headerWritten bool
+}
+
+func (w *mimePreservingWriter) WriteHeader(statusCode int) {
+	if !w.headerWritten && w.isJS {
+		// Ensure our JavaScript MIME type is preserved
+		w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+	}
+	w.headerWritten = true
+	w.ResponseWriter.WriteHeader(statusCode)
+}
+
+func (w *mimePreservingWriter) Write(data []byte) (int, error) {
+	if !w.headerWritten {
+		w.WriteHeader(http.StatusOK)
+	}
+	return w.ResponseWriter.Write(data)
 }

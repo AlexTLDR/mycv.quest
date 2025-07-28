@@ -67,7 +67,8 @@ type application struct {
 	mailer         *smtp.Mailer
 	sessionManager *scs.SessionManager
 	cvService      *cv.Service
-	wg             sync.WaitGroup
+
+	wg sync.WaitGroup
 }
 
 func run(logger *slog.Logger) error {
@@ -114,17 +115,19 @@ func run(logger *slog.Logger) error {
 	sessionManager.Cookie.Name = cfg.session.cookieName
 	sessionManager.Cookie.Secure = true
 
+	// Initialize CV service
+	cvService, err := cv.NewService("assets/templates/typst", "tmp/cv-output")
+	if err != nil {
+		return err
+	}
+
 	app := &application{
 		config:         cfg,
 		db:             db,
 		logger:         logger,
 		mailer:         mailer,
 		sessionManager: sessionManager,
-	}
-
-	// Initialize CV service
-	if err := app.initializeCVService(); err != nil {
-		return err
+		cvService:      cvService,
 	}
 
 	return app.serveHTTP()

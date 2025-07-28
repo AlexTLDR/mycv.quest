@@ -8,8 +8,8 @@ github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERo
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
 github.com/Oudwins/tailwind-merge-go v0.2.1 h1:jxRaEqGtwwwF48UuFIQ8g8XT7YSualNuGzCvQ89nPFE=
 github.com/Oudwins/tailwind-merge-go v0.2.1/go.mod h1:kkZodgOPvZQ8f7SIrlWkG/w1g9JTbtnptnePIh3V72U=
-github.com/a-h/templ v0.3.920 h1:IQjjTu4KGrYreHo/ewzSeS8uefecisPayIIc9VflLSE=
-github.com/a-h/templ v0.3.920/go.mod h1:FFAu4dI//ESmEN7PQkJ7E7QfnSEMdcnu7QrAY8Dn334=
+github.com/a-h/templ v0.3.924 h1:t5gZqTneXqvehpNZsgtnlOscnBboNh9aASBH2MgV/0k=
+github.com/a-h/templ v0.3.924/go.mod h1:FFAu4dI//ESmEN7PQkJ7E7QfnSEMdcnu7QrAY8Dn334=
 github.com/alexedwards/scs/postgresstore v0.0.0-20250417082927-ab20b3feb5e9 h1:FGBhs+LG4w1y511QLcuLr1xfhI7Fbyq6Da1TCf6EQq4=
 github.com/alexedwards/scs/postgresstore v0.0.0-20250417082927-ab20b3feb5e9/go.mod h1:TDDdV/xnjj+/4zBQ9a2k+i2AbuAdY7SQjPUh5zoTZ3M=
 github.com/alexedwards/scs/v2 v2.9.0 h1:xa05mVpwTBm1iLeTMNFfAWpKUm4fXAW7CeAViqBVS90=
