@@ -1,12 +1,6 @@
 package templates
 
-import (
-	"github.com/AlexTLDR/mycv.quest/components/button"
-	"github.com/AlexTLDR/mycv.quest/components/card"
-	"github.com/AlexTLDR/mycv.quest/components/form"
-	"github.com/AlexTLDR/mycv.quest/components/input"
-	"github.com/AlexTLDR/mycv.quest/components/label"
-)
+import "github.com/AlexTLDR/mycv.quest/components/card"
 
 type Template struct {
 	ID           string
@@ -20,448 +14,418 @@ type Template struct {
 
 templ CVBuilderScripts() {
 	<script>
-		// Simple form management without Alpine.js
-		function addWorkExperience() {
-			const container = document.getElementById('work-experience-container');
-			const count = container.children.length;
-			const newExperience = createWorkExperienceItem(count);
-			container.appendChild(newExperience);
-		}
+		window.cvBuilder = {
+			currentTemplate: '',
 
-		function addEducation() {
-			const container = document.getElementById('education-container');
-			const count = container.children.length;
-			const newEducation = createEducationItem(count);
-			container.appendChild(newEducation);
-		}
+			selectTemplate: function(templateId) {
+				this.currentTemplate = templateId;
+				document.getElementById('template_id').value = templateId;
 
-		function removeWorkExperience(button) {
-			const container = document.getElementById('work-experience-container');
-			if (container.children.length > 1) {
-				button.closest('.work-experience-item').remove();
+				// Update template selection UI
+				document.querySelectorAll('.template-option').forEach(option => {
+					option.classList.remove('border-primary', 'bg-primary/5');
+					option.classList.add('border-input');
+				});
+
+				// Highlight selected template
+				const selectedOption = document.querySelector('[data-template-id="' + templateId + '"]');
+				if (selectedOption) {
+					selectedOption.classList.remove('border-input');
+					selectedOption.classList.add('border-primary', 'bg-primary/5');
+				}
+
+				// Update selected template name
+				const templateName = selectedOption ? selectedOption.querySelector('h3').textContent : templateId;
+				document.getElementById('selected-template-name').textContent = templateName;
+
+				// Show the form
+				document.getElementById('cv-form-container').style.display = 'block';
+			},
+
+			addWorkExperience: function() {
+				const container = document.getElementById('work-experience-container');
+				const index = container.children.length;
+				const workItem = this.createWorkExperienceItem(index);
+				container.appendChild(workItem);
+			},
+
+			removeWorkExperience: function(button) {
+				const container = document.getElementById('work-experience-container');
+				if (container.children.length > 1) {
+					button.closest('.work-experience-item').remove();
+					this.updateWorkExperienceIndices();
+				}
+			},
+
+			createWorkExperienceItem: function(index) {
+				const div = document.createElement('div');
+				div.className = 'work-experience-item border rounded-lg p-4 mb-4 relative';
+				div.innerHTML = `
+					${index > 0 ? '<button type="button" onclick="window.cvBuilder.removeWorkExperience(this)" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm">×</button>' : ''}
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+						<div>
+							<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Job Title *</label>
+							<input type="text" name="jobs[${index}].position" required placeholder="e.g., Software Engineer" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+						</div>
+						<div>
+							<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Company *</label>
+							<input type="text" name="jobs[${index}].company.name" required placeholder="Company name" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+						</div>
+						<div>
+							<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Start Date *</label>
+							<input type="text" name="jobs[${index}].from" required placeholder="e.g., 2022 Jan" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+						</div>
+						<div>
+							<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">End Date *</label>
+							<input type="text" name="jobs[${index}].to" required placeholder="e.g., present or 2023 Dec" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+						</div>
+						<div class="md:col-span-2">
+							<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Location</label>
+							<input type="text" name="jobs[${index}].location" placeholder="e.g., San Francisco, CA" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+						</div>
+					</div>
+					<div class="mb-4">
+						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Job Description</label>
+						<textarea name="jobs[${index}].description[0]" rows="3" class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="Describe your responsibilities and achievements..."></textarea>
+					</div>
+					<div>
+						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Skills/Technologies Used</label>
+						<input type="text" name="jobs[${index}].tags" placeholder="e.g., JavaScript, React, Node.js (comma-separated)" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+					</div>
+				`;
+				return div;
+			},
+
+			updateWorkExperienceIndices: function() {
+				const items = document.querySelectorAll('.work-experience-item');
+				items.forEach((item, index) => {
+					item.querySelectorAll('input, textarea').forEach(input => {
+						input.name = input.name.replace(/\[\d+\]/, `[${index}]`);
+					});
+				});
+			},
+
+			addEducation: function() {
+				const container = document.getElementById('education-container');
+				const index = container.children.length;
+				const eduItem = this.createEducationItem(index);
+				container.appendChild(eduItem);
+			},
+
+			removeEducation: function(button) {
+				const container = document.getElementById('education-container');
+				if (container.children.length > 1) {
+					button.closest('.education-item').remove();
+					this.updateEducationIndices();
+				}
+			},
+
+			createEducationItem: function(index) {
+				const div = document.createElement('div');
+				div.className = 'education-item border rounded-lg p-4 mb-4 relative';
+				div.innerHTML = `
+					${index > 0 ? '<button type="button" onclick="window.cvBuilder.removeEducation(this)" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm">×</button>' : ''}
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div>
+							<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Degree *</label>
+							<input type="text" name="education[${index}].degree" required placeholder="e.g., Bachelor of Science" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+						</div>
+						<div>
+							<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Field of Study *</label>
+							<input type="text" name="education[${index}].major" required placeholder="e.g., Computer Science" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+						</div>
+						<div>
+							<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Institution *</label>
+							<input type="text" name="education[${index}].place.name" required placeholder="University name" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+						</div>
+						<div>
+							<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Location</label>
+							<input type="text" name="education[${index}].location" placeholder="e.g., Berkeley, CA" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+						</div>
+						<div>
+							<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Start Year *</label>
+							<input type="text" name="education[${index}].from" required placeholder="e.g., 2016" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+						</div>
+						<div>
+							<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">End Year *</label>
+							<input type="text" name="education[${index}].to" required placeholder="e.g., 2020" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+						</div>
+					</div>
+				`;
+				return div;
+			},
+
+			updateEducationIndices: function() {
+				const items = document.querySelectorAll('.education-item');
+				items.forEach((item, index) => {
+					item.querySelectorAll('input').forEach(input => {
+						input.name = input.name.replace(/\[\d+\]/, `[${index}]`);
+					});
+				});
+			},
+
+			generateCV: function() {
+				if (!this.currentTemplate) {
+					alert('Please select a template first');
+					return;
+				}
+
+				const form = document.getElementById('cv-form');
+				const formData = new FormData(form);
+
+				// Show loading state
+				const button = event.target;
+				const originalText = button.innerHTML;
+				button.innerHTML = '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>Generating...';
+				button.disabled = true;
+
+				fetch('/api/cv/generate', {
+					method: 'POST',
+					body: formData
+				})
+				.then(response => {
+					if (response.ok) {
+						return response.blob();
+					}
+					throw new Error('Failed to generate CV');
+				})
+				.then(blob => {
+					// Create download link
+					const url = window.URL.createObjectURL(blob);
+					const a = document.createElement('a');
+					a.style.display = 'none';
+					a.href = url;
+					a.download = 'cv.pdf';
+					document.body.appendChild(a);
+					a.click();
+					window.URL.revokeObjectURL(url);
+				})
+				.catch(error => {
+					console.error('Error generating CV:', error);
+					alert('Error generating CV. Please check your inputs and try again.');
+				})
+				.finally(() => {
+					button.innerHTML = originalText;
+					button.disabled = false;
+				});
 			}
-		}
+		};
 
-		function removeEducation(button) {
-			const container = document.getElementById('education-container');
-			if (container.children.length > 1) {
-				button.closest('.education-item').remove();
-			}
-		}
-
-		function createWorkExperienceItem(index) {
-			const div = document.createElement('div');
-			div.className = 'work-experience-item border rounded-lg p-4';
-			div.innerHTML = `
-				<div class="flex justify-between items-center mb-4">
-					<h4 class="text-sm font-medium text-muted-foreground">Work Experience ${index + 1}</h4>
-					<button type="button" onclick="removeWorkExperience(this)" class="text-red-500 hover:text-red-700 text-sm">Remove</button>
-				</div>
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-					<div>
-						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Job Title</label>
-						<input type="text" name="workExperience[${index}][jobTitle]" placeholder="e.g., Software Engineer" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
-					</div>
-					<div>
-						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Company</label>
-						<input type="text" name="workExperience[${index}][company]" placeholder="Company name" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
-					</div>
-					<div>
-						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Start Date</label>
-						<input type="date" name="workExperience[${index}][startDate]" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
-					</div>
-					<div>
-						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">End Date</label>
-						<input type="date" name="workExperience[${index}][endDate]" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
-					</div>
-				</div>
-				<div>
-					<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Job Description</label>
-					<textarea name="workExperience[${index}][description]" rows="3" class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="Describe your responsibilities and achievements..."></textarea>
-				</div>
-			`;
-			return div;
-		}
-
-		function createEducationItem(index) {
-			const div = document.createElement('div');
-			div.className = 'education-item border rounded-lg p-4';
-			div.innerHTML = `
-				<div class="flex justify-between items-center mb-4">
-					<h4 class="text-sm font-medium text-muted-foreground">Education ${index + 1}</h4>
-					<button type="button" onclick="removeEducation(this)" class="text-red-500 hover:text-red-700 text-sm">Remove</button>
-				</div>
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-					<div>
-						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Degree</label>
-						<input type="text" name="education[${index}][degree]" placeholder="e.g., Bachelor of Science" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
-					</div>
-					<div>
-						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Field of Study</label>
-						<input type="text" name="education[${index}][field]" placeholder="e.g., Computer Science" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
-					</div>
-					<div>
-						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">School/University</label>
-						<input type="text" name="education[${index}][school]" placeholder="Institution name" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
-					</div>
-					<div>
-						<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Graduation Year</label>
-						<input type="number" name="education[${index}][graduationYear]" placeholder="2024" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
-					</div>
-				</div>
-			`;
-			return div;
+		// Global functions for template selection
+		function selectTemplate(templateId) {
+			window.cvBuilder.selectTemplate(templateId);
 		}
 	</script>
 }
 
 templ CVBuilder(templates []Template) {
-	<div class="container mx-auto p-6 max-w-4xl">
+	<div class="max-w-4xl mx-auto p-6">
 		<div class="mb-8">
 			<h1 class="text-3xl font-bold bg-gradient-to-r from-primary to-violet-600 bg-clip-text text-transparent mb-2">CV Builder</h1>
 			<p class="text-muted-foreground">Create your professional CV with our easy-to-use builder</p>
 		</div>
-		<form class="space-y-8" method="post" action="/cv-builder">
-			<!-- Personal Information Section -->
-			@card.Card(card.Props{
-				Class: "p-6 border-l-4 border-l-primary",
-			}) {
-				@card.Header() {
-					@card.Title() {
-						<span class="text-primary">Personal Information</span>
-					}
-					@card.Description() {
-						Enter your basic personal details
-					}
+		<!-- Template Selection -->
+		@card.Card(card.Props{
+			Class: "mb-8 p-6",
+		}) {
+			@card.Header() {
+				@card.Title() {
+					<span class="text-primary">Choose a Template</span>
 				}
-				@card.Content() {
-					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-						@form.Item() {
-							@label.Label(label.Props{
-								For: "firstName",
-							}) {
-								First Name
-							}
-							@input.Input(input.Props{
-								Type:        input.TypeText,
-								ID:          "firstName",
-								Name:        "firstName",
-								Placeholder: "Enter your first name",
-							})
-						}
-						@form.Item() {
-							@label.Label(label.Props{
-								For: "lastName",
-							}) {
-								Last Name
-							}
-							@input.Input(input.Props{
-								Type:        input.TypeText,
-								ID:          "lastName",
-								Name:        "lastName",
-								Placeholder: "Enter your last name",
-							})
-						}
-						@form.Item() {
-							@label.Label(label.Props{
-								For: "email",
-							}) {
-								Email
-							}
-							@input.Input(input.Props{
-								Type:        input.TypeEmail,
-								ID:          "email",
-								Name:        "email",
-								Placeholder: "your.email@example.com",
-							})
-						}
-						@form.Item() {
-							@label.Label(label.Props{
-								For: "phone",
-							}) {
-								Phone
-							}
-							@input.Input(input.Props{
-								Type:        input.TypeTel,
-								ID:          "phone",
-								Name:        "phone",
-								Placeholder: "+1 (555) 123-4567",
-							})
-						}
-					</div>
-					<div class="mt-4">
-						@form.Item() {
-							@label.Label(label.Props{
-								For: "address",
-							}) {
-								Address
-							}
-							@input.Input(input.Props{
-								Type:        input.TypeText,
-								ID:          "address",
-								Name:        "address",
-								Placeholder: "Enter your full address",
-							})
-						}
-					</div>
-					<div class="mt-4">
-						@form.Item() {
-							@label.Label(label.Props{
-								For: "template",
-							}) {
-								CV Template
-							}
-							<select
-								id="template"
-								name="template"
-								class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-							>
-								<option value="">Select a template</option>
-								for _, template := range templates {
-									<option value={ template.ID }>{ template.Name }</option>
-								}
-							</select>
-						}
-					</div>
+				@card.Description() {
+					Select a CV template to get started
 				}
 			}
-			<!-- Professional Summary Section -->
-			@card.Card(card.Props{
-				Class: "border-l-4 border-l-primary",
-			}) {
-				@card.Header() {
-					@card.Title() {
-						<span class="text-primary">Professional Summary</span>
-					}
-					@card.Description() {
-						Write a brief overview of your professional background
-					}
-				}
-				@card.Content() {
-					@form.Item() {
-						@label.Label(label.Props{
-							For: "summary",
-						}) {
-							Summary
-						}
-						<textarea
-							id="summary"
-							name="summary"
-							rows="4"
-							class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-							placeholder="Describe your professional background, key skills, and career objectives..."
-						></textarea>
-					}
-				}
-			}
-			<!-- Work Experience Section -->
-			@card.Card(card.Props{
-				Class: "border-l-4 border-l-primary",
-			}) {
-				@card.Header() {
-					@card.Title() {
-						<span class="text-primary">Work Experience</span>
-					}
-					@card.Description() {
-						Add your work history and achievements
-					}
-				}
-				@card.Content() {
-					<div id="work-experience-container" class="space-y-4">
-						<!-- Initial work experience item -->
-						<div class="work-experience-item border rounded-lg p-4">
-							<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-								@form.Item() {
-									@label.Label(label.Props{}) {
-										Job Title
-									}
-									<input
-										type="text"
-										name="workExperience[0][jobTitle]"
-										placeholder="e.g., Software Engineer"
-										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								}
-								@form.Item() {
-									@label.Label(label.Props{}) {
-										Company
-									}
-									<input
-										type="text"
-										name="workExperience[0][company]"
-										placeholder="Company name"
-										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								}
-								@form.Item() {
-									@label.Label(label.Props{}) {
-										Start Date
-									}
-									<input
-										type="date"
-										name="workExperience[0][startDate]"
-										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								}
-								@form.Item() {
-									@label.Label(label.Props{}) {
-										End Date
-									}
-									<input
-										type="date"
-										name="workExperience[0][endDate]"
-										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								}
-							</div>
-							@form.Item() {
-								@label.Label(label.Props{}) {
-									Job Description
-								}
-								<textarea
-									name="workExperience[0][description]"
-									rows="3"
-									class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-									placeholder="Describe your responsibilities and achievements..."
-								></textarea>
+			@card.Content() {
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+					for _, template := range templates {
+						<div class="template-option border border-input rounded-lg p-4 cursor-pointer hover:bg-accent transition-colors" data-template-id={ template.ID } onclick="selectTemplate(this.dataset.templateId)">
+							if template.PreviewImage != "" {
+								<img src={ "/static/templates/" + template.ID + "/preview.png" } alt={ template.Name + " preview" } class="w-full h-32 object-cover rounded mb-3"/>
+							} else {
+								<div class="w-full h-32 bg-muted rounded mb-3 flex items-center justify-center">
+									<span class="text-muted-foreground">No Preview</span>
+								</div>
+							}
+							<h3 class="font-semibold">{ template.Name }</h3>
+							<p class="text-sm text-muted-foreground">{ template.Description }</p>
+							if template.Author != "" {
+								<p class="text-xs text-muted-foreground mt-1">by { template.Author }</p>
 							}
 						</div>
-					</div>
-					<div class="mt-4">
-						<button type="button" onclick="addWorkExperience()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary hover:text-primary h-10 px-4 py-2">
+					}
+				</div>
+				<div class="mt-4 p-3 bg-muted/50 rounded-md">
+					<p class="text-sm text-muted-foreground">
+						<span class="font-medium">Selected Template:</span>
+						<span id="selected-template-name" class="ml-2">None selected</span>
+					</p>
+				</div>
+			}
+		}
+		<!-- CV Form -->
+		<div id="cv-form-container" style="display: none;">
+			<form id="cv-form" class="space-y-8">
+				<input type="hidden" id="template_id" name="template_id" value=""/>
+				<!-- Personal Information -->
+				@card.Card(card.Props{
+					Class: "p-6 border-l-4 border-l-primary",
+				}) {
+					@card.Header() {
+						@card.Title() {
+							<span class="text-primary">Personal Information</span>
+						}
+						@card.Description() {
+							Enter your basic personal details
+						}
+					}
+					@card.Content() {
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div>
+								<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Full Name *</label>
+								<input type="text" name="contacts.name" required placeholder="Enter your full name" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"/>
+							</div>
+							<div>
+								<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Professional Title *</label>
+								<input type="text" name="contacts.title" required placeholder="e.g., Software Engineer" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"/>
+							</div>
+							<div>
+								<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email *</label>
+								<input type="email" name="contacts.email" required placeholder="your.email@example.com" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"/>
+							</div>
+							<div>
+								<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Location</label>
+								<input type="text" name="contacts.location" placeholder="City, Country" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"/>
+							</div>
+							<div>
+								<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">LinkedIn URL</label>
+								<input type="url" name="contacts.linkedin.url" placeholder="https://linkedin.com/in/yourprofile" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"/>
+							</div>
+							<div>
+								<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">GitHub URL</label>
+								<input type="url" name="contacts.github.url" placeholder="https://github.com/yourusername" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"/>
+							</div>
+						</div>
+						<div class="mt-4">
+							<div>
+								<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Target Position</label>
+								<input type="text" name="position" placeholder="The position you're applying for" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"/>
+							</div>
+						</div>
+					}
+				}
+				<!-- Professional Summary -->
+				@card.Card(card.Props{
+					Class: "border-l-4 border-l-primary",
+				}) {
+					@card.Header() {
+						@card.Title() {
+							<span class="text-primary">Professional Summary</span>
+						}
+						@card.Description() {
+							Write a brief overview of your professional background
+						}
+					}
+					@card.Content() {
+						<div>
+							<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Summary</label>
+							<textarea name="tagline" rows="4" class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" placeholder="Describe your professional background, key skills, and career objectives..."></textarea>
+						</div>
+					}
+				}
+				<!-- Work Experience -->
+				@card.Card(card.Props{
+					Class: "border-l-4 border-l-primary",
+				}) {
+					@card.Header() {
+						@card.Title() {
+							<span class="text-primary">Work Experience</span>
+						}
+						@card.Description() {
+							Add your work history and achievements
+						}
+					}
+					@card.Content() {
+						<div id="work-experience-container"></div>
+						<button type="button" onclick="window.cvBuilder.addWorkExperience()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary hover:text-primary h-10 px-4 py-2 mt-4">
 							<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
 							</svg>
 							Add Work Experience
 						</button>
-					</div>
-				}
-			}
-			<!-- Education Section -->
-			@card.Card(card.Props{
-				Class: "border-l-4 border-l-primary",
-			}) {
-				@card.Header() {
-					@card.Title() {
-						<span class="text-primary">Education</span>
-					}
-					@card.Description() {
-						Add your educational background
 					}
 				}
-				@card.Content() {
-					<div id="education-container" class="space-y-4">
-						<!-- Initial education item -->
-						<div class="education-item border rounded-lg p-4">
-							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-								@form.Item() {
-									@label.Label(label.Props{}) {
-										Degree
-									}
-									<input
-										type="text"
-										name="education[0][degree]"
-										placeholder="e.g., Bachelor of Science"
-										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								}
-								@form.Item() {
-									@label.Label(label.Props{}) {
-										Field of Study
-									}
-									<input
-										type="text"
-										name="education[0][field]"
-										placeholder="e.g., Computer Science"
-										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								}
-								@form.Item() {
-									@label.Label(label.Props{}) {
-										School/University
-									}
-									<input
-										type="text"
-										name="education[0][school]"
-										placeholder="Institution name"
-										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								}
-								@form.Item() {
-									@label.Label(label.Props{}) {
-										Graduation Year
-									}
-									<input
-										type="number"
-										name="education[0][graduationYear]"
-										placeholder="2024"
-										class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								}
-							</div>
-						</div>
-					</div>
-					<div class="mt-4">
-						<button type="button" onclick="addEducation()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary hover:text-primary h-10 px-4 py-2">
+				<!-- Education -->
+				@card.Card(card.Props{
+					Class: "border-l-4 border-l-primary",
+				}) {
+					@card.Header() {
+						@card.Title() {
+							<span class="text-primary">Education</span>
+						}
+						@card.Description() {
+							Add your educational background
+						}
+					}
+					@card.Content() {
+						<div id="education-container"></div>
+						<button type="button" onclick="window.cvBuilder.addEducation()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary hover:text-primary h-10 px-4 py-2 mt-4">
 							<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
 							</svg>
 							Add Education
 						</button>
-					</div>
-				}
-			}
-			<!-- Skills Section -->
-			@card.Card(card.Props{
-				Class: "border-l-4 border-l-primary",
-			}) {
-				@card.Header() {
-					@card.Title() {
-						<span class="text-primary">Skills</span>
-					}
-					@card.Description() {
-						List your technical and professional skills
 					}
 				}
-				@card.Content() {
-					@form.Item() {
-						@label.Label(label.Props{
-							For: "skills",
-						}) {
-							Skills (comma-separated)
+				<!-- Skills -->
+				@card.Card(card.Props{
+					Class: "border-l-4 border-l-primary",
+				}) {
+					@card.Header() {
+						@card.Title() {
+							<span class="text-primary">Skills</span>
 						}
-						@input.Input(input.Props{
-							Type:        input.TypeText,
-							ID:          "skills",
-							Name:        "skills",
-							Placeholder: "JavaScript, Python, React, Node.js, SQL...",
-						})
+						@card.Description() {
+							List your technical and professional skills
+						}
+					}
+					@card.Content() {
+						<div class="space-y-4">
+							<div>
+								<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Technical Skills</label>
+								<input type="text" name="skills" placeholder="JavaScript, Python, React, Node.js, SQL (comma-separated)" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"/>
+							</div>
+							<div>
+								<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Tools & Technologies</label>
+								<input type="text" name="tools" placeholder="Git, Docker, AWS, Jenkins (comma-separated)" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"/>
+							</div>
+							<div>
+								<label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Methodologies</label>
+								<input type="text" name="methodology" placeholder="Agile, Scrum, TDD, CI/CD (comma-separated)" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"/>
+							</div>
+						</div>
 					}
 				}
-			}
-			<!-- Action Buttons -->
-			<div class="flex gap-4 justify-end pt-6 border-t border-border">
-				@button.Button(button.Props{
-					Variant: button.VariantOutline,
-					Type:    button.TypeButton,
-				}) {
-					<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-					</svg>
-					Preview CV
-				}
-				@button.Button(button.Props{
-					Type: button.TypeSubmit,
-				}) {
-					<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-					</svg>
-					Generate CV
-				}
-			</div>
-		</form>
+				<!-- Generate Button -->
+				<div class="flex justify-end pt-6 border-t border-border">
+					<button type="button" onclick="window.cvBuilder.generateCV()" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+						</svg>
+						Generate CV
+					</button>
+				</div>
+			</form>
+		</div>
 	</div>
+	<script>
+		// Initialize form with first work experience and education items
+		document.addEventListener('DOMContentLoaded', function() {
+			window.cvBuilder.addWorkExperience();
+			window.cvBuilder.addEducation();
+		});
+	</script>
+	@CVBuilderScripts()
 }
 
 templ CVBuilderPage(data PageData, templates []Template) {
