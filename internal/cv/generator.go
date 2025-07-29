@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/BurntSushi/toml"
 	"gopkg.in/yaml.v3"
 )
 
@@ -130,11 +131,20 @@ func (g *Generator) GenerateCV(request GenerationRequest) (*GenerationResult, er
 	}
 	defer os.RemoveAll(tempDir)
 
-	// Generate data file (YAML)
-	dataPath := filepath.Join(tempDir, "data.yaml")
-	if err := g.writeDataFile(dataPath, adaptedData.Data); err != nil {
-		result.Message = "Failed to write data file"
-		return result, err
+	// Generate data file (YAML or TOML for grotesk)
+	var dataPath string
+	if request.TemplateID == "grotesk" {
+		dataPath = filepath.Join(tempDir, "info.toml")
+		if err := g.writeTOMLFile(dataPath, adaptedData.Data); err != nil {
+			result.Message = "Failed to write TOML data file"
+			return result, err
+		}
+	} else {
+		dataPath = filepath.Join(tempDir, "data.yaml")
+		if err := g.writeDataFile(dataPath, adaptedData.Data); err != nil {
+			result.Message = "Failed to write data file"
+			return result, err
+		}
 	}
 
 	// Copy template files to temp directory
@@ -193,6 +203,17 @@ func (g *Generator) writeDataFile(path string, data map[string]interface{}) erro
 	return encoder.Encode(data)
 }
 
+// writeTOMLFile writes template data to a TOML file
+func (g *Generator) writeTOMLFile(path string, data map[string]interface{}) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	return toml.NewEncoder(file).Encode(data)
+}
+
 // copyTemplateFiles copies template files to destination
 func (g *Generator) copyTemplateFiles(src, dst string) error {
 	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
@@ -234,6 +255,19 @@ func (g *Generator) copyFile(src, dst string) error {
 
 // generateMainTypstFile generates the main Typst file that imports template and uses data
 func (g *Generator) generateMainTypstFile(path string, config *TemplateConfig) error {
+	// Special handling for grotesk template - use cv.typ directly
+	if config.ID == "grotesk" {
+		cvTypPath := filepath.Join(filepath.Dir(path), "cv.typ")
+		if _, err := os.Stat(cvTypPath); err == nil {
+			// Copy cv.typ content to main.typ
+			cvContent, err := os.ReadFile(cvTypPath)
+			if err != nil {
+				return fmt.Errorf("failed to read cv.typ: %w", err)
+			}
+			return os.WriteFile(path, cvContent, 0644)
+		}
+	}
+
 	// Determine the main function name
 	mainFunction := config.MainFunction
 	if mainFunction == "" {
