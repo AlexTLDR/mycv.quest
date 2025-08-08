@@ -27,8 +27,8 @@ func (app *application) protected(w http.ResponseWriter, r *http.Request) {
 func (app *application) cvBuilder(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 
-	// Get available templates dynamically
-	availableTemplates, err := app.getAvailableTemplates()
+	// Get available templates
+	availableTemplates, err := app.cvService.GetAvailableTemplates()
 	if err != nil {
 		app.serverError(w, r, err)
 		return
@@ -43,8 +43,7 @@ func (app *application) cvBuilder(w http.ResponseWriter, r *http.Request) {
 			Description:  t.Description,
 			Version:      t.Version,
 			Author:       t.Author,
-			PreviewImage: "/static/templates/" + t.ID + "/preview.png",
-			Repository:   t.Repository,
+			PreviewImage: t.PreviewImage,
 		})
 	}
 
@@ -57,8 +56,8 @@ func (app *application) cvBuilder(w http.ResponseWriter, r *http.Request) {
 func (app *application) templates(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 
-	// Get available templates dynamically
-	availableTemplates, err := app.getAvailableTemplates()
+	// Get available templates
+	availableTemplates, err := app.cvService.GetAvailableTemplates()
 	if err != nil {
 		app.serverError(w, r, err)
 		return
@@ -73,8 +72,7 @@ func (app *application) templates(w http.ResponseWriter, r *http.Request) {
 			Description:  t.Description,
 			Version:      t.Version,
 			Author:       t.Author,
-			PreviewImage: "/static/templates/" + t.ID + "/preview.png",
-			Repository:   t.Repository,
+			PreviewImage: t.PreviewImage,
 		})
 	}
 
@@ -110,17 +108,14 @@ func (app *application) getTemplateForm(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	// Get the template form structure
-	form, err := app.cvService.GenerateForm(templateID)
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
-
+	// Return a simple form structure - for now just return success
+	// In the future this could return template-specific form fields
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(form); err != nil {
-		app.serverError(w, r, err)
+	response := map[string]interface{}{
+		"template_id": templateID,
+		"success":     true,
 	}
+	json.NewEncoder(w).Encode(response)
 }
 
 func (app *application) generateCV(w http.ResponseWriter, r *http.Request) {
@@ -142,18 +137,22 @@ func (app *application) generateCV(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Convert form data to template data
-	templateData, err := app.convertFormToTemplateData(templateID, r)
-	if err != nil {
-		app.logger.Error("Failed to convert form data", "error", err)
-		http.Error(w, "Failed to process form data: "+err.Error(), http.StatusBadRequest)
-		return
+	// Debug: Log raw form data
+	app.logger.Info("Raw form data received:")
+	for key, values := range r.Form {
+		app.logger.Info("Form field", "key", key, "values", values)
 	}
+
+	// Convert form data to simple map
+	formData := app.convertFormToMap(r)
+
+	// Debug: Log converted form data
+	app.logger.Info("Converted form data", "data", formData)
 
 	// Generate CV
 	request := cv.GenerationRequest{
 		TemplateID: templateID,
-		Data:       *templateData,
+		Data:       formData,
 		Format:     "pdf",
 	}
 
@@ -198,16 +197,17 @@ func (app *application) generatePreview(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	// Convert form data to template data
-	templateData, err := app.convertFormToTemplateData(templateID, r)
-	if err != nil {
-		app.logger.Error("Failed to convert form data", "error", err)
-		http.Error(w, "Failed to process form data: "+err.Error(), http.StatusBadRequest)
-		return
+	// Convert form data to simple map
+	formData := app.convertFormToMap(r)
+
+	// Generate CV (same as regular generation for now)
+	request := cv.GenerationRequest{
+		TemplateID: templateID,
+		Data:       formData,
+		Format:     "pdf",
 	}
 
-	// Generate preview
-	result, err := app.cvService.GeneratePreview(templateID, *templateData)
+	result, err := app.cvService.GenerateCV(request)
 	if err != nil {
 		app.logger.Error("Failed to generate preview", "error", err)
 		http.Error(w, "Failed to generate preview: "+err.Error(), http.StatusInternalServerError)
@@ -230,13 +230,17 @@ func (app *application) generatePreview(w http.ResponseWriter, r *http.Request) 
 	json.NewEncoder(w).Encode(response)
 }
 
-func (app *application) convertFormToTemplateData(templateID string, r *http.Request) (*cv.TemplateData, error) {
+func (app *application) convertFormToMap(r *http.Request) map[string]interface{} {
 	data := make(map[string]interface{})
 
-	// Parse all form values
+	// Handle photo upload
+	usePhoto := r.FormValue("use_photo") == "on"
+	data["use_photo"] = usePhoto
+
+	// Simple form field mapping
 	for key, values := range r.Form {
-		if key == "template_id" {
-			continue // Skip template_id as it's handled separately
+		if key == "template_id" || key == "profile_photo" {
+			continue // Skip these special fields
 		}
 
 		if len(values) == 0 {
@@ -245,51 +249,32 @@ func (app *application) convertFormToTemplateData(templateID string, r *http.Req
 
 		value := values[0]
 		if value == "" {
-			continue // Skip empty values
+			continue
 		}
 
 		// Handle comma-separated fields that should become arrays
 		if app.isCommaSeparatedField(key) {
 			arrayValue := app.parseCommaSeparatedValue(value)
-			if err := app.setNestedValue(data, key, arrayValue); err != nil {
-				return nil, fmt.Errorf("failed to set field %s: %w", key, err)
-			}
-			continue
+			data[key] = arrayValue
+		} else if strings.Contains(key, ".") {
+			// Handle nested fields like "contacts.name"
+			app.setNestedField(data, key, value)
+		} else if strings.Contains(key, "[") && strings.Contains(key, "]") {
+			// Handle array fields like "jobs[0].position" or "languages[0].name"
+			app.setArrayField(data, key, value)
+		} else {
+			data[key] = value
 		}
-
-		// Handle nested fields (e.g., "contacts.name", "jobs[0].position")
-		if err := app.setNestedValue(data, key, value); err != nil {
-			return nil, fmt.Errorf("failed to set field %s: %w", key, err)
-		}
 	}
 
-	// Process arrays (work experience, education, etc.)
-	if err := app.processFormArrays(data, r.Form); err != nil {
-		return nil, fmt.Errorf("failed to process arrays: %w", err)
-	}
-
-	// Post-process specific fields for template compatibility
-	app.postProcessTemplateData(data)
-
-	templateData := &cv.TemplateData{
-		TemplateID: templateID,
-		Data:       data,
-	}
-
-	return templateData, nil
+	return data
 }
 
-func (app *application) setNestedValue(data map[string]interface{}, key string, value interface{}) error {
-	// Handle array notation like "jobs[0].position"
-	if strings.Contains(key, "[") && strings.Contains(key, "]") {
-		return nil // Arrays are handled separately
-	}
-
-	// Split key by dots for nested objects
+func (app *application) setNestedField(data map[string]interface{}, key string, value interface{}) {
 	parts := strings.Split(key, ".")
 	current := data
 
-	// Navigate to the parent of the target field
+	// Navigate to the parent
 	for i := 0; i < len(parts)-1; i++ {
 		part := parts[i]
 		if _, exists := current[part]; !exists {
@@ -297,129 +282,16 @@ func (app *application) setNestedValue(data map[string]interface{}, key string, 
 		}
 		if nested, ok := current[part].(map[string]interface{}); ok {
 			current = nested
-		} else {
-			return fmt.Errorf("field %s is not an object", strings.Join(parts[:i+1], "."))
 		}
 	}
 
 	// Set the final value
-	finalKey := parts[len(parts)-1]
-	current[finalKey] = value
-
-	return nil
-}
-
-func (app *application) processFormArrays(data map[string]interface{}, form map[string][]string) error {
-	arrays := make(map[string]map[int]map[string]interface{})
-
-	// Collect array fields
-	for key, values := range form {
-		if !strings.Contains(key, "[") || !strings.Contains(key, "]") {
-			continue
-		}
-
-		// Parse array field like "jobs[0].position"
-		arrayName, index, fieldName, err := app.parseArrayField(key)
-		if err != nil {
-			continue // Skip malformed array fields
-		}
-
-		if _, exists := arrays[arrayName]; !exists {
-			arrays[arrayName] = make(map[int]map[string]interface{})
-		}
-		if _, exists := arrays[arrayName][index]; !exists {
-			arrays[arrayName][index] = make(map[string]interface{})
-		}
-
-		if len(values) > 0 {
-			// Handle nested fields within array items
-			if strings.Contains(fieldName, ".") {
-				if err := app.setNestedValueInMap(arrays[arrayName][index], fieldName, values[0]); err != nil {
-					return err
-				}
-			} else {
-				arrays[arrayName][index][fieldName] = values[0]
-			}
-		}
-	}
-
-	// Convert maps to slices and add to data
-	for arrayName, arrayMap := range arrays {
-		var arraySlice []interface{}
-		maxIndex := -1
-		for index := range arrayMap {
-			if index > maxIndex {
-				maxIndex = index
-			}
-		}
-
-		for i := 0; i <= maxIndex; i++ {
-			if item, exists := arrayMap[i]; exists {
-				arraySlice = append(arraySlice, item)
-			} else {
-				arraySlice = append(arraySlice, make(map[string]interface{}))
-			}
-		}
-
-		data[arrayName] = arraySlice
-	}
-
-	return nil
-}
-
-func (app *application) parseArrayField(key string) (arrayName string, index int, fieldName string, err error) {
-	// Parse field like "jobs[0].position" -> arrayName="jobs", index=0, fieldName="position"
-	start := strings.Index(key, "[")
-	end := strings.Index(key, "]")
-	if start == -1 || end == -1 || end <= start {
-		return "", 0, "", fmt.Errorf("invalid array field format")
-	}
-
-	arrayName = key[:start]
-	indexStr := key[start+1 : end]
-
-	var indexInt int
-	if _, err := fmt.Sscanf(indexStr, "%d", &indexInt); err != nil {
-		return "", 0, "", fmt.Errorf("invalid array index")
-	}
-
-	remainder := key[end+1:]
-	if strings.HasPrefix(remainder, ".") {
-		fieldName = remainder[1:]
-	} else {
-		fieldName = remainder
-	}
-
-	return arrayName, indexInt, fieldName, nil
-}
-
-func (app *application) setNestedValueInMap(data map[string]interface{}, key string, value interface{}) error {
-	parts := strings.Split(key, ".")
-	current := data
-
-	// Navigate to the parent of the target field
-	for i := 0; i < len(parts)-1; i++ {
-		part := parts[i]
-		if _, exists := current[part]; !exists {
-			current[part] = make(map[string]interface{})
-		}
-		if nested, ok := current[part].(map[string]interface{}); ok {
-			current = nested
-		} else {
-			return fmt.Errorf("field %s is not an object", strings.Join(parts[:i+1], "."))
-		}
-	}
-
-	// Set the final value
-	finalKey := parts[len(parts)-1]
-	current[finalKey] = value
-
-	return nil
+	current[parts[len(parts)-1]] = value
 }
 
 func (app *application) isCommaSeparatedField(fieldName string) bool {
 	commaSeparatedFields := []string{
-		"skills", "tools", "methodology", "achievements",
+		"skills", "tools", "methodology",
 	}
 
 	for _, field := range commaSeparatedFields {
@@ -448,60 +320,43 @@ func (app *application) parseCommaSeparatedValue(value string) []interface{} {
 	return result
 }
 
-func (app *application) postProcessTemplateData(data map[string]interface{}) {
-	// Convert jobs array tags from comma-separated strings to arrays
-	if jobs, ok := data["jobs"].([]interface{}); ok {
-		for _, job := range jobs {
-			if jobMap, ok := job.(map[string]interface{}); ok {
-				if tags, ok := jobMap["tags"].(string); ok && tags != "" {
-					jobMap["tags"] = app.parseCommaSeparatedValue(tags)
-				}
-
-				// Convert description to array if it's a single string
-				if desc, ok := jobMap["description"].([]interface{}); ok && len(desc) == 1 {
-					if descStr, ok := desc[0].(string); ok && descStr != "" {
-						// Split by newlines or keep as single item
-						if strings.Contains(descStr, "\n") {
-							lines := strings.Split(descStr, "\n")
-							jobMap["description"] = make([]interface{}, 0, len(lines))
-							for _, line := range lines {
-								trimmed := strings.TrimSpace(line)
-								if trimmed != "" {
-									jobMap["description"] = append(jobMap["description"].([]interface{}), trimmed)
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+func (app *application) setArrayField(data map[string]interface{}, key string, value interface{}) {
+	// Parse array field like "jobs[0].position"
+	start := strings.Index(key, "[")
+	end := strings.Index(key, "]")
+	if start == -1 || end == -1 {
+		return
 	}
 
-	// Set display text for social links if URLs are provided
-	if contacts, ok := data["contacts"].(map[string]interface{}); ok {
-		if linkedin, ok := contacts["linkedin"].(map[string]interface{}); ok {
-			if url, ok := linkedin["url"].(string); ok && url != "" {
-				if _, exists := linkedin["displayText"]; !exists {
-					linkedin["displayText"] = "linkedin"
-				}
-			}
-		}
+	arrayName := key[:start]
+	indexStr := key[start+1 : end]
 
-		if github, ok := contacts["github"].(map[string]interface{}); ok {
-			if url, ok := github["url"].(string); ok && url != "" {
-				if _, exists := github["displayText"]; !exists {
-					// Extract username from GitHub URL
-					if strings.Contains(url, "github.com/") {
-						parts := strings.Split(url, "github.com/")
-						if len(parts) > 1 {
-							username := strings.Split(parts[1], "/")[0]
-							github["displayText"] = "@" + username
-						}
-					} else {
-						github["displayText"] = "@username"
-					}
-				}
-			}
+	var index int
+	if _, err := fmt.Sscanf(indexStr, "%d", &index); err != nil {
+		return
+	}
+
+	remainder := key[end+1:]
+	fieldName := strings.TrimPrefix(remainder, ".")
+
+	// Ensure array exists
+	if _, exists := data[arrayName]; !exists {
+		data[arrayName] = make([]interface{}, 0)
+	}
+
+	// Ensure array is large enough
+	arr := data[arrayName].([]interface{})
+	for len(arr) <= index {
+		arr = append(arr, make(map[string]interface{}))
+	}
+	data[arrayName] = arr
+
+	// Set the field
+	if item, ok := arr[index].(map[string]interface{}); ok {
+		if fieldName == "" {
+			arr[index] = value
+		} else {
+			item[fieldName] = value
 		}
 	}
 }

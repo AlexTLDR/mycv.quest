@@ -1,297 +1,485 @@
 package cv
 
 import (
+	"bytes"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
+	"time"
+
+	"github.com/BurntSushi/toml"
+	"gopkg.in/yaml.v3"
 )
 
-// Service provides CV generation functionality with dynamic template support
+// Template represents a CV template
+type Template struct {
+	ID           string `json:"id"`
+	Name         string `json:"name"`
+	Description  string `json:"description"`
+	Version      string `json:"version"`
+	Author       string `json:"author"`
+	PreviewImage string `json:"preview_image"`
+}
+
+// GenerationRequest represents a CV generation request
+type GenerationRequest struct {
+	TemplateID string                 `json:"template_id"`
+	Data       map[string]interface{} `json:"data"`
+	Format     string                 `json:"format"`
+}
+
+// GenerationResult represents the result of CV generation
+type GenerationResult struct {
+	Success   bool      `json:"success"`
+	Filename  string    `json:"filename"`
+	Data      []byte    `json:"data"`
+	Message   string    `json:"message"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+// Service handles CV generation by running typst commands
 type Service struct {
-	generator *Generator
-	parser    *TemplateParser
+	templatesDir string
 }
 
 // NewService creates a new CV service
-func NewService(templatesDir, outputDir string) (*Service, error) {
-	// Ensure directories exist
-	if err := os.MkdirAll(templatesDir, 0755); err != nil {
-		return nil, fmt.Errorf("failed to create templates directory: %w", err)
-	}
-
-	if err := os.MkdirAll(outputDir, 0755); err != nil {
-		return nil, fmt.Errorf("failed to create output directory: %w", err)
-	}
-
-	generator := NewGenerator(templatesDir, outputDir)
-	parser := NewTemplateParser(templatesDir)
-
+func NewService(templatesDir string) *Service {
 	return &Service{
-		generator: generator,
-		parser:    parser,
-	}, nil
+		templatesDir: templatesDir,
+	}
 }
 
-// ListTemplates returns all available templates
-func (s *Service) ListTemplates() ([]Template, error) {
-	return s.generator.GetAvailableTemplates()
-}
+// GetAvailableTemplates returns all available CV templates
+func (s *Service) GetAvailableTemplates() ([]Template, error) {
+	var templates []Template
 
-// GetTemplate returns a specific template
-func (s *Service) GetTemplate(templateID string) (*Template, error) {
-	return s.generator.GetTemplate(templateID)
-}
-
-// GetTemplateConfig returns the full template configuration
-func (s *Service) GetTemplateConfig(templateID string) (*TemplateConfig, error) {
-	return s.generator.GetTemplateConfig(templateID)
-}
-
-// GenerateForm creates a dynamic form structure for a template
-func (s *Service) GenerateForm(templateID string) (*TemplateForm, error) {
-	return s.generator.GenerateForm(templateID)
-}
-
-// ValidateData validates template data against its configuration
-func (s *Service) ValidateData(templateID string, data TemplateData) (ValidationResult, error) {
-	return s.generator.ValidateData(templateID, data)
-}
-
-// GenerateCV generates a CV PDF
-func (s *Service) GenerateCV(request GenerationRequest) (*GenerationResult, error) {
-	return s.generator.GenerateCV(request)
-}
-
-// GeneratePreview generates a preview of the CV
-func (s *Service) GeneratePreview(templateID string, data TemplateData) (*GenerationResult, error) {
-	return s.generator.GeneratePreview(templateID, data)
-}
-
-// GetTemplateMetadata returns metadata for a template
-func (s *Service) GetTemplateMetadata(templateID string) (*TemplateMetadata, error) {
-	return s.generator.GetTemplateMetadata(templateID)
-}
-
-// GetSampleData generates sample data for a template
-func (s *Service) GetSampleData(templateID string) (*TemplateData, error) {
-	return s.generator.GetSampleData(templateID)
-}
-
-// ListTemplateFiles returns files in a template directory
-func (s *Service) ListTemplateFiles(templateID string) ([]string, error) {
-	return s.generator.ListTemplateFiles(templateID)
-}
-
-// ExtractDisplayName extracts a display name from template data
-func (s *Service) ExtractDisplayName(templateID string, data TemplateData) (string, error) {
-	config, err := s.parser.ParseTemplate(templateID)
+	entries, err := os.ReadDir(s.templatesDir)
 	if err != nil {
-		return "", err
+		return nil, fmt.Errorf("failed to read templates directory: %w", err)
 	}
 
-	return s.parser.GetDisplayName(config, data), nil
-}
+	for _, entry := range entries {
+		if entry.IsDir() {
+			templateID := entry.Name()
 
-// ConvertFieldValue converts a string value to the appropriate type
-func (s *Service) ConvertFieldValue(templateID, fieldName, value string) (interface{}, error) {
-	config, err := s.parser.ParseTemplate(templateID)
-	if err != nil {
-		return nil, err
-	}
-
-	fieldDef, exists := config.Fields[fieldName]
-	if !exists {
-		return value, nil // Return as-is if field not found
-	}
-
-	return s.parser.ConvertValue(value, fieldDef)
-}
-
-// GetFieldDefinition returns the definition for a specific field
-func (s *Service) GetFieldDefinition(templateID, fieldName string) (*FieldDefinition, error) {
-	config, err := s.parser.ParseTemplate(templateID)
-	if err != nil {
-		return nil, err
-	}
-
-	if fieldDef, exists := config.Fields[fieldName]; exists {
-		return &fieldDef, nil
-	}
-
-	return nil, fmt.Errorf("field %s not found in template %s", fieldName, templateID)
-}
-
-// ValidateField validates a single field value
-func (s *Service) ValidateField(templateID, fieldName string, value interface{}) []string {
-	config, err := s.parser.ParseTemplate(templateID)
-	if err != nil {
-		return []string{fmt.Sprintf("Template error: %v", err)}
-	}
-
-	fieldDef, exists := config.Fields[fieldName]
-	if !exists {
-		return []string{"Field not found in template"}
-	}
-
-	data := map[string]interface{}{fieldName: value}
-	return s.parser.validateFieldValue(data, fieldName, fieldDef, fieldName)
-}
-
-// CreateTemplateData creates a TemplateData structure from raw data
-func (s *Service) CreateTemplateData(templateID string, data map[string]interface{}) TemplateData {
-	return TemplateData{
-		TemplateID: templateID,
-		Data:       data,
-	}
-}
-
-// ExtractFieldValue extracts a nested field value from template data
-func (s *Service) ExtractFieldValue(data TemplateData, path []string) (interface{}, bool) {
-	return s.parser.ExtractValue(data.Data, path)
-}
-
-// SetFieldValue sets a nested field value in template data
-func (s *Service) SetFieldValue(data *TemplateData, path []string, value interface{}) error {
-	if len(path) == 0 {
-		return fmt.Errorf("empty path")
-	}
-
-	current := data.Data
-
-	// Navigate to the parent of the target field
-	for i := 0; i < len(path)-1; i++ {
-		key := path[i]
-
-		if next, exists := current[key]; exists {
-			if nextMap, ok := next.(map[string]interface{}); ok {
-				current = nextMap
-			} else {
-				// Need to replace with map
-				newMap := make(map[string]interface{})
-				current[key] = newMap
-				current = newMap
+			// Check if this directory contains a valid template
+			templateDir := filepath.Join(s.templatesDir, templateID)
+			if s.isValidTemplate(templateDir) {
+				template := Template{
+					ID:           templateID,
+					Name:         s.getTemplateName(templateID),
+					Description:  s.getTemplateDescription(templateID),
+					Version:      "1.0.0",
+					Author:       "Unknown",
+					PreviewImage: fmt.Sprintf("/static/templates/%s/preview.png", templateID),
+				}
+				templates = append(templates, template)
 			}
-		} else {
-			// Create new map
-			newMap := make(map[string]interface{})
-			current[key] = newMap
-			current = newMap
 		}
 	}
 
-	// Set the final value
-	current[path[len(path)-1]] = value
-	return nil
+	return templates, nil
 }
 
-// GetTemplateVersion returns the version of a template
-func (s *Service) GetTemplateVersion(templateID string) (string, error) {
-	config, err := s.parser.ParseTemplate(templateID)
+// GenerateCV generates a CV using typst
+func (s *Service) GenerateCV(request GenerationRequest) (*GenerationResult, error) {
+	result := &GenerationResult{
+		CreatedAt: time.Now(),
+	}
+
+	// Create temporary directory for generation
+	tempDir, err := os.MkdirTemp("", "cv-generation-*")
 	if err != nil {
-		return "", err
+		result.Message = "Failed to create temporary directory"
+		return result, err
+	}
+	defer os.RemoveAll(tempDir)
+
+	// Copy template files to temp directory
+	templateDir := filepath.Join(s.templatesDir, request.TemplateID)
+	if err := s.copyTemplateFiles(templateDir, tempDir); err != nil {
+		result.Message = "Failed to copy template files"
+		return result, err
 	}
 
-	return config.Version, nil
-}
-
-// IsTemplateAvailable checks if a template is available
-func (s *Service) IsTemplateAvailable(templateID string) bool {
-	templateDir := filepath.Join(s.generator.templatesDir, templateID)
-	if _, err := os.Stat(templateDir); os.IsNotExist(err) {
-		return false
+	// Create data file based on template type
+	if err := s.createDataFile(tempDir, request.TemplateID, request.Data); err != nil {
+		result.Message = "Failed to create data file"
+		return result, err
 	}
 
-	// Check if we can parse the template
-	_, err := s.parser.ParseTemplate(templateID)
-	return err == nil
-}
-
-// GetCompatibleTemplates returns templates compatible with the given template
-func (s *Service) GetCompatibleTemplates(templateID string) ([]Template, error) {
-	// For now, return all templates as potentially compatible
-	// In the future, this could implement actual compatibility checking
-	// based on field structure similarity
-	return s.ListTemplates()
-}
-
-// CloneTemplateData creates a deep copy of template data
-func (s *Service) CloneTemplateData(data TemplateData) TemplateData {
-	cloned := TemplateData{
-		TemplateID: data.TemplateID,
-		Data:       make(map[string]interface{}),
+	// Find the main typst file
+	mainFile, err := s.findMainTypstFile(tempDir)
+	if err != nil {
+		result.Message = "Failed to find main typst file"
+		return result, err
 	}
 
-	// Deep copy the data map
-	for key, value := range data.Data {
-		cloned.Data[key] = s.cloneValue(value)
+	// Run typst compilation
+	outputPath := filepath.Join(tempDir, "output.pdf")
+	if err := s.runTypstCompilation(mainFile, outputPath); err != nil {
+		result.Message = fmt.Sprintf("Typst compilation failed: %v", err)
+		return result, err
 	}
 
-	return cloned
+	// Read generated file
+	data, err := os.ReadFile(outputPath)
+	if err != nil {
+		result.Message = "Failed to read generated file"
+		return result, err
+	}
+
+	// Generate filename
+	filename := fmt.Sprintf("cv_%s_%d.pdf", request.TemplateID, time.Now().Unix())
+
+	result.Success = true
+	result.Filename = filename
+	result.Data = data
+
+	return result, nil
 }
 
-// cloneValue recursively clones a value
-func (s *Service) cloneValue(value interface{}) interface{} {
-	switch v := value.(type) {
-	case map[string]interface{}:
-		cloned := make(map[string]interface{})
-		for key, val := range v {
-			cloned[key] = s.cloneValue(val)
+// isValidTemplate checks if a directory contains a valid typst template
+func (s *Service) isValidTemplate(templateDir string) bool {
+	// Look for main typst files
+	possibleMainFiles := []string{"cv.typ", "template.typ", "main.typ"}
+
+	for _, mainFile := range possibleMainFiles {
+		if _, err := os.Stat(filepath.Join(templateDir, mainFile)); err == nil {
+			return true
 		}
-		return cloned
-	case []interface{}:
-		cloned := make([]interface{}, len(v))
-		for i, val := range v {
-			cloned[i] = s.cloneValue(val)
-		}
-		return cloned
-	case []string:
-		cloned := make([]string, len(v))
-		copy(cloned, v)
-		return cloned
+	}
+
+	return false
+}
+
+// getTemplateName returns a human-readable name for the template
+func (s *Service) getTemplateName(templateID string) string {
+	switch templateID {
+	case "vantage":
+		return "Vantage CV"
+	case "grotesk":
+		return "Grotesk CV"
 	default:
-		return value
+		// Convert snake_case or kebab-case to Title Case
+		words := strings.FieldsFunc(templateID, func(c rune) bool {
+			return c == '_' || c == '-'
+		})
+		for i, word := range words {
+			words[i] = strings.Title(strings.ToLower(word))
+		}
+		return strings.Join(words, " ") + " CV"
 	}
 }
 
-// GetRequiredFields returns all required fields for a template
-func (s *Service) GetRequiredFields(templateID string) ([]string, error) {
-	config, err := s.parser.ParseTemplate(templateID)
-	if err != nil {
-		return nil, err
+// getTemplateDescription returns a description for the template
+func (s *Service) getTemplateDescription(templateID string) string {
+	switch templateID {
+	case "vantage":
+		return "ATS friendly simple Typst CV template"
+	case "grotesk":
+		return "Modern two-column CV template with photo support"
+	default:
+		return "Professional CV template"
 	}
+}
 
-	var required []string
-	for fieldName, fieldDef := range config.Fields {
-		if fieldDef.Required {
-			required = append(required, fieldName)
+// copyTemplateFiles copies all template files to destination
+func (s *Service) copyTemplateFiles(src, dst string) error {
+	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
 		}
 
-		// Check nested required fields
-		if fieldDef.Type == "object" && fieldDef.Fields != nil {
-			for nestedName, nestedDef := range fieldDef.Fields {
-				if nestedDef.Required {
-					required = append(required, fieldName+"."+nestedName)
+		relPath, err := filepath.Rel(src, path)
+		if err != nil {
+			return err
+		}
+
+		dstPath := filepath.Join(dst, relPath)
+
+		if info.IsDir() {
+			return os.MkdirAll(dstPath, info.Mode())
+		}
+
+		return s.copyFile(path, dstPath)
+	})
+}
+
+// copyFile copies a single file
+func (s *Service) copyFile(src, dst string) error {
+	srcData, err := os.ReadFile(src)
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(dst, srcData, 0644)
+}
+
+// createTOMLDataFile creates a TOML data file
+func (s *Service) createTOMLDataFile(tempDir string, data map[string]interface{}) error {
+	dataPath := filepath.Join(tempDir, "info.toml")
+
+	// Convert form data to grotesk format
+	groteskData := s.convertToGroteskFormat(data)
+
+	file, err := os.Create(dataPath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	return toml.NewEncoder(file).Encode(groteskData)
+}
+
+// createDataFile creates the appropriate data file for the template
+func (s *Service) createDataFile(tempDir, templateID string, data map[string]interface{}) error {
+	switch templateID {
+	case "grotesk":
+		// Grotesk uses TOML
+		return s.createTOMLDataFile(tempDir, data)
+	case "vantage":
+		// Vantage uses YAML
+		return s.createYAMLDataFile(tempDir, data)
+	default:
+		// Default to YAML
+		return s.createYAMLDataFile(tempDir, data)
+	}
+}
+
+
+
+// createYAMLDataFile creates a YAML data file
+func (s *Service) createYAMLDataFile(tempDir string, data map[string]interface{}) error {
+	dataPath := filepath.Join(tempDir, "data.yaml")
+
+	file, err := os.Create(dataPath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	encoder := yaml.NewEncoder(file)
+	defer encoder.Close()
+
+	return encoder.Encode(data)
+}
+
+// convertToGroteskFormat converts form data to grotesk template format
+func (s *Service) convertToGroteskFormat(data map[string]interface{}) map[string]interface{} {
+	result := make(map[string]interface{})
+
+	// Personal information
+	personal := map[string]interface{}{
+		"first_name":     "John",
+		"last_name":      "Doe",
+		"profile_image":  "portrait.png",
+		"language":       "en",
+		"include_icons":  false,
+		"use_photo":      true,
+	}
+
+	// Extract name
+	if contacts, ok := data["contacts"].(map[string]interface{}); ok {
+		if name, ok := contacts["name"].(string); ok && name != "" {
+			parts := strings.Fields(strings.TrimSpace(name))
+			if len(parts) >= 2 {
+				personal["first_name"] = parts[0]
+				personal["last_name"] = strings.Join(parts[1:], " ")
+			} else if len(parts) == 1 {
+				personal["first_name"] = parts[0]
+			}
+		}
+	}
+
+	// Handle use_photo setting
+	if usePhoto, ok := data["use_photo"].(bool); ok {
+		personal["use_photo"] = usePhoto
+	} else if usePhotoStr, ok := data["use_photo"].(string); ok {
+		personal["use_photo"] = usePhotoStr == "true" || usePhotoStr == "on"
+	}
+
+	// Add contact info structure
+	info := make(map[string]interface{})
+
+	// Extract contact info from form data
+	if contacts, ok := data["contacts"].(map[string]interface{}); ok {
+		if email, ok := contacts["email"].(string); ok && email != "" {
+			info["email"] = map[string]interface{}{
+				"link":  "mailto:" + email,
+				"label": email,
+			}
+		}
+
+		if address, ok := contacts["address"].(string); ok && address != "" {
+			info["address"] = address
+		} else if location, ok := contacts["location"].(string); ok && location != "" {
+			info["address"] = location
+		}
+
+		if phone, ok := contacts["phone"].(string); ok && phone != "" {
+			info["telephone"] = phone
+		}
+
+		if linkedin, ok := contacts["linkedin"].(map[string]interface{}); ok {
+			if url, ok := linkedin["url"].(string); ok && url != "" {
+				displayText := "linkedin"
+				if dt, ok := linkedin["displayText"]; ok {
+					displayText = fmt.Sprintf("%v", dt)
+				}
+				info["linkedin"] = map[string]interface{}{
+					"link":  url,
+					"label": displayText,
+				}
+			}
+		}
+
+		if github, ok := contacts["github"].(map[string]interface{}); ok {
+			if url, ok := github["url"].(string); ok && url != "" {
+				displayText := "@username"
+				if dt, ok := github["displayText"]; ok {
+					displayText = fmt.Sprintf("%v", dt)
+				}
+				info["github"] = map[string]interface{}{
+					"link":  url,
+					"label": displayText,
 				}
 			}
 		}
 	}
 
-	return required, nil
-}
-
-// GetFieldsOfType returns all fields of a specific type
-func (s *Service) GetFieldsOfType(templateID, fieldType string) ([]string, error) {
-	config, err := s.parser.ParseTemplate(templateID)
-	if err != nil {
-		return nil, err
+	personal["info"] = info
+	personal["icon"] = map[string]interface{}{
+		"address":   "house",
+		"telephone": "phone",
+		"email":     "envelope",
+		"linkedin":  "linkedin",
+		"github":    "github",
+		"homepage":  "globe",
 	}
 
-	var fields []string
-	for fieldName, fieldDef := range config.Fields {
-		if fieldDef.Type == fieldType {
-			fields = append(fields, fieldName)
+	// Add IA (AI) settings - required by grotesk template but we'll disable them
+	personal["ia"] = map[string]interface{}{
+		"inject_ai_prompt": false,
+		"inject_keywords":  false,
+		"keywords_list":    []interface{}{},
+	}
+
+	result["personal"] = personal
+
+	// Extract summary/tagline
+	if tagline, ok := data["tagline"].(string); ok && tagline != "" {
+		result["summary"] = tagline
+	} else if summary, ok := data["summary"].(string); ok && summary != "" {
+		result["summary"] = summary
+	}
+
+	// Copy experience data (jobs -> experience for grotesk)
+	if jobs, ok := data["jobs"]; ok {
+		result["experience"] = jobs
+	}
+
+	// Copy education data
+	if education, ok := data["education"]; ok {
+		result["education"] = education
+	}
+
+	// Copy skills data
+	if skills, ok := data["skills"]; ok {
+		result["skills"] = skills
+	}
+
+	// Copy languages data
+	if languages, ok := data["languages"]; ok {
+		result["languages"] = languages
+	}
+
+	// Add required import settings
+	result["import"] = map[string]interface{}{
+		"fontawesome": "@preview/fontawesome:0.5.0",
+	}
+
+	// Add section icon settings
+	result["section"] = map[string]interface{}{
+		"icon": map[string]interface{}{
+			"profile":          "id-card",
+			"experience":       "briefcase",
+			"education":        "graduation-cap",
+			"skills":           "cogs",
+			"languages":        "language",
+			"other_experience": "wrench",
+			"references":       "users",
+			"personal":         "brain",
+		},
+	}
+
+	// Add layout settings with all required nested structures
+	result["layout"] = map[string]interface{}{
+		"accent_color":      "#d4d2cc",
+		"fill_color":        "#f4f1eb",
+		"left_pane_width":   "71%",
+		"paper_size":        "a4",
+		"text": map[string]interface{}{
+			"font":              "Arial", // Use Arial instead of HK Grotesk to avoid font issues
+			"size":              "10pt",
+			"cover_letter_size": "11pt",
+			"color": map[string]interface{}{
+				"light":  "#ededef",
+				"medium": "#78787e",
+				"dark":   "#3c3c42",
+			},
+		},
+	}
+
+	// Add language settings required by grotesk template
+	result["language"] = map[string]interface{}{
+		"en": map[string]interface{}{
+			"subtitle":                   "Software Engineer",
+			"ai_prompt":                  "", // Empty AI prompt to disable the feature
+			"cv_document_name":           "Resume",
+			"cover_letter_document_name": "Cover letter",
+		},
+		"es": map[string]interface{}{
+			"subtitle":                   "Ingeniero de Software",
+			"ai_prompt":                  "", // Empty AI prompt to disable the feature
+			"cv_document_name":           "CV",
+			"cover_letter_document_name": "Carta de motivación",
+		},
+	}
+
+	return result
+}
+
+// findMainTypstFile finds the main typst file to compile
+func (s *Service) findMainTypstFile(tempDir string) (string, error) {
+	possibleMainFiles := []string{"main.typ", "cv.typ", "template.typ"}
+
+	for _, mainFile := range possibleMainFiles {
+		path := filepath.Join(tempDir, mainFile)
+		if _, err := os.Stat(path); err == nil {
+			return path, nil
 		}
 	}
 
-	return fields, nil
+	return "", fmt.Errorf("no main typst file found")
+}
+
+// runTypstCompilation runs typst to compile the CV
+func (s *Service) runTypstCompilation(inputPath, outputPath string) error {
+	cmd := exec.Command("typst", "compile", inputPath, outputPath)
+	cmd.Dir = filepath.Dir(inputPath)
+
+	var stderr bytes.Buffer
+	var stdout bytes.Buffer
+	cmd.Stderr = &stderr
+	cmd.Stdout = &stdout
+
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("typst compilation failed: %v\nStderr: %s\nStdout: %s",
+			err, stderr.String(), stdout.String())
+	}
+
+	return nil
 }
