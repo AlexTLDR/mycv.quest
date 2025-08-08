@@ -116,10 +116,7 @@ func run(logger *slog.Logger) error {
 	sessionManager.Cookie.Secure = true
 
 	// Initialize CV service
-	cvService, err := cv.NewService("assets/templates/typst", "tmp/cv-output")
-	if err != nil {
-		return err
-	}
+	cvService := cv.NewService("assets/templates/typst")
 
 	app := &application{
 		config:         cfg,

@@ -37,6 +37,11 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("GET /cv-builder", app.cvBuilder)
 	mux.HandleFunc("GET /templates", app.templates)
 	mux.HandleFunc("GET /templates/{id}/preview", app.templatePreview)
+	mux.HandleFunc("GET /api/templates/{id}/form", app.getTemplateForm)
+
+	// API routes for CV generation
+	mux.HandleFunc("POST /api/cv/generate", app.generateCV)
+	mux.HandleFunc("POST /api/cv/preview", app.generatePreview)
 
 	mux.Handle("GET /basic-auth-protected", app.requireBasicAuthentication(http.HandlerFunc(app.protected)))
 

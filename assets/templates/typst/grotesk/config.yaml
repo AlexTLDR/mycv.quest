@@ -1,5 +1,5 @@
 name: "Grotesk CV"
-description: "A clean CV template with modern typography and two-column layout"
+description: "A clean, professional CV template using the official grotesk-cv package"
 version: "1.0.5"
 author: "Ásbjörn Skarphéðinsson"
 features:
@@ -7,286 +7,299 @@ features:
     - "Two-column layout"
     - "FontAwesome icons"
     - "Professional typography"
+    - "Official grotesk-cv package"
+    - "TOML configuration"
 
-main_function: "grotesk-cv"
+main_function: "cv"
+data_format: "toml"
 
 data_extractor:
-    name_path: ["contacts", "name"]
-    email_path: ["contacts", "email"]
+    name_path: ["personal", "first_name"]
+    email_path: ["personal", "info", "email", "label"]
     fallback_name: "Unknown"
 
 fields:
-    contacts:
+    personal:
         type: object
         required: true
-        label: "Contact Information"
-        description: "Your personal contact details"
+        label: "Personal Information"
+        description: "Your personal details and contact information"
         fields:
-            name:
+            first_name:
                 type: string
                 required: true
-                label: "Full Name"
-                description: "Your full name as it should appear on the CV"
-            title:
+                label: "First Name"
+                description: "Your first name"
+            last_name:
                 type: string
                 required: true
-                label: "Professional Title"
-                description: "Your current job title or desired position"
-            email:
-                type: string
-                required: true
-                label: "Email Address"
-                pattern: "^[^@]+@[^@]+\\.[^@]+$"
-                description: "Your professional email address"
-            address:
+                label: "Last Name"
+                description: "Your last name"
+            profile_image:
                 type: string
                 required: false
-                label: "Address"
-                description: "Your current address or city, country"
-            location:
+                label: "Profile Image"
+                description: "Filename of your profile image (should be in img/ folder)"
+                default: "portrait.png"
+            language:
                 type: string
+                required: true
+                label: "Language"
+                description: "Primary language code (en, es)"
+                default: "en"
+            include_icons:
+                type: boolean
                 required: false
-                label: "Location"
-                description: "Your current location (city, country)"
-            linkedin:
+                label: "Include Icons"
+                description: "Whether to include FontAwesome icons"
+                default: false
+            info:
+                type: object
+                required: true
+                label: "Contact Information"
+                fields:
+                    address:
+                        type: string
+                        required: false
+                        label: "Address"
+                        description: "Your current address or location"
+                    telephone:
+                        type: string
+                        required: false
+                        label: "Phone Number"
+                        description: "Your phone number"
+                    email:
+                        type: object
+                        required: true
+                        label: "Email"
+                        fields:
+                            link:
+                                type: string
+                                required: true
+                                label: "Email Link"
+                                pattern: "^mailto:[^@]+@[^@]+\\.[^@]+$"
+                                description: "Email link (e.g., mailto:your@email.com)"
+                            label:
+                                type: string
+                                required: true
+                                label: "Email Display"
+                                description: "Email address to display"
+                    linkedin:
+                        type: object
+                        required: false
+                        label: "LinkedIn"
+                        fields:
+                            link:
+                                type: string
+                                required: true
+                                label: "LinkedIn URL"
+                                pattern: "^https?://.*linkedin\\.com.*"
+                            label:
+                                type: string
+                                required: true
+                                label: "LinkedIn Display"
+                    github:
+                        type: object
+                        required: false
+                        label: "GitHub"
+                        fields:
+                            link:
+                                type: string
+                                required: true
+                                label: "GitHub URL"
+                                pattern: "^https?://.*github\\.com.*"
+                            label:
+                                type: string
+                                required: true
+                                label: "GitHub Display"
+            icon:
                 type: object
                 required: false
-                label: "LinkedIn Profile"
+                label: "Icon Settings"
                 fields:
-                    url:
+                    address:
                         type: string
-                        required: true
-                        label: "LinkedIn URL"
-                        pattern: "^https?://.*linkedin\\.com.*"
-                    displayText:
+                        default: "house"
+                    telephone:
                         type: string
-                        required: true
-                        label: "Display Text"
+                        default: "phone"
+                    email:
+                        type: string
+                        default: "envelope"
+                    linkedin:
+                        type: string
                         default: "linkedin"
-            github:
+                    github:
+                        type: string
+                        default: "github"
+                    homepage:
+                        type: string
+                        default: "globe"
+
+    layout:
+        type: object
+        required: false
+        label: "Layout Settings"
+        description: "Customize the appearance of your CV"
+        fields:
+            fill_color:
+                type: string
+                required: false
+                label: "Background Color"
+                description: "Hex color code for background (e.g., #f4f1eb)"
+                default: "#f4f1eb"
+            paper_size:
+                type: string
+                required: false
+                label: "Paper Size"
+                default: "a4"
+            accent_color:
+                type: string
+                required: false
+                label: "Accent Color"
+                description: "Hex color code for accents (e.g., #d4d2cc)"
+                default: "#d4d2cc"
+            left_pane_width:
+                type: string
+                required: false
+                label: "Left Column Width"
+                description: "Width of left column as percentage (e.g., 71%)"
+                default: "71%"
+            text:
                 type: object
                 required: false
-                label: "GitHub Profile"
+                label: "Text Settings"
                 fields:
-                    url:
+                    font:
                         type: string
-                        required: true
-                        label: "GitHub URL"
-                        pattern: "^https?://.*github\\.com.*"
-                    displayText:
+                        required: false
+                        label: "Font Family"
+                        default: "HK Grotesk"
+                    size:
                         type: string
-                        required: true
-                        label: "Display Text"
-                        default: "@username"
-            website:
+                        required: false
+                        label: "Font Size"
+                        default: "10pt"
+                    cover_letter_size:
+                        type: string
+                        required: false
+                        label: "Cover Letter Font Size"
+                        default: "11pt"
+                    color:
+                        type: object
+                        required: false
+                        label: "Text Colors"
+                        fields:
+                            light:
+                                type: string
+                                required: false
+                                label: "Light Text Color"
+                                default: "#ededef"
+                            medium:
+                                type: string
+                                required: false
+                                label: "Medium Text Color"
+                                default: "#78787e"
+                            dark:
+                                type: string
+                                required: false
+                                label: "Dark Text Color"
+                                default: "#3c3c42"
+
+    language:
+        type: object
+        required: false
+        label: "Language Settings"
+        fields:
+            en:
                 type: object
                 required: false
-                label: "Personal Website"
+                label: "English"
                 fields:
-                    url:
+                    subtitle:
                         type: string
-                        required: true
-                        label: "Website URL"
-                        pattern: "^https?://.*"
-                    displayText:
+                        required: false
+                        label: "Professional Subtitle"
+                        default: "Software Engineer with a knack for human-friendly AI solutions"
+                    cv_document_name:
                         type: string
-                        required: true
-                        label: "Display Text"
-                        default: "www.example.com"
-
-    position:
-        type: string
-        required: true
-        label: "Target Position"
-        description: "The position you are applying for"
-
-    tagline:
-        type: text
-        required: false
-        label: "Professional Summary"
-        description: "A brief summary of your professional background and goals"
-
-    jobs:
-        type: array
-        required: false
-        label: "Work Experience"
-        description: "Your professional work history"
-        items:
-            type: object
-            fields:
-                position:
-                    type: string
-                    required: true
-                    label: "Job Title"
-                company:
-                    type: object
-                    required: true
-                    label: "Company"
-                    fields:
-                        name:
-                            type: string
-                            required: true
-                            label: "Company Name"
-                        link:
-                            type: string
-                            required: false
-                            label: "Company Website"
-                            pattern: "^https?://.*"
-                product:
-                    type: object
-                    required: false
-                    label: "Product/Project"
-                    fields:
-                        name:
-                            type: string
-                            required: true
-                            label: "Product Name"
-                        link:
-                            type: string
-                            required: false
-                            label: "Product URL"
-                            pattern: "^https?://.*"
-                description:
-                    type: array
-                    required: false
-                    label: "Job Description"
-                    description: "List of achievements and responsibilities"
-                    items:
-                        type: text
-                from:
-                    type: string
-                    required: true
-                    label: "Start Date"
-                    description: "Format: YYYY Mon. (e.g., 2023 Mar.)"
-                to:
-                    type: string
-                    required: true
-                    label: "End Date"
-                    description: "Format: YYYY Mon. or 'present'"
-                tags:
-                    type: array
-                    required: false
-                    label: "Technologies/Skills"
-                    description: "Technologies and skills used in this role"
-                    items:
+                        required: false
+                        label: "CV Document Name"
+                        default: "Resume"
+                    cover_letter_document_name:
                         type: string
-                location:
-                    type: string
-                    required: false
-                    label: "Job Location"
+                        required: false
+                        label: "Cover Letter Document Name"
+                        default: "Cover letter"
+            es:
+                type: object
+                required: false
+                label: "Spanish"
+                fields:
+                    subtitle:
+                        type: string
+                        required: false
+                        label: "Professional Subtitle"
+                        default: "Ingeniero de software con un talento para soluciones de IA amigables para humanos"
+                    cv_document_name:
+                        type: string
+                        required: false
+                        label: "CV Document Name"
+                        default: "CV"
+                    cover_letter_document_name:
+                        type: string
+                        required: false
+                        label: "Cover Letter Document Name"
+                        default: "Carta de motivación"
 
-    education:
-        type: array
+    section:
+        type: object
         required: false
-        label: "Education"
-        description: "Your educational background"
-        items:
-            type: object
-            fields:
-                place:
-                    type: object
-                    required: true
-                    label: "Institution"
-                    fields:
-                        name:
-                            type: string
-                            required: true
-                            label: "Institution Name"
-                        link:
-                            type: string
-                            required: false
-                            label: "Institution Website"
-                            pattern: "^https?://.*"
-                degree:
-                    type: string
-                    required: true
-                    label: "Degree"
-                    description: "e.g., B.Sc., M.A., Ph.D."
-                major:
-                    type: string
-                    required: true
-                    label: "Field of Study"
-                    description: "Your major or field of study"
-                track:
-                    type: string
-                    required: false
-                    label: "Track/Specialization"
-                from:
-                    type: string
-                    required: true
-                    label: "Start Year"
-                    pattern: "^\\d{4}$"
-                to:
-                    type: string
-                    required: true
-                    label: "End Year"
-                    pattern: "^\\d{4}$"
-                location:
-                    type: string
-                    required: false
-                    label: "Location"
+        label: "Section Icons"
+        fields:
+            icon:
+                type: object
+                required: false
+                label: "Section Icons"
+                fields:
+                    education:
+                        type: string
+                        default: "graduation-cap"
+                    experience:
+                        type: string
+                        default: "briefcase"
+                    languages:
+                        type: string
+                        default: "language"
+                    other_experience:
+                        type: string
+                        default: "wrench"
+                    personal:
+                        type: string
+                        default: "brain"
+                    profile:
+                        type: string
+                        default: "id-card"
+                    references:
+                        type: string
+                        default: "users"
+                    skills:
+                        type: string
+                        default: "cogs"
 
-    technical_expertise:
-        type: array
+    import:
+        type: object
         required: false
-        label: "Technical Expertise"
-        description: "Your technical skills with proficiency levels"
-        items:
-            type: object
-            fields:
-                name:
-                    type: string
-                    required: true
-                    label: "Technology/Skill"
-                level:
-                    type: integer
-                    required: true
-                    label: "Proficiency Level"
-                    description: "Rate your proficiency from 1 (beginner) to 5 (expert)"
-                    min: 1
-                    max: 5
-
-    skills:
-        type: array
-        required: false
-        label: "Skills"
-        description: "General skills and technologies you're familiar with"
-        items:
-            type: string
-
-    methodology:
-        type: array
-        required: false
-        label: "Methodologies"
-        description: "Development methodologies and approaches you're familiar with"
-        items:
-            type: string
-
-    tools:
-        type: array
-        required: false
-        label: "Tools"
-        description: "Software tools and platforms you use"
-        items:
-            type: string
-
-    achievements:
-        type: array
-        required: false
-        label: "Achievements & Certifications"
-        description: "Your notable achievements and certifications"
-        items:
-            type: object
-            fields:
-                name:
-                    type: string
-                    required: true
-                    label: "Achievement/Certification Name"
-                description:
-                    type: text
-                    required: true
-                    label: "Description"
-                    description: "Details about the achievement or certification"
+        label: "Import Settings"
+        fields:
+            fontawesome:
+                type: string
+                required: false
+                label: "FontAwesome Package"
+                default: "@preview/fontawesome:0.5.0"
 
 template_files:
-    - "template.typ"
+    - "cv.typ"
+    - "info.toml"
+    - "content/"
+    - "img/"
