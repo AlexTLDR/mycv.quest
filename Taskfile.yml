@@ -1,243 +1,93 @@
-version: "3"
-
-# Usage: go-task <task-name>
-# Install Task: https://taskfile.dev/installation/
-
-vars:
-    BUILD_DIR: /tmp/bin
-    APP_NAME: web
+version: '3'
 
 tasks:
-    help:
-        desc: Print this help message
-        cmds:
-            - go-task --list
+  templ:
+    desc: Run templ generation in watch mode
+    cmd: templ generate --watch --proxy="http://localhost:3132" --open-browser=false
 
-    # ==================================================================================== #
-    # TEMPL
-    # ==================================================================================== #
+  server:
+    desc: Run air for Go hot reload
+    cmd: |
+      air \
+      --build.cmd "go build -o tmp/bin/main ./main.go" \
+      --build.bin "tmp/bin/main" \
+      --build.delay "100" \
+      --build.exclude_dir "node_modules" \
+      --build.include_ext "go" \
+      --build.stop_on_error "false" \
+      --misc.clean_on_exit true
 
-    templ:generate:
-        desc: Generate templ files
-        cmds:
-            - templ generate
-        sources:
-            - "assets/**/*.templ"
-        generates:
-            - "assets/**/*_templ.go"
+  tailwind:
+    desc: Watch Tailwind CSS changes
+    cmd: tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --watch
 
-    templ:watch:
-        desc: Watch and regenerate templ files on changes
-        cmds:
-            - templ generate --watch
+  dev:
+    desc: Start development server with all watchers in parallel
+    cmd: |
+      echo "Starting development servers in parallel..."
+      echo "Press Ctrl+C to stop all processes"
 
-    # ==================================================================================== #
-    # CSS
-    # ==================================================================================== #
+      # Function to cleanup background processes
+      cleanup() {
+        echo "Stopping all processes..."
+        jobs -p | xargs -r kill
+        exit 0
+      }
 
-    css:build:
-        desc: Build CSS from input.css using Tailwind
-        cmds:
-            - ./tailwindcss -i ./assets/css/input.css -o ./assets/static/css/main.css
-        sources:
-            - "assets/css/input.css"
-            - "assets/**/*.templ"
-            - "components/**/*.templ"
-        generates:
-            - "assets/static/css/main.css"
+      # Set trap to cleanup on exit
+      trap cleanup SIGINT SIGTERM
 
-    css:watch:
-        desc: Watch and rebuild CSS on changes
-        cmds:
-            - ./tailwindcss -i ./assets/css/input.css -o ./assets/static/css/main.css --watch
+      # Start background processes
+      tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --watch &
+      TAILWIND_PID=$!
 
-    # ==================================================================================== #
-    # TEMPLUI
-    # ==================================================================================== #
+      templ generate --watch --proxy="http://localhost:3132" --open-browser=false &
+      TEMPL_PID=$!
 
-    ui:init:
-        desc: Initialize templui in the project
-        cmds:
-            - templui init
+      # Start air in foreground (this keeps the script running)
+      air \
+      --build.cmd "go build -o tmp/bin/main ./main.go" \
+      --build.bin "tmp/bin/main" \
+      --build.delay "100" \
+      --build.exclude_dir "node_modules" \
+      --build.include_ext "go" \
+      --build.stop_on_error "false" \
+      --misc.clean_on_exit true
 
-    ui:add:
-        desc: Add templui components (usage - go-task ui:add COMPONENTS="button card input")
-        cmds:
-            - templui add {{.COMPONENTS}}
-        requires:
-            vars: [COMPONENTS]
+      # If air exits, cleanup background processes
+      cleanup
 
-    ui:list:
-        desc: List available templui components
-        cmds:
-            - templui list
+  generate:
+    desc: Generate templ files once
+    cmd: templ generate
 
-    ui:upgrade:
-        desc: Upgrade templui CLI to latest version
-        cmds:
-            - templui upgrade
+  build:
+    desc: Build the application
+    cmd: go build -o bin/main ./main.go
+    deps: [generate]
 
-    # ==================================================================================== #
-    # QUALITY CONTROL
-    # ==================================================================================== #
+  clean:
+    desc: Clean generated files and build artifacts
+    cmd: |
+      rm -rf tmp/
+      rm -rf bin/
+      rm -f assets/css/output.css
 
-    audit:
-        desc: Run quality control checks
-        deps: [test]
-        cmds:
-            - go mod tidy -diff
-            - go mod verify
-            - test -z "$(gofmt -l .)"
-            - go vet ./...
-            - go run honnef.co/go/tools/cmd/staticcheck@latest -checks=all,-ST1000,-U1000 ./...
-            - go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+  install:
+    desc: Install development dependencies
+    cmd: |
+      go mod tidy
+      # Install tools if not present
+      which templ > /dev/null || go install github.com/a-h/templ/cmd/templ@latest
+      which air > /dev/null || go install github.com/cosmtrek/air@latest
+      which tailwindcss > /dev/null || echo "Please install Tailwind CSS CLI from https://tailwindcss.com/docs/installation"
 
-    test:
-        desc: Run all tests
-        deps: [templ:generate]
-        cmds:
-            - go test -v -race -buildvcs ./...
+  test:
+    desc: Run tests
+    cmd: go test ./...
 
-    test:cover:
-        desc: Run all tests and display coverage
-        deps: [templ:generate]
-        cmds:
-            - go test -v -race -buildvcs -coverprofile=/tmp/coverage.out ./...
-            - go tool cover -html=/tmp/coverage.out
-
-    upgradeable:
-        desc: List direct dependencies that have upgrades available
-        cmds:
-            - go run github.com/oligot/go-mod-upgrade@latest
-
-    # ==================================================================================== #
-    # DEVELOPMENT
-    # ==================================================================================== #
-
-    tidy:
-        desc: Tidy modfiles and format .go files
-        cmds:
-            - go mod tidy -v
-            - go fmt ./...
-
-    build:
-        desc: Build the cmd/web application
-        deps: [templ:generate, css:build]
-        cmds:
-            - go build -o={{.BUILD_DIR}}/{{.APP_NAME}} ./cmd/web
-        sources:
-            - "**/*.go"
-            - "**/*_templ.go"
-            - "assets/static/css/main.css"
-        generates:
-            - "{{.BUILD_DIR}}/{{.APP_NAME}}"
-
-    run:
-        desc: Run the cmd/web application
-        deps: [build]
-        cmds:
-            - "{{.BUILD_DIR}}/{{.APP_NAME}}"
-
-    run:live:
-        desc: Run the application with reloading on file changes
-        cmds:
-            - |
-                go run github.com/cosmtrek/air@v1.43.0 \
-                  --build.cmd "go-task build" --build.bin "{{.BUILD_DIR}}/{{.APP_NAME}}" --build.delay "100" \
-                  --build.exclude_dir "" \
-                  --build.include_ext "go, templ, tpl, tmpl, html, css, scss, js, ts, sql, jpeg, jpg, gif, png, bmp, svg, webp, ico" \
-                  --misc.clean_on_exit "true"
-
-    dev:
-        desc: Run development server with templ and CSS watching and live reload
-        cmds:
-            - |
-                echo "Starting development server with templ and CSS watching..."
-
-                # Start templ watching in background
-                templ generate --watch &
-                TEMPL_PID=$!
-
-                # Start CSS watching in background
-                ./tailwindcss -i ./assets/css/input.css -o ./assets/static/css/main.css --watch &
-                CSS_PID=$!
-
-                # Cleanup function
-                cleanup() {
-                    echo "Stopping development server..."
-                    kill $TEMPL_PID 2>/dev/null || true
-                    kill $CSS_PID 2>/dev/null || true
-                    exit 0
-                }
-
-                trap cleanup EXIT INT TERM
-
-                # Start air for Go live reload
-                go run github.com/cosmtrek/air@v1.43.0 \
-                  --build.cmd "go-task build" --build.bin "{{.BUILD_DIR}}/{{.APP_NAME}}" --build.delay "100" \
-                  --build.exclude_dir "node_modules,tmp,.git" \
-                  --build.include_ext "go, templ, tpl, tmpl, html, css, scss, js, ts, sql, jpeg, jpg, gif, png, bmp, svg, webp, ico" \
-                  --misc.clean_on_exit "true"
-
-    # ==================================================================================== #
-    # SQL MIGRATIONS
-    # ==================================================================================== #
-
-    migrations:new:
-        desc: Create a new database migration (usage - go-task migrations:new NAME=migration_name)
-        cmds:
-            - go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest create -seq -ext=.sql -dir=./assets/migrations {{.NAME}}
-        requires:
-            vars: [NAME]
-
-    migrations:up:
-        desc: Apply all up database migrations
-        cmds:
-            - go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest -path=./assets/migrations -database="postgres://{{.DB_DSN}}" up
-        requires:
-            vars: [DB_DSN]
-
-    migrations:down:
-        desc: Apply all down database migrations
-        cmds:
-            - go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest -path=./assets/migrations -database="postgres://{{.DB_DSN}}" down
-        requires:
-            vars: [DB_DSN]
-
-    migrations:goto:
-        desc: Migrate to a specific version number (usage - go-task migrations:goto VERSION=123)
-        cmds:
-            - go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest -path=./assets/migrations -database="postgres://{{.DB_DSN}}" goto {{.VERSION}}
-        requires:
-            vars: [DB_DSN, VERSION]
-
-    migrations:force:
-        desc: Force database migration (usage - go-task migrations:force VERSION=123)
-        cmds:
-            - go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest -path=./assets/migrations -database="postgres://{{.DB_DSN}}" force {{.VERSION}}
-        requires:
-            vars: [DB_DSN, VERSION]
-
-    migrations:version:
-        desc: Print the current in-use migration version
-        cmds:
-            - go run -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest -path=./assets/migrations -database="postgres://{{.DB_DSN}}" version
-        requires:
-            vars: [DB_DSN]
-
-    # ==================================================================================== #
-    # CLEANUP
-    # ==================================================================================== #
-
-    clean:
-        desc: Clean build artifacts and generated files
-        cmds:
-            - rm -rf {{.BUILD_DIR}}/{{.APP_NAME}}
-            - find . -name "*_templ.go" -type f -delete
-            - rm -f assets/static/css/main.css
-
-    clean:all:
-        desc: Clean everything including dependencies
-        deps: [clean]
-        cmds:
-            - go clean -modcache
+  fmt:
+    desc: Format code
+    cmd: |
+      go fmt ./...
+      templ fmt .
