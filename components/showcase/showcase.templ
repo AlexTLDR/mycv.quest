@@ -1,0 +1,271 @@
+// showcase component for mycv.quest
+package showcase
+
+import "github.com/AlexTLDR/mycv.quest/components/aspectratio"
+
+templ AspectRatioDefault() {
+	@aspectratio.AspectRatio(aspectratio.Props{
+		Ratio: aspectratio.RatioVideo,
+		Class: "rounded-md overflow-hidden",
+	}) {
+		<img
+			src="/assets/img/aspect_ratio_placeholder.jpeg"
+			alt="Example image"
+			class="h-full w-full object-cover"
+		/>
+	}
+}
+
+templ CVTemplateShowcase() {
+	<div class="space-y-8">
+		<div>
+			<h3 class="text-lg font-semibold text-foreground mb-4">CV Template Previews</h3>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+				<!-- Vantage CV Template -->
+				<div class="group">
+					@aspectratio.AspectRatio(aspectratio.Props{
+						Ratio: aspectratio.RatioPortrait,
+						Class: "rounded-lg overflow-hidden border border-border group-hover:shadow-lg transition-all duration-300",
+					}) {
+						<div class="h-full w-full bg-gradient-to-br from-primary/5 to-accent/5 p-4 flex flex-col">
+							<div class="mb-3">
+								<div class="h-2 bg-primary/20 rounded w-3/4 mb-1"></div>
+								<div class="h-1 bg-muted-foreground/30 rounded w-1/2"></div>
+							</div>
+							<div class="space-y-2 flex-1">
+								<div class="h-1 bg-foreground/40 rounded w-full"></div>
+								<div class="h-1 bg-foreground/30 rounded w-4/5"></div>
+								<div class="h-1 bg-foreground/30 rounded w-3/5"></div>
+								<div class="mt-2 h-1 bg-primary/30 rounded w-2/3"></div>
+								<div class="h-1 bg-foreground/20 rounded w-5/6"></div>
+							</div>
+						</div>
+					}
+					<div class="mt-2">
+						<h4 class="font-medium text-card-foreground text-sm">Vantage CV</h4>
+						<p class="text-xs text-muted-foreground">Modern professional</p>
+					</div>
+				</div>
+				<!-- Basic Resume Template -->
+				<div class="group">
+					@aspectratio.AspectRatio(aspectratio.Props{
+						Ratio: aspectratio.RatioPortrait,
+						Class: "rounded-lg overflow-hidden border border-border group-hover:shadow-lg transition-all duration-300",
+					}) {
+						<div class="h-full w-full bg-gradient-to-br from-secondary/5 to-muted/10 p-4 flex flex-col">
+							<div class="mb-3">
+								<div class="h-2 bg-secondary/20 rounded w-2/3 mb-1"></div>
+								<div class="h-1 bg-muted-foreground/30 rounded w-2/5"></div>
+							</div>
+							<div class="space-y-2 flex-1">
+								<div class="h-1 bg-foreground/30 rounded w-full"></div>
+								<div class="h-1 bg-foreground/30 rounded w-5/6"></div>
+								<div class="h-1 bg-foreground/30 rounded w-3/4"></div>
+								<div class="mt-2 h-1 bg-foreground/30 rounded w-4/5"></div>
+								<div class="h-1 bg-foreground/30 rounded w-3/5"></div>
+							</div>
+						</div>
+					}
+					<div class="mt-2">
+						<h4 class="font-medium text-card-foreground text-sm">Basic Resume</h4>
+						<p class="text-xs text-muted-foreground">Simple & clean</p>
+					</div>
+				</div>
+				<!-- Metronic CV Template -->
+				<div class="group">
+					@aspectratio.AspectRatio(aspectratio.Props{
+						Ratio: aspectratio.RatioPortrait,
+						Class: "rounded-lg overflow-hidden border border-border group-hover:shadow-lg transition-all duration-300",
+					}) {
+						<div class="h-full w-full bg-gradient-to-br from-accent/5 to-primary/5 p-4 flex flex-col">
+							<div class="mb-3 text-center">
+								<div class="h-2 bg-accent/20 rounded w-2/3 mx-auto mb-1"></div>
+								<div class="h-1 bg-muted-foreground/30 rounded w-1/3 mx-auto"></div>
+							</div>
+							<div class="space-y-2 flex-1">
+								<div class="bg-accent/5 p-2 rounded">
+									<div class="h-1 bg-accent/30 rounded w-full mb-1"></div>
+									<div class="h-1 bg-foreground/20 rounded w-3/4"></div>
+								</div>
+								<div class="h-1 bg-foreground/30 rounded w-5/6"></div>
+								<div class="h-1 bg-foreground/30 rounded w-4/5"></div>
+							</div>
+						</div>
+					}
+					<div class="mt-2">
+						<h4 class="font-medium text-card-foreground text-sm">Metronic CV</h4>
+						<p class="text-xs text-muted-foreground">Executive style</p>
+					</div>
+				</div>
+				<!-- SWE CV Template -->
+				<div class="group">
+					@aspectratio.AspectRatio(aspectratio.Props{
+						Ratio: aspectratio.RatioPortrait,
+						Class: "rounded-lg overflow-hidden border border-border group-hover:shadow-lg transition-all duration-300",
+					}) {
+						<div class="h-full w-full bg-gradient-to-br from-primary/5 to-secondary/5 p-4 flex">
+							<div class="w-1/4 pr-2 border-r border-border/20">
+								<div class="space-y-1">
+									<div class="h-1 bg-primary/30 rounded w-full"></div>
+									<div class="h-1 bg-muted/30 rounded w-3/4"></div>
+									<div class="h-1 bg-muted/30 rounded w-2/3"></div>
+								</div>
+							</div>
+							<div class="flex-1 pl-2">
+								<div class="space-y-1">
+									<div class="h-1 bg-primary/30 rounded w-4/5"></div>
+									<div class="h-1 bg-foreground/20 rounded w-full"></div>
+									<div class="h-1 bg-foreground/20 rounded w-5/6"></div>
+									<div class="h-1 bg-foreground/20 rounded w-3/5"></div>
+								</div>
+							</div>
+						</div>
+					}
+					<div class="mt-2">
+						<h4 class="font-medium text-card-foreground text-sm">SWE CV</h4>
+						<p class="text-xs text-muted-foreground">Software engineer</p>
+					</div>
+				</div>
+				<!-- Imprecv Template -->
+				<div class="group">
+					@aspectratio.AspectRatio(aspectratio.Props{
+						Ratio: aspectratio.RatioPortrait,
+						Class: "rounded-lg overflow-hidden border border-border group-hover:shadow-lg transition-all duration-300",
+					}) {
+						<div class="h-full w-full bg-gradient-to-br from-secondary/5 to-accent/5 p-4 flex flex-col">
+							<div class="mb-3">
+								<div class="h-2 bg-secondary/20 rounded w-5/6 mb-1"></div>
+								<div class="h-1 bg-muted-foreground/30 rounded w-2/5"></div>
+							</div>
+							<div class="space-y-2 flex-1">
+								<div class="bg-secondary/5 p-2 rounded">
+									<div class="h-1 bg-secondary/30 rounded w-full mb-1"></div>
+									<div class="h-1 bg-foreground/20 rounded w-4/5"></div>
+								</div>
+								<div class="h-1 bg-foreground/30 rounded w-full"></div>
+								<div class="h-1 bg-foreground/30 rounded w-3/4"></div>
+								<div class="bg-accent/5 p-1 rounded">
+									<div class="h-1 bg-accent/30 rounded w-2/3"></div>
+								</div>
+							</div>
+						</div>
+					}
+					<div class="mt-2">
+						<h4 class="font-medium text-card-foreground text-sm">Imprecv</h4>
+						<p class="text-xs text-muted-foreground">Impressive design</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Template Features Comparison -->
+		<div>
+			<h3 class="text-lg font-semibold text-foreground mb-4">Template Features Comparison</h3>
+			<div class="bg-card p-4 rounded-lg border border-border">
+				<div class="overflow-x-auto">
+					<table class="w-full text-sm">
+						<thead>
+							<tr class="border-b border-border">
+								<th class="text-left py-2 text-card-foreground">Template</th>
+								<th class="text-center py-2 text-card-foreground">Best For</th>
+								<th class="text-center py-2 text-card-foreground">Style</th>
+								<th class="text-center py-2 text-card-foreground">Complexity</th>
+								<th class="text-center py-2 text-card-foreground">ATS Friendly</th>
+							</tr>
+						</thead>
+						<tbody class="text-muted-foreground">
+							<tr class="border-b border-border/50">
+								<td class="py-2 font-medium text-card-foreground">Vantage CV</td>
+								<td class="py-2 text-center">Tech Professionals</td>
+								<td class="py-2 text-center">Modern</td>
+								<td class="py-2 text-center">Medium</td>
+								<td class="py-2 text-center">✓</td>
+							</tr>
+							<tr class="border-b border-border/50">
+								<td class="py-2 font-medium text-card-foreground">Basic Resume</td>
+								<td class="py-2 text-center">Entry Level</td>
+								<td class="py-2 text-center">Traditional</td>
+								<td class="py-2 text-center">Simple</td>
+								<td class="py-2 text-center">✓✓</td>
+							</tr>
+							<tr class="border-b border-border/50">
+								<td class="py-2 font-medium text-card-foreground">Metronic CV</td>
+								<td class="py-2 text-center">Executives</td>
+								<td class="py-2 text-center">Professional</td>
+								<td class="py-2 text-center">Medium</td>
+								<td class="py-2 text-center">✓</td>
+							</tr>
+							<tr class="border-b border-border/50">
+								<td class="py-2 font-medium text-card-foreground">SWE CV</td>
+								<td class="py-2 text-center">Software Engineers</td>
+								<td class="py-2 text-center">Technical</td>
+								<td class="py-2 text-center">Medium</td>
+								<td class="py-2 text-center">✓</td>
+							</tr>
+							<tr>
+								<td class="py-2 font-medium text-card-foreground">Imprecv</td>
+								<td class="py-2 text-center">Creative Fields</td>
+								<td class="py-2 text-center">Bold</td>
+								<td class="py-2 text-center">High</td>
+								<td class="py-2 text-center">○</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- Different Aspect Ratios Demo -->
+		<div>
+			<h3 class="text-lg font-semibold text-foreground mb-4">Aspect Ratio Examples</h3>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+				<!-- Square -->
+				<div>
+					@aspectratio.AspectRatio(aspectratio.Props{
+						Ratio: aspectratio.RatioSquare,
+						Class: "rounded-lg overflow-hidden bg-muted",
+					}) {
+						<div class="h-full w-full bg-gradient-to-br from-primary/20 to-transparent flex items-center justify-center">
+							<span class="text-foreground font-medium">Square</span>
+						</div>
+					}
+					<p class="text-xs text-muted-foreground mt-2 text-center">1:1 Ratio</p>
+				</div>
+				<!-- Video -->
+				<div>
+					@aspectratio.AspectRatio(aspectratio.Props{
+						Ratio: aspectratio.RatioVideo,
+						Class: "rounded-lg overflow-hidden bg-muted",
+					}) {
+						<div class="h-full w-full bg-gradient-to-br from-accent/20 to-transparent flex items-center justify-center">
+							<span class="text-foreground font-medium">Video</span>
+						</div>
+					}
+					<p class="text-xs text-muted-foreground mt-2 text-center">16:9 Ratio</p>
+				</div>
+				<!-- Portrait -->
+				<div>
+					@aspectratio.AspectRatio(aspectratio.Props{
+						Ratio: aspectratio.RatioPortrait,
+						Class: "rounded-lg overflow-hidden bg-muted",
+					}) {
+						<div class="h-full w-full bg-gradient-to-br from-secondary/20 to-transparent flex items-center justify-center">
+							<span class="text-foreground font-medium">Portrait</span>
+						</div>
+					}
+					<p class="text-xs text-muted-foreground mt-2 text-center">3:4 Ratio</p>
+				</div>
+				<!-- Wide -->
+				<div>
+					@aspectratio.AspectRatio(aspectratio.Props{
+						Ratio: aspectratio.RatioWide,
+						Class: "rounded-lg overflow-hidden bg-muted",
+					}) {
+						<div class="h-full w-full bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center">
+							<span class="text-foreground font-medium">Wide</span>
+						</div>
+					}
+					<p class="text-xs text-muted-foreground mt-2 text-center">2:1 Ratio</p>
+				</div>
+			</div>
+		</div>
+	</div>
+}
