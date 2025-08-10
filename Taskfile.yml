@@ -1,93 +1,106 @@
-version: '3'
+version: "3"
 
 tasks:
-  templ:
-    desc: Run templ generation in watch mode
-    cmd: templ generate --watch --proxy="http://localhost:3132" --open-browser=false
+    templ:
+        desc: Run templ generation in watch mode
+        cmd: templ generate --watch --proxy="http://localhost:3132" --open-browser=false
 
-  server:
-    desc: Run air for Go hot reload
-    cmd: |
-      air \
-      --build.cmd "go build -o tmp/bin/main ./main.go" \
-      --build.bin "tmp/bin/main" \
-      --build.delay "100" \
-      --build.exclude_dir "node_modules" \
-      --build.include_ext "go" \
-      --build.stop_on_error "false" \
-      --misc.clean_on_exit true
+    run:
+        desc: Generate templ files and run the server on port 3132
+        cmd: |
+            echo "🚀 Starting mycv.quest server..."
+            echo "🎨 Compiling CSS with DaisyUI themes..."
+            tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css
+            echo "📝 Generating templ files..."
+            templ generate
+            echo "🌟 Starting server on port 3132..."
+            echo "📄 Serving mycv.quest - Professional CV generation with Typst"
+            echo "🌐 Visit: http://localhost:3132"
+            go run main.go
 
-  tailwind:
-    desc: Watch Tailwind CSS changes
-    cmd: tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --watch
+    server:
+        desc: Run air for Go hot reload
+        cmd: |
+            air \
+            --build.cmd "go build -o tmp/bin/main ./main.go" \
+            --build.bin "tmp/bin/main" \
+            --build.delay "100" \
+            --build.exclude_dir "node_modules" \
+            --build.include_ext "go" \
+            --build.stop_on_error "false" \
+            --misc.clean_on_exit true
 
-  dev:
-    desc: Start development server with all watchers in parallel
-    cmd: |
-      echo "Starting development servers in parallel..."
-      echo "Press Ctrl+C to stop all processes"
+    tailwind:
+        desc: Watch Tailwind CSS changes
+        cmd: tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --watch
 
-      # Function to cleanup background processes
-      cleanup() {
-        echo "Stopping all processes..."
-        jobs -p | xargs -r kill
-        exit 0
-      }
+    dev:
+        desc: Start development server with all watchers in parallel
+        cmd: |
+            echo "Starting development servers in parallel..."
+            echo "Press Ctrl+C to stop all processes"
 
-      # Set trap to cleanup on exit
-      trap cleanup SIGINT SIGTERM
+            # Function to cleanup background processes
+            cleanup() {
+              echo "Stopping all processes..."
+              jobs -p | xargs -r kill
+              exit 0
+            }
 
-      # Start background processes
-      tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --watch &
-      TAILWIND_PID=$!
+            # Set trap to cleanup on exit
+            trap cleanup SIGINT SIGTERM
 
-      templ generate --watch --proxy="http://localhost:3132" --open-browser=false &
-      TEMPL_PID=$!
+            # Start background processes
+            tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --watch &
+            TAILWIND_PID=$!
 
-      # Start air in foreground (this keeps the script running)
-      air \
-      --build.cmd "go build -o tmp/bin/main ./main.go" \
-      --build.bin "tmp/bin/main" \
-      --build.delay "100" \
-      --build.exclude_dir "node_modules" \
-      --build.include_ext "go" \
-      --build.stop_on_error "false" \
-      --misc.clean_on_exit true
+            templ generate --watch --proxy="http://localhost:3132" --open-browser=false &
+            TEMPL_PID=$!
 
-      # If air exits, cleanup background processes
-      cleanup
+            # Start air in foreground (this keeps the script running)
+            air \
+            --build.cmd "go build -o tmp/bin/main ./main.go" \
+            --build.bin "tmp/bin/main" \
+            --build.delay "100" \
+            --build.exclude_dir "node_modules" \
+            --build.include_ext "go" \
+            --build.stop_on_error "false" \
+            --misc.clean_on_exit true
 
-  generate:
-    desc: Generate templ files once
-    cmd: templ generate
+            # If air exits, cleanup background processes
+            cleanup
 
-  build:
-    desc: Build the application
-    cmd: go build -o bin/main ./main.go
-    deps: [generate]
+    generate:
+        desc: Generate templ files once
+        cmd: templ generate
 
-  clean:
-    desc: Clean generated files and build artifacts
-    cmd: |
-      rm -rf tmp/
-      rm -rf bin/
-      rm -f assets/css/output.css
+    build:
+        desc: Build the application
+        cmd: go build -o bin/main ./main.go
+        deps: [generate]
 
-  install:
-    desc: Install development dependencies
-    cmd: |
-      go mod tidy
-      # Install tools if not present
-      which templ > /dev/null || go install github.com/a-h/templ/cmd/templ@latest
-      which air > /dev/null || go install github.com/cosmtrek/air@latest
-      which tailwindcss > /dev/null || echo "Please install Tailwind CSS CLI from https://tailwindcss.com/docs/installation"
+    clean:
+        desc: Clean generated files and build artifacts
+        cmd: |
+            rm -rf tmp/
+            rm -rf bin/
+            rm -f assets/css/output.css
 
-  test:
-    desc: Run tests
-    cmd: go test ./...
+    install:
+        desc: Install development dependencies
+        cmd: |
+            go mod tidy
+            # Install tools if not present
+            which templ > /dev/null || go install github.com/a-h/templ/cmd/templ@latest
+            which air > /dev/null || go install github.com/cosmtrek/air@latest
+            which tailwindcss > /dev/null || echo "Please install Tailwind CSS CLI from https://tailwindcss.com/docs/installation"
 
-  fmt:
-    desc: Format code
-    cmd: |
-      go fmt ./...
-      templ fmt .
+    test:
+        desc: Run tests
+        cmd: go test ./...
+
+    fmt:
+        desc: Format code
+        cmd: |
+            go fmt ./...
+            templ fmt .
