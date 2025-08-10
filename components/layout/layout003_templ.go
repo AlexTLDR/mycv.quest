@@ -43,7 +43,7 @@ func Layout003() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</aside><!-- Main Content --><main class=\"flex-1 p-6\"><div class=\"max-w-6xl mx-auto space-y-6\"><!-- Welcome Section --><div class=\"bg-muted p-6 rounded-lg border border-border transition-colors\"><h2 class=\"text-2xl font-bold text-foreground mb-2\">Create Professional CVs with Typst</h2><p class=\"text-muted-foreground mb-4\">Generate beautiful, modern resumes using Typst's powerful typesetting engine. Choose from professional templates and customize to your needs.</p><button class=\"bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors\">Start Creating</button></div><!-- Template Gallery --><div class=\"bg-card p-6 rounded-lg border border-border transition-colors\"><h3 class=\"text-xl font-semibold text-card-foreground mb-4\">Featured Templates</h3><div class=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4\"><div class=\"border border-border rounded-lg p-4 hover:shadow-md transition-shadow\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</aside><!-- Main Content --><main class=\"flex-1 p-6\"><div class=\"max-w-6xl mx-auto space-y-6\"><!-- Welcome Section --><div class=\"bg-muted p-6 rounded-lg border border-border transition-colors\"><h2 class=\"text-2xl font-bold text-foreground mb-2\">Create Professional CVs with Typst</h2><p class=\"text-muted-foreground mb-4\">Generate beautiful, modern resumes using Typst's powerful typesetting engine. Choose from professional templates and customize to your needs.</p><button class=\"bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors\">Start Creating</button></div><!-- Template Gallery --><div class=\"bg-card p-6 rounded-lg border border-border transition-colors\"><h3 class=\"text-xl font-semibold text-card-foreground mb-4\">Featured Templates</h3><div class=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4\"><div class=\"border border-border rounded-lg p-4 hover:shadow-md transition-shadow\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -88,7 +88,7 @@ func Layout003() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div class=\"h-full w-full bg-gradient-to-br from-accent/30 to-primary/30 flex items-center justify-center\"><span class=\"text-accent-foreground font-medium\">Executive</span></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div class=\"h-full w-full bg-gradient-to-br from-secondary/20 to-primary/20 flex items-center justify-center\"><span class=\"text-foreground font-medium\">Basic Resume</span></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -96,12 +96,12 @@ func Layout003() templ.Component {
 		})
 		templ_7745c5c3_Err = aspectratio.AspectRatio(aspectratio.Props{
 			Ratio: aspectratio.RatioPortrait,
-			Class: "rounded mb-3 overflow-hidden bg-accent",
+			Class: "rounded mb-3 overflow-hidden bg-muted",
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<h4 class=\"font-medium text-card-foreground\">Executive Style</h4><p class=\"text-sm text-muted-foreground\">Elegant design for senior positions</p></div><div class=\"border border-border rounded-lg p-4 hover:shadow-md transition-shadow\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<h4 class=\"font-medium text-card-foreground\">Simple & Clean</h4><p class=\"text-sm text-muted-foreground\">Minimalist approach with clear structure</p></div><div class=\"border border-border rounded-lg p-4 hover:shadow-md transition-shadow\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -117,7 +117,7 @@ func Layout003() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"h-full w-full bg-gradient-to-br from-secondary/30 to-muted/50 flex items-center justify-center\"><span class=\"text-secondary-foreground font-medium\">Creative</span></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"h-full w-full bg-gradient-to-br from-accent/30 to-primary/30 flex items-center justify-center\"><span class=\"text-accent-foreground font-medium\">Metronic CV</span></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -125,12 +125,12 @@ func Layout003() templ.Component {
 		})
 		templ_7745c5c3_Err = aspectratio.AspectRatio(aspectratio.Props{
 			Ratio: aspectratio.RatioPortrait,
-			Class: "rounded mb-3 overflow-hidden bg-secondary",
+			Class: "rounded mb-3 overflow-hidden bg-accent",
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<h4 class=\"font-medium text-card-foreground\">Creative Portfolio</h4><p class=\"text-sm text-muted-foreground\">Stand out with creative layouts</p></div></div></div><!-- Features Section --><div class=\"bg-card p-6 rounded-lg border border-border transition-colors\"><h3 class=\"text-xl font-semibold text-card-foreground mb-4\">Why Choose mycv.quest?</h3><div class=\"grid grid-cols-1 md:grid-cols-2 gap-6\"><div class=\"flex items-start space-x-3\"><div class=\"h-8 w-8 bg-primary/10 rounded-lg flex items-center justify-center\"><svg class=\"h-5 w-5 text-primary\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13 10V3L4 14h7v7l9-11h-7z\"></path></svg></div><div><h4 class=\"font-medium text-card-foreground\">Typst Powered</h4><p class=\"text-sm text-muted-foreground\">Professional typesetting with perfect formatting</p></div></div><div class=\"flex items-start space-x-3\"><div class=\"h-8 w-8 bg-accent rounded-lg flex items-center justify-center\"><svg class=\"h-5 w-5 text-accent-foreground\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z\"></path></svg></div><div><h4 class=\"font-medium text-card-foreground\">Easy to Use</h4><p class=\"text-sm text-muted-foreground\">Simple interface, professional results</p></div></div></div></div><!-- CV Showcase Section --><div class=\"bg-card p-6 rounded-lg border border-border transition-colors\"><h3 class=\"text-xl font-semibold text-card-foreground mb-4\">CV Template Showcase</h3><p class=\"text-muted-foreground mb-6\">See examples of professional CVs generated with our Typst-powered templates</p><div class=\"grid grid-cols-2 md:grid-cols-4 gap-4\"><div class=\"group cursor-pointer\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<h4 class=\"font-medium text-card-foreground\">Executive Style</h4><p class=\"text-sm text-muted-foreground\">Professional design for business roles</p></div><div class=\"border border-border rounded-lg p-4 hover:shadow-md transition-shadow\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -146,7 +146,7 @@ func Layout003() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div class=\"h-full w-full bg-gradient-to-br from-primary/10 to-accent/10 p-4 flex flex-col justify-between\"><div class=\"space-y-1\"><div class=\"h-1 bg-primary/30 rounded w-3/4\"></div><div class=\"h-1 bg-muted/50 rounded w-1/2\"></div></div><div class=\"space-y-2\"><div class=\"h-1 bg-foreground/20 rounded w-full\"></div><div class=\"h-1 bg-foreground/20 rounded w-4/5\"></div><div class=\"h-1 bg-foreground/20 rounded w-3/5\"></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div class=\"h-full w-full bg-gradient-to-br from-primary/30 to-secondary/20 flex items-center justify-center\"><span class=\"text-primary-foreground font-medium\">SWE CV</span></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -154,12 +154,12 @@ func Layout003() templ.Component {
 		})
 		templ_7745c5c3_Err = aspectratio.AspectRatio(aspectratio.Props{
 			Ratio: aspectratio.RatioPortrait,
-			Class: "rounded-lg overflow-hidden border border-border group-hover:shadow-lg transition-shadow",
+			Class: "rounded mb-3 overflow-hidden bg-primary",
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<p class=\"text-xs text-muted-foreground mt-2 text-center\">Vantage Modern</p></div><div class=\"group cursor-pointer\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<h4 class=\"font-medium text-card-foreground\">Software Engineer</h4><p class=\"text-sm text-muted-foreground\">Tailored for software engineering roles</p></div><div class=\"border border-border rounded-lg p-4 hover:shadow-md transition-shadow\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -175,7 +175,7 @@ func Layout003() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"h-full w-full bg-gradient-to-br from-accent/10 to-secondary/10 p-4 flex flex-col justify-between\"><div class=\"space-y-1\"><div class=\"h-1 bg-accent/30 rounded w-2/3\"></div><div class=\"h-1 bg-muted/50 rounded w-1/3\"></div></div><div class=\"space-y-2\"><div class=\"h-1 bg-foreground/20 rounded w-full\"></div><div class=\"h-1 bg-foreground/20 rounded w-5/6\"></div><div class=\"h-1 bg-foreground/20 rounded w-2/3\"></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"h-full w-full bg-gradient-to-br from-secondary/30 to-muted/50 flex items-center justify-center\"><span class=\"text-secondary-foreground font-medium\">Imprecv</span></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -183,12 +183,12 @@ func Layout003() templ.Component {
 		})
 		templ_7745c5c3_Err = aspectratio.AspectRatio(aspectratio.Props{
 			Ratio: aspectratio.RatioPortrait,
-			Class: "rounded-lg overflow-hidden border border-border group-hover:shadow-lg transition-shadow",
+			Class: "rounded mb-3 overflow-hidden bg-secondary",
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<p class=\"text-xs text-muted-foreground mt-2 text-center\">Executive Pro</p></div><div class=\"group cursor-pointer\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<h4 class=\"font-medium text-card-foreground\">Impressive CV</h4><p class=\"text-sm text-muted-foreground\">Eye-catching design that stands out</p></div></div></div><!-- Features Section --><div class=\"bg-card p-6 rounded-lg border border-border transition-colors\"><h3 class=\"text-xl font-semibold text-card-foreground mb-4\">Why Choose mycv.quest?</h3><div class=\"grid grid-cols-1 md:grid-cols-2 gap-6\"><div class=\"flex items-start space-x-3\"><div class=\"h-8 w-8 bg-primary/10 rounded-lg flex items-center justify-center\"><svg class=\"h-5 w-5 text-primary\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13 10V3L4 14h7v7l9-11h-7z\"></path></svg></div><div><h4 class=\"font-medium text-card-foreground\">Typst Powered</h4><p class=\"text-sm text-muted-foreground\">Professional typesetting with perfect formatting</p></div></div><div class=\"flex items-start space-x-3\"><div class=\"h-8 w-8 bg-accent rounded-lg flex items-center justify-center\"><svg class=\"h-5 w-5 text-accent-foreground\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z\"></path></svg></div><div><h4 class=\"font-medium text-card-foreground\">Easy to Use</h4><p class=\"text-sm text-muted-foreground\">Simple interface, professional results</p></div></div></div></div><!-- CV Showcase Section --><div class=\"bg-card p-6 rounded-lg border border-border transition-colors\"><h3 class=\"text-xl font-semibold text-card-foreground mb-4\">CV Template Showcase</h3><p class=\"text-muted-foreground mb-6\">See examples of professional CVs generated with our Typst-powered templates</p><div class=\"grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4\"><div class=\"group cursor-pointer\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -204,7 +204,7 @@ func Layout003() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div class=\"h-full w-full bg-gradient-to-br from-secondary/10 to-primary/10 p-4 flex flex-col justify-between\"><div class=\"space-y-1\"><div class=\"h-1 bg-secondary/30 rounded w-5/6\"></div><div class=\"h-1 bg-muted/50 rounded w-2/5\"></div></div><div class=\"space-y-2\"><div class=\"h-1 bg-foreground/20 rounded w-full\"></div><div class=\"h-1 bg-foreground/20 rounded w-3/4\"></div><div class=\"h-1 bg-foreground/20 rounded w-4/5\"></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div class=\"h-full w-full bg-gradient-to-br from-primary/10 to-accent/10 p-4 flex flex-col justify-between\"><div class=\"space-y-1\"><div class=\"h-1 bg-primary/30 rounded w-3/4\"></div><div class=\"h-1 bg-muted/50 rounded w-1/2\"></div></div><div class=\"space-y-2\"><div class=\"h-1 bg-foreground/20 rounded w-full\"></div><div class=\"h-1 bg-foreground/20 rounded w-4/5\"></div><div class=\"h-1 bg-foreground/20 rounded w-3/5\"></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -217,7 +217,7 @@ func Layout003() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<p class=\"text-xs text-muted-foreground mt-2 text-center\">Creative Flow</p></div><div class=\"group cursor-pointer\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<p class=\"text-xs text-muted-foreground mt-2 text-center\">Vantage Modern</p></div><div class=\"group cursor-pointer\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -233,7 +233,7 @@ func Layout003() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<div class=\"h-full w-full bg-gradient-to-br from-muted/20 to-accent/10 p-4 flex flex-col justify-between\"><div class=\"space-y-1\"><div class=\"h-1 bg-foreground/30 rounded w-4/5\"></div><div class=\"h-1 bg-muted/50 rounded w-3/5\"></div></div><div class=\"space-y-2\"><div class=\"h-1 bg-foreground/20 rounded w-full\"></div><div class=\"h-1 bg-foreground/20 rounded w-4/6\"></div><div class=\"h-1 bg-foreground/20 rounded w-3/4\"></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<div class=\"h-full w-full bg-gradient-to-br from-secondary/10 to-primary/10 p-4 flex flex-col justify-between\"><div class=\"space-y-1\"><div class=\"h-1 bg-secondary/30 rounded w-2/3\"></div><div class=\"h-1 bg-muted/50 rounded w-1/3\"></div></div><div class=\"space-y-3\"><div class=\"h-1 bg-foreground/20 rounded w-full\"></div><div class=\"h-1 bg-foreground/20 rounded w-5/6\"></div><div class=\"h-1 bg-foreground/20 rounded w-2/3\"></div><div class=\"h-1 bg-foreground/20 rounded w-3/4\"></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -246,7 +246,239 @@ func Layout003() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<p class=\"text-xs text-muted-foreground mt-2 text-center\">Academic Elite</p></div></div></div></div></main></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<p class=\"text-xs text-muted-foreground mt-2 text-center\">Basic Resume</p></div><div class=\"group cursor-pointer\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var9 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+			if !templ_7745c5c3_IsBuffer {
+				defer func() {
+					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err == nil {
+						templ_7745c5c3_Err = templ_7745c5c3_BufErr
+					}
+				}()
+			}
+			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<div class=\"h-full w-full bg-gradient-to-br from-accent/10 to-secondary/10 p-4 flex flex-col justify-between\"><div class=\"space-y-1 text-center\"><div class=\"h-1 bg-accent/30 rounded w-2/3 mx-auto\"></div><div class=\"h-1 bg-muted/50 rounded w-1/3 mx-auto\"></div></div><div class=\"space-y-2\"><div class=\"h-1 bg-foreground/20 rounded w-full\"></div><div class=\"h-1 bg-foreground/20 rounded w-5/6\"></div><div class=\"h-1 bg-foreground/20 rounded w-2/3\"></div></div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			return nil
+		})
+		templ_7745c5c3_Err = aspectratio.AspectRatio(aspectratio.Props{
+			Ratio: aspectratio.RatioPortrait,
+			Class: "rounded-lg overflow-hidden border border-border group-hover:shadow-lg transition-shadow",
+		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<p class=\"text-xs text-muted-foreground mt-2 text-center\">Metronic CV</p></div><div class=\"group cursor-pointer\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var10 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+			if !templ_7745c5c3_IsBuffer {
+				defer func() {
+					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err == nil {
+						templ_7745c5c3_Err = templ_7745c5c3_BufErr
+					}
+				}()
+			}
+			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<div class=\"h-full w-full bg-gradient-to-br from-primary/10 to-secondary/10 p-4 flex\"><div class=\"w-1/4 pr-2 border-r border-border/20\"><div class=\"space-y-1\"><div class=\"h-1 bg-primary/30 rounded w-full\"></div><div class=\"h-1 bg-muted/30 rounded w-3/4\"></div></div></div><div class=\"flex-1 pl-2\"><div class=\"space-y-2\"><div class=\"h-1 bg-foreground/20 rounded w-full\"></div><div class=\"h-1 bg-foreground/20 rounded w-4/5\"></div><div class=\"h-1 bg-foreground/20 rounded w-3/5\"></div></div></div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			return nil
+		})
+		templ_7745c5c3_Err = aspectratio.AspectRatio(aspectratio.Props{
+			Ratio: aspectratio.RatioPortrait,
+			Class: "rounded-lg overflow-hidden border border-border group-hover:shadow-lg transition-shadow",
+		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<p class=\"text-xs text-muted-foreground mt-2 text-center\">SWE CV</p></div><div class=\"group cursor-pointer\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var11 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+			if !templ_7745c5c3_IsBuffer {
+				defer func() {
+					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err == nil {
+						templ_7745c5c3_Err = templ_7745c5c3_BufErr
+					}
+				}()
+			}
+			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<div class=\"h-full w-full bg-gradient-to-br from-secondary/10 to-accent/10 p-4 flex flex-col justify-between\"><div class=\"space-y-1\"><div class=\"h-1 bg-secondary/30 rounded w-5/6\"></div><div class=\"h-1 bg-muted/50 rounded w-2/5\"></div></div><div class=\"space-y-2\"><div class=\"h-1 bg-foreground/20 rounded w-full\"></div><div class=\"h-1 bg-foreground/20 rounded w-3/4\"></div><div class=\"h-1 bg-foreground/20 rounded w-4/5\"></div><div class=\"h-1 bg-foreground/20 rounded w-2/3\"></div></div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			return nil
+		})
+		templ_7745c5c3_Err = aspectratio.AspectRatio(aspectratio.Props{
+			Ratio: aspectratio.RatioPortrait,
+			Class: "rounded-lg overflow-hidden border border-border group-hover:shadow-lg transition-shadow",
+		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var11), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<p class=\"text-xs text-muted-foreground mt-2 text-center\">Imprecv</p></div></div></div><!-- Detailed Template Sections --><div class=\"space-y-8\"><!-- Vantage CV Section --><div class=\"bg-card p-6 rounded-lg border border-border\"><div class=\"flex items-center justify-between mb-4\"><h3 class=\"text-xl font-semibold text-card-foreground\">Vantage CV Template</h3><span class=\"text-xs bg-primary/10 text-primary px-2 py-1 rounded\">Most Popular</span></div><div class=\"grid grid-cols-1 lg:grid-cols-3 gap-6\"><div class=\"lg:col-span-1\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var12 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+			if !templ_7745c5c3_IsBuffer {
+				defer func() {
+					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err == nil {
+						templ_7745c5c3_Err = templ_7745c5c3_BufErr
+					}
+				}()
+			}
+			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div class=\"h-full w-full bg-gradient-to-br from-primary/10 to-accent/10 p-4 flex flex-col\"><div class=\"mb-4\"><div class=\"h-2 bg-primary/40 rounded w-3/4 mb-1\"></div><div class=\"h-1 bg-muted-foreground/40 rounded w-1/2\"></div></div><div class=\"space-y-2 flex-1\"><div class=\"h-1 bg-foreground/30 rounded w-full\"></div><div class=\"h-1 bg-foreground/30 rounded w-4/5\"></div><div class=\"h-1 bg-foreground/30 rounded w-3/5\"></div><div class=\"mt-3 h-1 bg-primary/30 rounded w-2/3\"></div><div class=\"h-1 bg-foreground/20 rounded w-5/6\"></div><div class=\"h-1 bg-foreground/20 rounded w-3/4\"></div></div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			return nil
+		})
+		templ_7745c5c3_Err = aspectratio.AspectRatio(aspectratio.Props{
+			Ratio: aspectratio.RatioPortrait,
+			Class: "rounded-lg overflow-hidden border border-border",
+		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var12), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "</div><div class=\"lg:col-span-2 space-y-4\"><p class=\"text-muted-foreground\">Clean and modern design perfect for technology professionals. Features a minimalist layout with clear sections for experience, skills, and education.</p><ul class=\"space-y-2 text-sm text-muted-foreground\"><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-primary rounded-full mr-2\"></span>Professional typography</li><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-primary rounded-full mr-2\"></span>Skills section with progress bars</li><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-primary rounded-full mr-2\"></span>Clean timeline layout</li></ul><button class=\"bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors\">Use This Template</button></div></div></div><!-- Basic Resume Section --><div class=\"bg-card p-6 rounded-lg border border-border\"><div class=\"flex items-center justify-between mb-4\"><h3 class=\"text-xl font-semibold text-card-foreground\">Basic Resume Template</h3><span class=\"text-xs bg-secondary/10 text-secondary px-2 py-1 rounded\">Simple</span></div><div class=\"grid grid-cols-1 lg:grid-cols-3 gap-6\"><div class=\"lg:col-span-1\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var13 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+			if !templ_7745c5c3_IsBuffer {
+				defer func() {
+					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err == nil {
+						templ_7745c5c3_Err = templ_7745c5c3_BufErr
+					}
+				}()
+			}
+			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<div class=\"h-full w-full bg-gradient-to-br from-secondary/10 to-muted/10 p-4 flex flex-col\"><div class=\"mb-4\"><div class=\"h-2 bg-secondary/40 rounded w-2/3 mb-1\"></div><div class=\"h-1 bg-muted-foreground/40 rounded w-2/5\"></div></div><div class=\"space-y-3 flex-1\"><div class=\"space-y-1\"><div class=\"h-1 bg-foreground/30 rounded w-full\"></div><div class=\"h-1 bg-foreground/30 rounded w-5/6\"></div><div class=\"h-1 bg-foreground/30 rounded w-3/4\"></div></div><div class=\"space-y-1\"><div class=\"h-1 bg-foreground/30 rounded w-4/5\"></div><div class=\"h-1 bg-foreground/30 rounded w-3/5\"></div></div></div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			return nil
+		})
+		templ_7745c5c3_Err = aspectratio.AspectRatio(aspectratio.Props{
+			Ratio: aspectratio.RatioPortrait,
+			Class: "rounded-lg overflow-hidden border border-border",
+		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var13), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</div><div class=\"lg:col-span-2 space-y-4\"><p class=\"text-muted-foreground\">A straightforward, no-frills resume template that focuses on content over design. Perfect for traditional industries and entry-level positions.</p><ul class=\"space-y-2 text-sm text-muted-foreground\"><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-secondary rounded-full mr-2\"></span>Clean, readable layout</li><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-secondary rounded-full mr-2\"></span>Traditional formatting</li><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-secondary rounded-full mr-2\"></span>ATS-friendly design</li></ul><button class=\"bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/90 transition-colors\">Use This Template</button></div></div></div><!-- Metronic CV Section --><div class=\"bg-card p-6 rounded-lg border border-border\"><div class=\"flex items-center justify-between mb-4\"><h3 class=\"text-xl font-semibold text-card-foreground\">Metronic CV Template</h3><span class=\"text-xs bg-accent/10 text-accent px-2 py-1 rounded\">Premium</span></div><div class=\"grid grid-cols-1 lg:grid-cols-3 gap-6\"><div class=\"lg:col-span-1\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var14 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+			if !templ_7745c5c3_IsBuffer {
+				defer func() {
+					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err == nil {
+						templ_7745c5c3_Err = templ_7745c5c3_BufErr
+					}
+				}()
+			}
+			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<div class=\"h-full w-full bg-gradient-to-br from-accent/10 to-primary/10 p-4 flex flex-col\"><div class=\"mb-4 text-center\"><div class=\"h-2 bg-accent/40 rounded w-2/3 mx-auto mb-1\"></div><div class=\"h-1 bg-muted-foreground/40 rounded w-1/3 mx-auto\"></div></div><div class=\"space-y-3 flex-1\"><div class=\"space-y-1\"><div class=\"h-1 bg-foreground/30 rounded w-full\"></div><div class=\"h-1 bg-foreground/30 rounded w-5/6\"></div></div><div class=\"bg-accent/5 p-2 rounded\"><div class=\"h-1 bg-accent/30 rounded w-full mb-1\"></div><div class=\"h-1 bg-foreground/20 rounded w-3/4\"></div></div></div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			return nil
+		})
+		templ_7745c5c3_Err = aspectratio.AspectRatio(aspectratio.Props{
+			Ratio: aspectratio.RatioPortrait,
+			Class: "rounded-lg overflow-hidden border border-border",
+		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var14), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</div><div class=\"lg:col-span-2 space-y-4\"><p class=\"text-muted-foreground\">Professional and sophisticated design inspired by modern business aesthetics. Ideal for executives, managers, and business professionals.</p><ul class=\"space-y-2 text-sm text-muted-foreground\"><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-accent rounded-full mr-2\"></span>Executive-level design</li><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-accent rounded-full mr-2\"></span>Elegant color scheme</li><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-accent rounded-full mr-2\"></span>Professional typography</li></ul><button class=\"bg-accent text-accent-foreground px-4 py-2 rounded-lg hover:bg-accent/90 transition-colors\">Use This Template</button></div></div></div><!-- SWE CV Section --><div class=\"bg-card p-6 rounded-lg border border-border\"><div class=\"flex items-center justify-between mb-4\"><h3 class=\"text-xl font-semibold text-card-foreground\">Software Engineering CV</h3><span class=\"text-xs bg-primary/10 text-primary px-2 py-1 rounded\">Tech Focus</span></div><div class=\"grid grid-cols-1 lg:grid-cols-3 gap-6\"><div class=\"lg:col-span-1\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var15 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+			if !templ_7745c5c3_IsBuffer {
+				defer func() {
+					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err == nil {
+						templ_7745c5c3_Err = templ_7745c5c3_BufErr
+					}
+				}()
+			}
+			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<div class=\"h-full w-full bg-gradient-to-br from-primary/10 to-secondary/10 p-4 flex\"><div class=\"w-1/3 pr-2 border-r border-border/30\"><div class=\"space-y-2\"><div class=\"h-1 bg-primary/30 rounded w-full\"></div><div class=\"h-1 bg-muted/30 rounded w-3/4\"></div><div class=\"h-1 bg-muted/30 rounded w-2/3\"></div></div></div><div class=\"flex-1 pl-2\"><div class=\"space-y-2\"><div class=\"h-1 bg-primary/30 rounded w-4/5\"></div><div class=\"h-1 bg-foreground/20 rounded w-full\"></div><div class=\"h-1 bg-foreground/20 rounded w-5/6\"></div><div class=\"h-1 bg-foreground/20 rounded w-3/5\"></div><div class=\"mt-2 h-1 bg-secondary/30 rounded w-3/4\"></div><div class=\"h-1 bg-foreground/20 rounded w-4/5\"></div></div></div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			return nil
+		})
+		templ_7745c5c3_Err = aspectratio.AspectRatio(aspectratio.Props{
+			Ratio: aspectratio.RatioPortrait,
+			Class: "rounded-lg overflow-hidden border border-border",
+		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var15), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "</div><div class=\"lg:col-span-2 space-y-4\"><p class=\"text-muted-foreground\">Specially designed for software engineers and developers. Emphasizes technical skills, projects, and programming experience.</p><ul class=\"space-y-2 text-sm text-muted-foreground\"><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-primary rounded-full mr-2\"></span>Technical skills highlighting</li><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-primary rounded-full mr-2\"></span>Project showcase section</li><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-primary rounded-full mr-2\"></span>Code-friendly formatting</li></ul><button class=\"bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors\">Use This Template</button></div></div></div><!-- Imprecv Section --><div class=\"bg-card p-6 rounded-lg border border-border\"><div class=\"flex items-center justify-between mb-4\"><h3 class=\"text-xl font-semibold text-card-foreground\">Impressive CV Template</h3><span class=\"text-xs bg-secondary/10 text-secondary px-2 py-1 rounded\">Eye-Catching</span></div><div class=\"grid grid-cols-1 lg:grid-cols-3 gap-6\"><div class=\"lg:col-span-1\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var16 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+			if !templ_7745c5c3_IsBuffer {
+				defer func() {
+					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err == nil {
+						templ_7745c5c3_Err = templ_7745c5c3_BufErr
+					}
+				}()
+			}
+			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "<div class=\"h-full w-full bg-gradient-to-br from-secondary/10 to-accent/10 p-4 flex flex-col\"><div class=\"mb-4\"><div class=\"h-2 bg-secondary/40 rounded w-5/6 mb-1\"></div><div class=\"h-1 bg-muted-foreground/40 rounded w-2/5\"></div></div><div class=\"space-y-3 flex-1\"><div class=\"bg-secondary/5 p-2 rounded\"><div class=\"h-1 bg-secondary/30 rounded w-full mb-1\"></div><div class=\"h-1 bg-foreground/20 rounded w-4/5\"></div></div><div class=\"space-y-1\"><div class=\"h-1 bg-foreground/30 rounded w-full\"></div><div class=\"h-1 bg-foreground/30 rounded w-3/4\"></div><div class=\"h-1 bg-foreground/30 rounded w-4/5\"></div></div><div class=\"bg-accent/5 p-2 rounded\"><div class=\"h-1 bg-accent/30 rounded w-2/3\"></div></div></div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			return nil
+		})
+		templ_7745c5c3_Err = aspectratio.AspectRatio(aspectratio.Props{
+			Ratio: aspectratio.RatioPortrait,
+			Class: "rounded-lg overflow-hidden border border-border",
+		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var16), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "</div><div class=\"lg:col-span-2 space-y-4\"><p class=\"text-muted-foreground\">Bold and impressive design that makes a strong first impression. Perfect for creative fields and competitive industries where standing out matters.</p><ul class=\"space-y-2 text-sm text-muted-foreground\"><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-secondary rounded-full mr-2\"></span>Bold visual hierarchy</li><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-secondary rounded-full mr-2\"></span>Creative section layouts</li><li class=\"flex items-center\"><span class=\"w-2 h-2 bg-secondary rounded-full mr-2\"></span>Attention-grabbing design</li></ul><button class=\"bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/90 transition-colors\">Use This Template</button></div></div></div></div></div></main></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -270,12 +502,12 @@ func Layout003SidebarContent() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var9 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var9 == nil {
-			templ_7745c5c3_Var9 = templ.NopComponent
+		templ_7745c5c3_Var17 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var17 == nil {
+			templ_7745c5c3_Var17 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<div class=\"p-4 space-y-4\"><!-- Navigation --><nav class=\"space-y-2\"><h3 class=\"text-sm font-semibold text-sidebar-foreground mb-3\">Templates</h3><a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-primary-foreground bg-sidebar-primary rounded-lg\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\"></path></svg> All Templates</a> <a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2h8z\"></path></svg> Vantage CV</a> <a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h1a1 1 0 011 1v5m-4 0h4\"></path></svg> Corporate</a> <a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17v4a2 2 0 002 2h4M15 7l3 3\"></path></svg> Creative</a> <a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253\"></path></svg> Academic</a></nav><!-- Divider --><div class=\"border-t border-sidebar-border my-4\"></div><!-- Secondary Navigation --><nav class=\"space-y-2\"><h3 class=\"text-sm font-semibold text-sidebar-foreground mb-3\">Tools</h3><a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 4v16m8-8H4\"></path></svg> Create New</a> <a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\"></path></svg> My CVs</a> <a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z\"></path> <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M15 12a3 3 0 11-6 0 3 3 0 016 0z\"></path></svg> Settings</a></nav></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "<div class=\"p-4 space-y-4\"><!-- Navigation --><nav class=\"space-y-2\"><h3 class=\"text-sm font-semibold text-sidebar-foreground mb-3\">Templates</h3><a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-primary-foreground bg-sidebar-primary rounded-lg\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\"></path></svg> All Templates</a> <a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2h8z\"></path></svg> Vantage CV</a> <a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\"></path></svg> Basic Resume</a> <a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z\"></path></svg> Metronic CV</a> <a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4\"></path></svg> SWE CV</a> <a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2\"></path></svg> Imprecv</a></nav><!-- Divider --><div class=\"border-t border-sidebar-border my-4\"></div><!-- Secondary Navigation --><nav class=\"space-y-2\"><h3 class=\"text-sm font-semibold text-sidebar-foreground mb-3\">Tools</h3><a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 4v16m8-8H4\"></path></svg> Create New</a> <a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\"></path></svg> My CVs</a> <a href=\"#\" class=\"flex items-center px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors\"><svg class=\"mr-3 h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z\"></path> <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M15 12a3 3 0 11-6 0 3 3 0 016 0z\"></path></svg> Settings</a></nav></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -71,13 +71,28 @@ tasks:
             cleanup
 
     generate:
-        desc: Generate templ files once
-        cmd: templ generate
+        desc: Generate templ files and compile CSS
+        cmd: |
+            echo "🎨 Compiling CSS..."
+            tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css
+            echo "📝 Generating templ files..."
+            templ generate
 
     build:
         desc: Build the application
-        cmd: go build -o bin/main ./main.go
+        cmd: |
+            echo "🔧 Building mycv.quest..."
+            go build -o bin/main ./main.go
         deps: [generate]
+
+    assets:
+        desc: Compile all assets (CSS and templates)
+        cmd: |
+            echo "🎨 Compiling CSS with DaisyUI themes..."
+            tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css
+            echo "📝 Generating templ files..."
+            templ generate
+            echo "✅ Assets compiled successfully"
 
     clean:
         desc: Clean generated files and build artifacts
