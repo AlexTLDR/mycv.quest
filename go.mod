@@ -4,5 +4,7 @@ go 1.24.6
 
 require (
 	github.com/Oudwins/tailwind-merge-go v0.2.1
-	github.com/a-h/templ v0.3.924
+	github.com/a-h/templ v0.3.943
 )
+
+require gopkg.in/yaml.v2 v2.4.0 // indirect

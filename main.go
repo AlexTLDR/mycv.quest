@@ -1,54 +1,290 @@
 package main
 
 import (
-	"context"
+	"fmt"
 	"log"
-	"net/http"
-
-	"github.com/AlexTLDR/mycv.quest/components/layout"
+	"os"
+	"os/exec"
+	"text/template"
 )
 
+type ContactInfo struct {
+	Name     string
+	Title    string
+	Email    string
+	Website  string
+	GitHub   string
+	LinkedIn string
+	Location string
+}
+
+type Experience struct {
+	Position  string
+	Company   string
+	StartDate string
+	EndDate   string
+	Location  string
+	IsRemote  bool
+	Bullets   []string
+}
+
+type Education struct {
+	Degree      string
+	Institution string
+	StartYear   string
+	EndYear     string
+	Location    string
+}
+
+type TechnicalSkill struct {
+	Category string
+	Skills   []string
+}
+
+type Achievement struct {
+	Title       string
+	Description string
+}
+
+type CVData struct {
+	Contact         ContactInfo
+	Summary         string
+	Experiences     []Experience
+	Education       []Education
+	TechnicalSkills []TechnicalSkill
+	Achievements    []Achievement
+	Objective       string
+}
+
 func main() {
-	// Set up the root route
-	http.HandleFunc("/", homeHandler)
+	cvData := getSampleCVData()
 
-	// Serve static assets
-	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
+	if err := generateCV(cvData); err != nil {
+		log.Fatal(err)
+	}
 
-	log.Println("Server starting on port 3132...")
-	log.Println("Visit http://localhost:3132")
+	fmt.Println("CV generated successfully! Check output.pdf")
+}
 
-	if err := http.ListenAndServe(":3132", nil); err != nil {
-		log.Fatal("Server failed to start:", err)
+func getSampleCVData() CVData {
+	return CVData{
+		Contact: ContactInfo{
+			Name:     "John Doe",
+			Title:    "Software Engineer",
+			Email:    "johndoe@example.com",
+			Website:  "www.johndoe.com",
+			GitHub:   "@johndoe",
+			LinkedIn: "johndoe",
+			Location: "City, Country",
+		},
+		Summary:   "Software engineer with 7+ years of experience and a strong foundation in computer science, skilled in developing software for innovative industries. Proficient in JavaScript/TypeScript, Python, and C/C++, with a solid understanding of system architecture and design principles.",
+		Objective: "Seeking to advance my skills and build a strong career with a company that values innovation and creativity.",
+		Experiences: []Experience{
+			{
+				Position:  "Lead Software Developer",
+				Company:   "Quantum Innovations - QuantumLeap",
+				StartDate: "2023 Mar",
+				EndDate:   "2024 Jul",
+				Location:  "",
+				IsRemote:  true,
+				Bullets: []string{
+					"Spearheaded the development of a cutting-edge quantum computing simulator, optimizing algorithms for performance.",
+					"Collaborated with a team to create intuitive user interfaces that simplified complex scientific data for end users.",
+				},
+			},
+			{
+				Position:  "Backend Developer",
+				Company:   "CloudSync Solutions - SyncManager",
+				StartDate: "2024 Aug",
+				EndDate:   "present",
+				Location:  "",
+				IsRemote:  true,
+				Bullets: []string{
+					"Built scalable backend services for SyncManager, ensuring high availability and performance for cloud synchronization.",
+					"Designed and implemented RESTful APIs to facilitate data exchange between clients and servers.",
+				},
+			},
+			{
+				Position:  "DevOps Engineer",
+				Company:   "AutoTech Dynamics - AutoPilot",
+				StartDate: "2022 Feb",
+				EndDate:   "2023 Dec",
+				Location:  "Denver, USA",
+				IsRemote:  false,
+				Bullets: []string{
+					"Streamlined CI/CD pipelines for the AutoPilot system, enhancing deployment frequency and reliability.",
+					"Monitored system performance and implemented improvements for optimized infrastructure.",
+				},
+			},
+			{
+				Position:  "Game Developer",
+				Company:   "PixelForge Studios - Realm of Adventure",
+				StartDate: "2021 Jan",
+				EndDate:   "2022 Dec",
+				Location:  "Los Angeles, USA",
+				IsRemote:  false,
+				Bullets: []string{
+					"Developed engaging gameplay mechanics and interactive environments using Unity and C\\#.",
+					"Collaborated with artists to ensure visual consistency and high-quality game experiences.",
+				},
+			},
+			{
+				Position:  "Data Engineer",
+				Company:   "Insight Analytics - DataVision",
+				StartDate: "2020 Mar",
+				EndDate:   "2021 Feb",
+				Location:  "Chicago, USA",
+				IsRemote:  false,
+				Bullets: []string{
+					"Engineered data pipelines to aggregate and process large datasets for analytics using Python and Apache Spark.",
+					"Developed interactive dashboards for real-time data visualization and business intelligence.",
+				},
+			},
+			{
+				Position:  "Quality Assurance Intern",
+				Company:   "CodeFix Labs - TestSuite Pro",
+				StartDate: "2019 Jan",
+				EndDate:   "2019 Dec",
+				Location:  "Austin, USA",
+				IsRemote:  false,
+				Bullets: []string{
+					"Assisted in testing software applications for functionality and usability, reporting bugs and feedback.",
+					"Gained experience in automated testing frameworks to improve product quality.",
+				},
+			},
+		},
+		Education: []Education{
+			{
+				Degree:      "B.Sc. in Computer Science",
+				Institution: "Example University",
+				StartYear:   "2015",
+				EndYear:     "2019",
+				Location:    "City, Country",
+			},
+			{
+				Degree:      "Diploma in IT Specialist",
+				Institution: "Technical College",
+				StartYear:   "2012",
+				EndYear:     "2015",
+				Location:    "City, Country",
+			},
+		},
+		TechnicalSkills: []TechnicalSkill{
+			{
+				Category: "Languages",
+				Skills:   []string{"Python", "Java", "React", "Node.js", "Express", "MongoDB", "AWS", "Material UI", "Tailwind CSS"},
+			},
+			{
+				Category: "Methodology/Approach",
+				Skills:   []string{"Lean", "Kanban", "Design Thinking", "Test Driven Development", "Pair Programming"},
+			},
+			{
+				Category: "Tools",
+				Skills:   []string{"GitHub", "IntelliJ IDEA", "Asana", "Slack", "Adobe XD", "Postman"},
+			},
+		},
+		Achievements: []Achievement{
+			{
+				Title:       "Best Project Award",
+				Description: "Developed an innovative solution for community service management and received recognition from the university.",
+			},
+		},
 	}
 }
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	// Set content type to HTML
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+func generateCV(data CVData) error {
+	typstTemplate := `#import "@preview/vantage-cv:1.0.0": vantage-cv
 
-	// Write the HTML document structure
-	w.Write([]byte(`<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mycv.quest - Professional CV Generator</title>
-    <link rel="stylesheet" href="/assets/css/output.css">
-</head>
-<body class="antialiased">
-`))
+#show: vantage-cv.with(
+  name: "{{.Contact.Name}}",
+  position: "{{.Contact.Title}}",
+  links: (
+    (name: "email", link: "{{.Contact.Email}}", icon: "mail"),
+    (name: "website", link: "{{.Contact.Website}}", icon: "globe"),
+    (name: "github", link: "{{.Contact.GitHub}}", icon: "github"),
+    (name: "linkedin", link: "{{.Contact.LinkedIn}}", icon: "linkedin"),
+    (name: "location", link: "{{.Contact.Location}}", icon: "map-pin"),
+  ),
+  tagline: "{{.Summary}}",
+  [
+    = Objective
+    {{.Objective}}
 
-	// Render the Layout003 component
-	ctx := context.Background()
-	if err := layout.Layout003().Render(ctx, w); err != nil {
-		log.Printf("Error rendering template: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
+    = Education
+    {{range .Education}}
+    == {{.Degree}}
+    *{{.Institution}}* \
+    {{.StartYear}} -- {{.EndYear}} | {{.Location}}
+
+    {{end}}
+
+    = Technical Expertise
+    {{range .TechnicalSkills}}
+    == {{.Category}}
+    {{range .Skills}}{{.}} • {{end}}
+
+    {{end}}
+
+    = Achievements/Certifications
+    {{range .Achievements}}
+    == {{.Title}}
+    {{.Description}}
+
+    {{end}}
+  ]
+)
+
+= Experience
+
+{{range .Experiences}}
+== {{.Position}}
+*{{.Company}}* \
+{{.StartDate}} -- {{.EndDate}} {{if .Location}}| {{.Location}}{{end}}{{if .IsRemote}} | Remote{{end}}
+
+{{range .Bullets}}
+- {{.}}
+{{end}}
+
+{{end}}
+`
+
+	tmpl, err := template.New("cv").Parse(typstTemplate)
+	if err != nil {
+		return fmt.Errorf("error parsing template: %v", err)
 	}
 
-	// Close the HTML document
-	w.Write([]byte(`
-</body>
-</html>`))
+	typstFile := "cv.typ"
+	file, err := os.Create(typstFile)
+	if err != nil {
+		return fmt.Errorf("error creating typst file: %v", err)
+	}
+	defer file.Close()
+
+	if err := tmpl.Execute(file, data); err != nil {
+		return fmt.Errorf("error executing template: %v", err)
+	}
+
+	if err := compileToPDF(typstFile); err != nil {
+		return fmt.Errorf("error compiling to PDF: %v", err)
+	}
+
+	return nil
+}
+
+func compileToPDF(typstFile string) error {
+	outputFile := "output.pdf"
+
+	cmd := exec.Command("typst", "compile", typstFile, outputFile)
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("typst compilation failed: %v\nOutput: %s", err, output)
+	}
+
+	if _, err := os.Stat(outputFile); os.IsNotExist(err) {
+		return fmt.Errorf("PDF file was not created")
+	}
+
+	fmt.Printf("Successfully compiled %s to %s\n", typstFile, outputFile)
+	return nil
 }
