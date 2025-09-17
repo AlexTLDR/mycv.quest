@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -10,9 +11,10 @@ import (
 )
 
 type Template struct {
-	Name      string
-	Dir       string
-	InputFile string
+	Name       string
+	Dir        string
+	InputFile  string
+	NeedsPhoto bool
 }
 
 type CVGenerator struct {
@@ -23,14 +25,22 @@ type CVGenerator struct {
 func NewCVGenerator() *CVGenerator {
 	templates := map[string]Template{
 		"vantage": {
-			Name:      "Vantage",
-			Dir:       "templates/vantage",
-			InputFile: "example.typ",
+			Name:       "Vantage",
+			Dir:        "templates/vantage",
+			InputFile:  "example.typ",
+			NeedsPhoto: false,
 		},
 		"basic": {
-			Name:      "Basic Resume",
-			Dir:       "templates/basic/template",
-			InputFile: "main.typ",
+			Name:       "Basic Resume",
+			Dir:        "templates/basic/template",
+			InputFile:  "main.typ",
+			NeedsPhoto: false,
+		},
+		"modern": {
+			Name:       "Modern Resume",
+			Dir:        "templates/modern/template",
+			InputFile:  "main.typ",
+			NeedsPhoto: true,
 		},
 	}
 
@@ -57,6 +67,12 @@ func (cv *CVGenerator) Generate(templateKey string) error {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
+	if template.NeedsPhoto {
+		if err := cv.copyPhoto(template.Dir); err != nil {
+			return fmt.Errorf("failed to copy photo for %s template: %w", template.Name, err)
+		}
+	}
+
 	outputFile := filepath.Join(cv.OutputDir, fmt.Sprintf("cv-%s.pdf", templateKey))
 	absOutputFile, _ := filepath.Abs(outputFile)
 	cmd := exec.Command("typst", "compile", template.InputFile, absOutputFile)
@@ -75,8 +91,42 @@ func (cv *CVGenerator) ensureOutputDir() error {
 	return os.MkdirAll(cv.OutputDir, 0755)
 }
 
+func (cv *CVGenerator) copyPhoto(templateDir string) error {
+	photoFiles, err := filepath.Glob("cv-photos/*")
+	if err != nil {
+		return fmt.Errorf("failed to find photos: %w", err)
+	}
+
+	if len(photoFiles) == 0 {
+		return fmt.Errorf("no photos found in cv-photos/ directory")
+	}
+
+	sourcePhoto := photoFiles[0]
+	destPhoto := filepath.Join(templateDir, "avatar.png")
+
+	source, err := os.Open(sourcePhoto)
+	if err != nil {
+		return fmt.Errorf("failed to open source photo: %w", err)
+	}
+	defer source.Close()
+
+	dest, err := os.Create(destPhoto)
+	if err != nil {
+		return fmt.Errorf("failed to create destination photo: %w", err)
+	}
+	defer dest.Close()
+
+	_, err = io.Copy(dest, source)
+	if err != nil {
+		return fmt.Errorf("failed to copy photo: %w", err)
+	}
+
+	fmt.Printf("Copied photo %s to %s\n", sourcePhoto, destPhoto)
+	return nil
+}
+
 func main() {
-	var templateFlag = flag.String("template", "vantage", "Template to use (vantage, basic)")
+	var templateFlag = flag.String("template", "vantage", "Template to use (vantage, basic, modern)")
 	var listFlag = flag.Bool("list", false, "List available templates")
 	flag.Parse()
 
