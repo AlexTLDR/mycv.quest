@@ -1,0 +1,30 @@
+version: "2"
+
+linters:
+    default: all
+    disable:
+        # Disable overly strict linters for this project
+        - wrapcheck # Too strict for small projects
+        - exhaustruct # Not needed for simple structs
+        - varnamelen # Short var names are fine in small scopes
+        - tagliatelle # Struct tag formatting not critical
+        - nlreturn # Newline rules too strict
+        - wsl # Whitespace rules too pedantic
+        - lll # Line length handled by gofumpt
+        - funlen # Function length not critical for this project
+        - cyclop # Cyclomatic complexity not critical
+        - gocognit # Cognitive complexity not critical
+        - maintidx # Maintainability index not critical
+        - gocyclo # Cyclomatic complexity duplicate
+        - err113 # Dynamic errors are fine for CLI tools
+        - forbidigo # Printf is fine for CLI output
+        - errcheck # Defer close errors are acceptable
+        - mnd # Magic numbers like file permissions are clear
+        - noinlineerr # Inline error handling is idiomatic Go
+        - wsl_v5 # Whitespace rules too pedantic
+        - revive # Package comments not needed for main
+        - perfsprint # Minor performance optimizations not critical
+
+formatters:
+    enable:
+        - gofumpt

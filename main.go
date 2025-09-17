@@ -8,6 +8,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
+	"strings"
 )
 
 type Template struct {
@@ -20,6 +22,49 @@ type Template struct {
 type CVGenerator struct {
 	Templates map[string]Template
 	OutputDir string
+}
+
+func validatePath(path, expectedPrefix string) error {
+	cleanPath := filepath.Clean(path)
+
+	if strings.Contains(cleanPath, "..") {
+		return fmt.Errorf("path contains directory traversal: %s", path)
+	}
+
+	if expectedPrefix != "" {
+		absPath, err := filepath.Abs(cleanPath)
+		if err != nil {
+			return fmt.Errorf("failed to get absolute path: %w", err)
+		}
+
+		absPrefix, err := filepath.Abs(expectedPrefix)
+		if err != nil {
+			return fmt.Errorf("failed to get absolute prefix: %w", err)
+		}
+
+		if !strings.HasPrefix(absPath, absPrefix) {
+			return fmt.Errorf("path %s is outside expected directory %s", path, expectedPrefix)
+		}
+	}
+
+	return nil
+}
+
+func validateTemplateArgs(template Template, outputFile string) error {
+	allowedInputFiles := []string{"example.typ", "main.typ"}
+	if !slices.Contains(allowedInputFiles, template.InputFile) {
+		return fmt.Errorf("invalid input file: %s", template.InputFile)
+	}
+
+	if !strings.HasSuffix(outputFile, ".pdf") {
+		return fmt.Errorf("output file must have .pdf extension")
+	}
+
+	if err := validatePath(outputFile, ""); err != nil {
+		return fmt.Errorf("invalid output file path: %w", err)
+	}
+
+	return nil
 }
 
 func NewCVGenerator() *CVGenerator {
@@ -75,6 +120,11 @@ func (cv *CVGenerator) Generate(templateKey string) error {
 
 	outputFile := filepath.Join(cv.OutputDir, fmt.Sprintf("cv-%s.pdf", templateKey))
 	absOutputFile, _ := filepath.Abs(outputFile)
+
+	if err := validateTemplateArgs(template, absOutputFile); err != nil {
+		return fmt.Errorf("invalid template arguments: %w", err)
+	}
+
 	cmd := exec.Command("typst", "compile", template.InputFile, absOutputFile)
 	cmd.Dir = template.Dir
 
@@ -88,7 +138,7 @@ func (cv *CVGenerator) Generate(templateKey string) error {
 }
 
 func (cv *CVGenerator) ensureOutputDir() error {
-	return os.MkdirAll(cv.OutputDir, 0755)
+	return os.MkdirAll(cv.OutputDir, 0o750)
 }
 
 func (cv *CVGenerator) copyPhoto(templateDir string) error {
@@ -102,7 +152,16 @@ func (cv *CVGenerator) copyPhoto(templateDir string) error {
 	}
 
 	sourcePhoto := photoFiles[0]
+
+	if err := validatePath(sourcePhoto, "cv-photos"); err != nil {
+		return fmt.Errorf("invalid source photo path: %w", err)
+	}
+
 	destPhoto := filepath.Join(templateDir, "avatar.png")
+
+	if err := validatePath(templateDir, "templates"); err != nil {
+		return fmt.Errorf("invalid template directory: %w", err)
+	}
 
 	source, err := os.Open(sourcePhoto)
 	if err != nil {
@@ -126,8 +185,8 @@ func (cv *CVGenerator) copyPhoto(templateDir string) error {
 }
 
 func main() {
-	var templateFlag = flag.String("template", "vantage", "Template to use (vantage, basic, modern)")
-	var listFlag = flag.Bool("list", false, "List available templates")
+	templateFlag := flag.String("template", "vantage", "Template to use (vantage, basic, modern)")
+	listFlag := flag.Bool("list", false, "List available templates")
 	flag.Parse()
 
 	generator := NewCVGenerator()
