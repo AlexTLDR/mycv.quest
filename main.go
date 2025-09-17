@@ -1,290 +1,202 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
-	"text/template"
+	"path/filepath"
+	"slices"
+	"strings"
 )
 
-type ContactInfo struct {
-	Name     string
-	Title    string
-	Email    string
-	Website  string
-	GitHub   string
-	LinkedIn string
-	Location string
+type Template struct {
+	Name       string
+	Dir        string
+	InputFile  string
+	NeedsPhoto bool
 }
 
-type Experience struct {
-	Position  string
-	Company   string
-	StartDate string
-	EndDate   string
-	Location  string
-	IsRemote  bool
-	Bullets   []string
+type CVGenerator struct {
+	Templates map[string]Template
+	OutputDir string
 }
 
-type Education struct {
-	Degree      string
-	Institution string
-	StartYear   string
-	EndYear     string
-	Location    string
-}
+func validatePath(path, expectedPrefix string) error {
+	cleanPath := filepath.Clean(path)
 
-type TechnicalSkill struct {
-	Category string
-	Skills   []string
-}
-
-type Achievement struct {
-	Title       string
-	Description string
-}
-
-type CVData struct {
-	Contact         ContactInfo
-	Summary         string
-	Experiences     []Experience
-	Education       []Education
-	TechnicalSkills []TechnicalSkill
-	Achievements    []Achievement
-	Objective       string
-}
-
-func main() {
-	cvData := getSampleCVData()
-
-	if err := generateCV(cvData); err != nil {
-		log.Fatal(err)
+	if strings.Contains(cleanPath, "..") {
+		return fmt.Errorf("path contains directory traversal: %s", path)
 	}
 
-	fmt.Println("CV generated successfully! Check output.pdf")
-}
+	if expectedPrefix != "" {
+		absPath, err := filepath.Abs(cleanPath)
+		if err != nil {
+			return fmt.Errorf("failed to get absolute path: %w", err)
+		}
 
-func getSampleCVData() CVData {
-	return CVData{
-		Contact: ContactInfo{
-			Name:     "John Doe",
-			Title:    "Software Engineer",
-			Email:    "johndoe@example.com",
-			Website:  "www.johndoe.com",
-			GitHub:   "@johndoe",
-			LinkedIn: "johndoe",
-			Location: "City, Country",
-		},
-		Summary:   "Software engineer with 7+ years of experience and a strong foundation in computer science, skilled in developing software for innovative industries. Proficient in JavaScript/TypeScript, Python, and C/C++, with a solid understanding of system architecture and design principles.",
-		Objective: "Seeking to advance my skills and build a strong career with a company that values innovation and creativity.",
-		Experiences: []Experience{
-			{
-				Position:  "Lead Software Developer",
-				Company:   "Quantum Innovations - QuantumLeap",
-				StartDate: "2023 Mar",
-				EndDate:   "2024 Jul",
-				Location:  "",
-				IsRemote:  true,
-				Bullets: []string{
-					"Spearheaded the development of a cutting-edge quantum computing simulator, optimizing algorithms for performance.",
-					"Collaborated with a team to create intuitive user interfaces that simplified complex scientific data for end users.",
-				},
-			},
-			{
-				Position:  "Backend Developer",
-				Company:   "CloudSync Solutions - SyncManager",
-				StartDate: "2024 Aug",
-				EndDate:   "present",
-				Location:  "",
-				IsRemote:  true,
-				Bullets: []string{
-					"Built scalable backend services for SyncManager, ensuring high availability and performance for cloud synchronization.",
-					"Designed and implemented RESTful APIs to facilitate data exchange between clients and servers.",
-				},
-			},
-			{
-				Position:  "DevOps Engineer",
-				Company:   "AutoTech Dynamics - AutoPilot",
-				StartDate: "2022 Feb",
-				EndDate:   "2023 Dec",
-				Location:  "Denver, USA",
-				IsRemote:  false,
-				Bullets: []string{
-					"Streamlined CI/CD pipelines for the AutoPilot system, enhancing deployment frequency and reliability.",
-					"Monitored system performance and implemented improvements for optimized infrastructure.",
-				},
-			},
-			{
-				Position:  "Game Developer",
-				Company:   "PixelForge Studios - Realm of Adventure",
-				StartDate: "2021 Jan",
-				EndDate:   "2022 Dec",
-				Location:  "Los Angeles, USA",
-				IsRemote:  false,
-				Bullets: []string{
-					"Developed engaging gameplay mechanics and interactive environments using Unity and C\\#.",
-					"Collaborated with artists to ensure visual consistency and high-quality game experiences.",
-				},
-			},
-			{
-				Position:  "Data Engineer",
-				Company:   "Insight Analytics - DataVision",
-				StartDate: "2020 Mar",
-				EndDate:   "2021 Feb",
-				Location:  "Chicago, USA",
-				IsRemote:  false,
-				Bullets: []string{
-					"Engineered data pipelines to aggregate and process large datasets for analytics using Python and Apache Spark.",
-					"Developed interactive dashboards for real-time data visualization and business intelligence.",
-				},
-			},
-			{
-				Position:  "Quality Assurance Intern",
-				Company:   "CodeFix Labs - TestSuite Pro",
-				StartDate: "2019 Jan",
-				EndDate:   "2019 Dec",
-				Location:  "Austin, USA",
-				IsRemote:  false,
-				Bullets: []string{
-					"Assisted in testing software applications for functionality and usability, reporting bugs and feedback.",
-					"Gained experience in automated testing frameworks to improve product quality.",
-				},
-			},
-		},
-		Education: []Education{
-			{
-				Degree:      "B.Sc. in Computer Science",
-				Institution: "Example University",
-				StartYear:   "2015",
-				EndYear:     "2019",
-				Location:    "City, Country",
-			},
-			{
-				Degree:      "Diploma in IT Specialist",
-				Institution: "Technical College",
-				StartYear:   "2012",
-				EndYear:     "2015",
-				Location:    "City, Country",
-			},
-		},
-		TechnicalSkills: []TechnicalSkill{
-			{
-				Category: "Languages",
-				Skills:   []string{"Python", "Java", "React", "Node.js", "Express", "MongoDB", "AWS", "Material UI", "Tailwind CSS"},
-			},
-			{
-				Category: "Methodology/Approach",
-				Skills:   []string{"Lean", "Kanban", "Design Thinking", "Test Driven Development", "Pair Programming"},
-			},
-			{
-				Category: "Tools",
-				Skills:   []string{"GitHub", "IntelliJ IDEA", "Asana", "Slack", "Adobe XD", "Postman"},
-			},
-		},
-		Achievements: []Achievement{
-			{
-				Title:       "Best Project Award",
-				Description: "Developed an innovative solution for community service management and received recognition from the university.",
-			},
-		},
-	}
-}
+		absPrefix, err := filepath.Abs(expectedPrefix)
+		if err != nil {
+			return fmt.Errorf("failed to get absolute prefix: %w", err)
+		}
 
-func generateCV(data CVData) error {
-	typstTemplate := `#import "@preview/vantage-cv:1.0.0": vantage-cv
-
-#show: vantage-cv.with(
-  name: "{{.Contact.Name}}",
-  position: "{{.Contact.Title}}",
-  links: (
-    (name: "email", link: "{{.Contact.Email}}", icon: "mail"),
-    (name: "website", link: "{{.Contact.Website}}", icon: "globe"),
-    (name: "github", link: "{{.Contact.GitHub}}", icon: "github"),
-    (name: "linkedin", link: "{{.Contact.LinkedIn}}", icon: "linkedin"),
-    (name: "location", link: "{{.Contact.Location}}", icon: "map-pin"),
-  ),
-  tagline: "{{.Summary}}",
-  [
-    = Objective
-    {{.Objective}}
-
-    = Education
-    {{range .Education}}
-    == {{.Degree}}
-    *{{.Institution}}* \
-    {{.StartYear}} -- {{.EndYear}} | {{.Location}}
-
-    {{end}}
-
-    = Technical Expertise
-    {{range .TechnicalSkills}}
-    == {{.Category}}
-    {{range .Skills}}{{.}} • {{end}}
-
-    {{end}}
-
-    = Achievements/Certifications
-    {{range .Achievements}}
-    == {{.Title}}
-    {{.Description}}
-
-    {{end}}
-  ]
-)
-
-= Experience
-
-{{range .Experiences}}
-== {{.Position}}
-*{{.Company}}* \
-{{.StartDate}} -- {{.EndDate}} {{if .Location}}| {{.Location}}{{end}}{{if .IsRemote}} | Remote{{end}}
-
-{{range .Bullets}}
-- {{.}}
-{{end}}
-
-{{end}}
-`
-
-	tmpl, err := template.New("cv").Parse(typstTemplate)
-	if err != nil {
-		return fmt.Errorf("error parsing template: %v", err)
-	}
-
-	typstFile := "cv.typ"
-	file, err := os.Create(typstFile)
-	if err != nil {
-		return fmt.Errorf("error creating typst file: %v", err)
-	}
-	defer file.Close()
-
-	if err := tmpl.Execute(file, data); err != nil {
-		return fmt.Errorf("error executing template: %v", err)
-	}
-
-	if err := compileToPDF(typstFile); err != nil {
-		return fmt.Errorf("error compiling to PDF: %v", err)
+		if !strings.HasPrefix(absPath, absPrefix) {
+			return fmt.Errorf("path %s is outside expected directory %s", path, expectedPrefix)
+		}
 	}
 
 	return nil
 }
 
-func compileToPDF(typstFile string) error {
-	outputFile := "output.pdf"
+func validateTemplateArgs(template Template, outputFile string) error {
+	allowedInputFiles := []string{"example.typ", "main.typ"}
+	if !slices.Contains(allowedInputFiles, template.InputFile) {
+		return fmt.Errorf("invalid input file: %s", template.InputFile)
+	}
 
-	cmd := exec.Command("typst", "compile", typstFile, outputFile)
+	if !strings.HasSuffix(outputFile, ".pdf") {
+		return fmt.Errorf("output file must have .pdf extension")
+	}
+
+	if err := validatePath(outputFile, ""); err != nil {
+		return fmt.Errorf("invalid output file path: %w", err)
+	}
+
+	return nil
+}
+
+func NewCVGenerator() *CVGenerator {
+	templates := map[string]Template{
+		"vantage": {
+			Name:       "Vantage",
+			Dir:        "templates/vantage",
+			InputFile:  "example.typ",
+			NeedsPhoto: false,
+		},
+		"basic": {
+			Name:       "Basic Resume",
+			Dir:        "templates/basic/template",
+			InputFile:  "main.typ",
+			NeedsPhoto: false,
+		},
+		"modern": {
+			Name:       "Modern Resume",
+			Dir:        "templates/modern/template",
+			InputFile:  "main.typ",
+			NeedsPhoto: true,
+		},
+	}
+
+	return &CVGenerator{
+		Templates: templates,
+		OutputDir: "output",
+	}
+}
+
+func (cv *CVGenerator) ListTemplates() {
+	fmt.Println("Available templates:")
+	for key, template := range cv.Templates {
+		fmt.Printf("  %s: %s\n", key, template.Name)
+	}
+}
+
+func (cv *CVGenerator) Generate(templateKey string) error {
+	template, exists := cv.Templates[templateKey]
+	if !exists {
+		return fmt.Errorf("template '%s' not found", templateKey)
+	}
+
+	if err := cv.ensureOutputDir(); err != nil {
+		return fmt.Errorf("failed to create output directory: %w", err)
+	}
+
+	if template.NeedsPhoto {
+		if err := cv.copyPhoto(template.Dir); err != nil {
+			return fmt.Errorf("failed to copy photo for %s template: %w", template.Name, err)
+		}
+	}
+
+	outputFile := filepath.Join(cv.OutputDir, fmt.Sprintf("cv-%s.pdf", templateKey))
+	absOutputFile, _ := filepath.Abs(outputFile)
+
+	if err := validateTemplateArgs(template, absOutputFile); err != nil {
+		return fmt.Errorf("invalid template arguments: %w", err)
+	}
+
+	cmd := exec.Command("typst", "compile", template.InputFile, absOutputFile)
+	cmd.Dir = template.Dir
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("typst compilation failed: %v\nOutput: %s", err, output)
+		return fmt.Errorf("typst compilation failed for %s: %w\nOutput: %s", template.Name, err, string(output))
 	}
 
-	if _, err := os.Stat(outputFile); os.IsNotExist(err) {
-		return fmt.Errorf("PDF file was not created")
-	}
-
-	fmt.Printf("Successfully compiled %s to %s\n", typstFile, outputFile)
+	fmt.Printf("CV generated successfully using %s template at %s/cv-%s.pdf\n", template.Name, cv.OutputDir, templateKey)
 	return nil
+}
+
+func (cv *CVGenerator) ensureOutputDir() error {
+	return os.MkdirAll(cv.OutputDir, 0o750)
+}
+
+func (cv *CVGenerator) copyPhoto(templateDir string) error {
+	photoFiles, err := filepath.Glob("cv-photos/*")
+	if err != nil {
+		return fmt.Errorf("failed to find photos: %w", err)
+	}
+
+	if len(photoFiles) == 0 {
+		return fmt.Errorf("no photos found in cv-photos/ directory")
+	}
+
+	sourcePhoto := photoFiles[0]
+
+	if err := validatePath(sourcePhoto, "cv-photos"); err != nil {
+		return fmt.Errorf("invalid source photo path: %w", err)
+	}
+
+	destPhoto := filepath.Join(templateDir, "avatar.png")
+
+	if err := validatePath(templateDir, "templates"); err != nil {
+		return fmt.Errorf("invalid template directory: %w", err)
+	}
+
+	source, err := os.Open(sourcePhoto)
+	if err != nil {
+		return fmt.Errorf("failed to open source photo: %w", err)
+	}
+	defer source.Close()
+
+	dest, err := os.Create(destPhoto)
+	if err != nil {
+		return fmt.Errorf("failed to create destination photo: %w", err)
+	}
+	defer dest.Close()
+
+	_, err = io.Copy(dest, source)
+	if err != nil {
+		return fmt.Errorf("failed to copy photo: %w", err)
+	}
+
+	fmt.Printf("Copied photo %s to %s\n", sourcePhoto, destPhoto)
+	return nil
+}
+
+func main() {
+	templateFlag := flag.String("template", "vantage", "Template to use (vantage, basic, modern)")
+	listFlag := flag.Bool("list", false, "List available templates")
+	flag.Parse()
+
+	generator := NewCVGenerator()
+
+	if *listFlag {
+		generator.ListTemplates()
+		return
+	}
+
+	if err := generator.Generate(*templateFlag); err != nil {
+		log.Fatalf("Error generating CV: %v", err)
+	}
 }
