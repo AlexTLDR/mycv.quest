@@ -1,0 +1,341 @@
+package templates
+
+import "strconv"
+
+type BasicFormData struct {
+	// Personal Information
+	Name         string
+	Location     string
+	Email        string
+	Github       string
+	LinkedIn     string
+	Phone        string
+	PersonalSite string
+	AccentColor  string
+
+	// Education entries
+	Education []BasicEducation
+
+	// Work experience entries
+	WorkExperience []BasicWork
+
+	// Project entries
+	Projects []BasicProject
+
+	// Skills
+	ProgrammingLanguages string
+	Technologies         string
+}
+
+type BasicEducation struct {
+	Institution string
+	Location    string
+	StartDate   string
+	EndDate     string
+	Degree      string
+	GPA         string
+	Details     string
+}
+
+type BasicWork struct {
+	Title       string
+	Company     string
+	Location    string
+	StartDate   string
+	EndDate     string
+	Description string
+}
+
+type BasicProject struct {
+	Name        string
+	Role        string
+	StartDate   string
+	EndDate     string
+	URL         string
+	Description string
+}
+
+templ BasicForm() {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Basic Template - CV Form</title>
+			<script src="https://cdn.tailwindcss.com"></script>
+			<script>
+				function addEducation() {
+					const container = document.getElementById('education-container');
+					const template = document.getElementById('education-template').content.cloneNode(true);
+					const index = container.children.length;
+
+					// Update field names and IDs
+					const inputs = template.querySelectorAll('input, textarea');
+					inputs.forEach(input => {
+						const name = input.getAttribute('name');
+						input.setAttribute('name', name.replace('[0]', `[${index}]`));
+					});
+
+					container.appendChild(template);
+				}
+
+				function addWork() {
+					const container = document.getElementById('work-container');
+					const template = document.getElementById('work-template').content.cloneNode(true);
+					const index = container.children.length;
+
+					const inputs = template.querySelectorAll('input, textarea');
+					inputs.forEach(input => {
+						const name = input.getAttribute('name');
+						input.setAttribute('name', name.replace('[0]', `[${index}]`));
+					});
+
+					container.appendChild(template);
+				}
+
+				function addProject() {
+					const container = document.getElementById('projects-container');
+					const template = document.getElementById('project-template').content.cloneNode(true);
+					const index = container.children.length;
+
+					const inputs = template.querySelectorAll('input, textarea');
+					inputs.forEach(input => {
+						const name = input.getAttribute('name');
+						input.setAttribute('name', name.replace('[0]', `[${index}]`));
+					});
+
+					container.appendChild(template);
+				}
+
+				function removeEntry(button) {
+					button.closest('.entry-item').remove();
+				}
+			</script>
+		</head>
+		<body class="bg-gray-50 min-h-screen">
+			<header class="bg-white shadow-sm border-b">
+				<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+					<h1 class="text-2xl font-bold text-gray-900">Basic Template - CV Form</h1>
+					<p class="mt-1 text-gray-600">Fill in your details to generate your CV</p>
+				</div>
+			</header>
+			<main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+				<form method="POST" action="/generate/basic" class="space-y-8">
+					<!-- Personal Information -->
+					<div class="bg-white rounded-lg shadow p-6">
+						<h2 class="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+								<input type="text" name="name" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+								<input type="text" name="location" placeholder="San Diego, CA" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+								<input type="email" name="email" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+								<input type="text" name="phone" placeholder="+1 (xxx) xxx-xxxx" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">GitHub</label>
+								<input type="text" name="github" placeholder="github.com/username" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+								<input type="text" name="linkedin" placeholder="linkedin.com/in/username" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Personal Website</label>
+								<input type="text" name="personal_site" placeholder="yoursite.dev" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Accent Color</label>
+								<input type="color" name="accent_color" value="#26428b" class="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+						</div>
+					</div>
+					<!-- Education Section -->
+					<div class="bg-white rounded-lg shadow p-6">
+						<div class="flex justify-between items-center mb-4">
+							<h2 class="text-lg font-semibold text-gray-900">Education</h2>
+							<button type="button" onclick="addEducation()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Add Education</button>
+						</div>
+						<div id="education-container">
+							@BasicEducationEntry(0)
+						</div>
+					</div>
+					<!-- Work Experience Section -->
+					<div class="bg-white rounded-lg shadow p-6">
+						<div class="flex justify-between items-center mb-4">
+							<h2 class="text-lg font-semibold text-gray-900">Work Experience</h2>
+							<button type="button" onclick="addWork()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Add Work Experience</button>
+						</div>
+						<div id="work-container">
+							@BasicWorkEntry(0)
+						</div>
+					</div>
+					<!-- Projects Section -->
+					<div class="bg-white rounded-lg shadow p-6">
+						<div class="flex justify-between items-center mb-4">
+							<h2 class="text-lg font-semibold text-gray-900">Projects</h2>
+							<button type="button" onclick="addProject()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Add Project</button>
+						</div>
+						<div id="projects-container">
+							@BasicProjectEntry(0)
+						</div>
+					</div>
+					<!-- Skills Section -->
+					<div class="bg-white rounded-lg shadow p-6">
+						<h2 class="text-lg font-semibold text-gray-900 mb-4">Skills</h2>
+						<div class="space-y-4">
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Programming Languages</label>
+								<textarea name="programming_languages" rows="3" placeholder="JavaScript, Python, C/C++, HTML/CSS, Java, Bash, R, Flutter, Dart" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Technologies</label>
+								<textarea name="technologies" rows="3" placeholder="React, Astro, Svelte, Tailwind CSS, Git, UNIX, Docker, Caddy, NGINX, Google Cloud Platform" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+							</div>
+						</div>
+					</div>
+					<!-- Submit Button -->
+					<div class="flex justify-end">
+						<button type="submit" class="bg-green-600 text-white px-8 py-3 rounded-md hover:bg-green-700 font-medium">
+							Generate CV
+						</button>
+					</div>
+				</form>
+			</main>
+			<!-- Templates for dynamic fields -->
+			<template id="education-template">
+				@BasicEducationEntry(0)
+			</template>
+			<template id="work-template">
+				@BasicWorkEntry(0)
+			</template>
+			<template id="project-template">
+				@BasicProjectEntry(0)
+			</template>
+		</body>
+	</html>
+}
+
+templ BasicEducationEntry(index int) {
+	<div class="entry-item border border-gray-200 rounded-lg p-4 mb-4">
+		<div class="flex justify-between items-start mb-3">
+			<h3 class="font-medium text-gray-900">Education Entry</h3>
+			if index > 0 {
+				<button type="button" onclick="removeEntry(this)" class="text-red-600 hover:text-red-800 text-sm">Remove</button>
+			}
+		</div>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Institution</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][institution]" } class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][location]" } class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][start_date]" } placeholder="Aug 2023" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][end_date]" } placeholder="May 2027" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div class="md:col-span-2">
+				<label class="block text-sm font-medium text-gray-700 mb-1">Degree</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][degree]" } placeholder="Bachelor's of Science, Computer Science and Mathematics" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">GPA (optional)</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][gpa]" } placeholder="4.0/4.0" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div class="md:col-span-2">
+				<label class="block text-sm font-medium text-gray-700 mb-1">Additional Details</label>
+				<textarea name={ "education[" + strconv.Itoa(index) + "][details]" } rows="3" placeholder="Relevant coursework, achievements, etc." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+			</div>
+		</div>
+	</div>
+}
+
+templ BasicWorkEntry(index int) {
+	<div class="entry-item border border-gray-200 rounded-lg p-4 mb-4">
+		<div class="flex justify-between items-start mb-3">
+			<h3 class="font-medium text-gray-900">Work Experience Entry</h3>
+			if index > 0 {
+				<button type="button" onclick="removeEntry(this)" class="text-red-600 hover:text-red-800 text-sm">Remove</button>
+			}
+		</div>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][title]" } class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Company</label>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][company]" } class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][location]" } class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][start_date]" } placeholder="May 2024" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][end_date]" } placeholder="Present" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div class="md:col-span-2">
+				<label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+				<textarea name={ "work[" + strconv.Itoa(index) + "][description]" } rows="4" placeholder="- Bullet point describing your responsibilities and achievements" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+			</div>
+		</div>
+	</div>
+}
+
+templ BasicProjectEntry(index int) {
+	<div class="entry-item border border-gray-200 rounded-lg p-4 mb-4">
+		<div class="flex justify-between items-start mb-3">
+			<h3 class="font-medium text-gray-900">Project Entry</h3>
+			if index > 0 {
+				<button type="button" onclick="removeEntry(this)" class="text-red-600 hover:text-red-800 text-sm">Remove</button>
+			}
+		</div>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][name]" } class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Role (optional)</label>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][role]" } placeholder="Maintainer" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][start_date]" } placeholder="Nov 2023" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">End Date (optional)</label>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][end_date]" } placeholder="Present" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">URL (optional)</label>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][url]" } placeholder="hyperschedule.io" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div class="md:col-span-2">
+				<label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+				<textarea name={ "projects[" + strconv.Itoa(index) + "][description]" } rows="4" placeholder="- Bullet point describing the project and your contributions" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+			</div>
+		</div>
+	</div>
+}
