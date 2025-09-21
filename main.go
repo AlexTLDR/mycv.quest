@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"slices"
 	"strings"
+
+	"github.com/AlexTLDR/mycv.quest/templates"
 )
 
 type Template struct {
@@ -184,12 +187,82 @@ func (cv *CVGenerator) copyPhoto(templateDir string) error {
 	return nil
 }
 
+func (cv *CVGenerator) getTemplateData() []templates.CVTemplate {
+	var templateData []templates.CVTemplate
+
+	descriptions := map[string]string{
+		"vantage": "Clean and professional design with modern typography",
+		"basic":   "Simple and elegant layout perfect for any industry",
+		"modern":  "Contemporary design with visual elements and photo support",
+	}
+
+	for key, template := range cv.Templates {
+		pdfPath := fmt.Sprintf("/static/output/cv-%s.pdf", key)
+		thumbnailPath := ""
+
+		// Check for thumbnail images
+		if _, err := os.Stat(filepath.Join(template.Dir, "thumbnail.png")); err == nil {
+			thumbnailPath = fmt.Sprintf("/static/%s/thumbnail.png", template.Dir)
+		} else if _, err := os.Stat(filepath.Join(template.Dir, "screenshot.png")); err == nil {
+			thumbnailPath = fmt.Sprintf("/static/%s/screenshot.png", template.Dir)
+		}
+
+		templateData = append(templateData, templates.CVTemplate{
+			Key:           key,
+			Name:          template.Name,
+			Description:   descriptions[key],
+			PDFPath:       pdfPath,
+			ThumbnailPath: thumbnailPath,
+		})
+	}
+
+	return templateData
+}
+
+func (cv *CVGenerator) setupRoutes() {
+	// Serve static files
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("."))))
+
+	// Home page
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+
+		templateData := cv.getTemplateData()
+		templates.Index(templateData).Render(r.Context(), w)
+	})
+
+	// Generate CV endpoint
+	http.HandleFunc("/generate/", func(w http.ResponseWriter, r *http.Request) {
+		templateKey := strings.TrimPrefix(r.URL.Path, "/generate/")
+
+		if err := cv.Generate(templateKey); err != nil {
+			http.Error(w, fmt.Sprintf("Error generating CV: %v", err), http.StatusInternalServerError)
+			return
+		}
+
+		// Redirect to the generated PDF
+		http.Redirect(w, r, fmt.Sprintf("/static/output/cv-%s.pdf", templateKey), http.StatusSeeOther)
+	})
+}
+
 func main() {
 	templateFlag := flag.String("template", "vantage", "Template to use (vantage, basic, modern)")
 	listFlag := flag.Bool("list", false, "List available templates")
+	serveFlag := flag.Bool("serve", false, "Start web server")
+	portFlag := flag.String("port", "8080", "Port to serve on")
 	flag.Parse()
 
 	generator := NewCVGenerator()
+
+	if *serveFlag {
+		generator.setupRoutes()
+		fmt.Printf("Starting server on http://localhost:%s\n", *portFlag)
+		log.Fatal(http.ListenAndServe(":"+*portFlag, nil))
+		return
+	}
 
 	if *listFlag {
 		generator.ListTemplates()
