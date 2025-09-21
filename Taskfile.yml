@@ -1,31 +1,85 @@
-version: '3'
+version: "3"
+
+vars:
+    APP_NAME: mycv.quest
+    BUILD_DIR: tmp/bin
 
 tasks:
-  # Run templ generation in watch mode
-  templ:
-    desc: Run templ generation in watch mode
-    cmd: templ generate --watch --proxy="http://localhost:8090" --open-browser=false
+    # Run templ generation in watch mode
+    templ:
+        desc: Run templ generation in watch mode
+        cmd: templ generate --watch --proxy="http://localhost:8090" --open-browser=false
 
-  # Run air for Go hot reload
-  server:
-    desc: Run air for Go hot reload
-    cmd: |
-      air \
-      --build.cmd "go build -o tmp/bin/main ./main.go" \
-      --build.bin "tmp/bin/main" \
-      --build.delay "100" \
-      --build.exclude_dir "node_modules" \
-      --build.include_ext "go" \
-      --build.stop_on_error "false" \
-      --misc.clean_on_exit true
+    # Run air for Go hot reload
+    server:
+        desc: Run air for Go hot reload
+        cmd: |
+            air \
+            --build.cmd "go build -o tmp/bin/main ." \
+            --build.bin "tmp/bin/main" \
+            --build.delay "100" \
+            --build.exclude_dir "node_modules,tmp" \
+            --build.include_ext "go" \
+            --build.include_dir "pkg,templates,utils" \
+            --build.stop_on_error "false" \
+            --misc.clean_on_exit true
 
-  # Watch Tailwind CSS changes
-  tailwind:
-    desc: Watch Tailwind CSS changes
-    cmd: tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --watch
+    # Watch Tailwind CSS changes
+    tailwind:
+        desc: Watch Tailwind CSS changes
+        cmd: tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --watch
 
-  # Start development server with all watchers
-  dev:
-    desc: Start development server with all watchers
-    deps: [tailwind, templ, server]
-    cmd: echo "Development environment started with all watchers"
+    # Build the application
+    build:
+        desc: Build the application
+        cmd: go build -o {{.BUILD_DIR}}/{{.APP_NAME}} .
+
+    # Run the application
+    run:
+        desc: Run the application
+        deps: [build]
+        cmd: ./{{.BUILD_DIR}}/{{.APP_NAME}}
+
+    # Run with specific template
+    run-template:
+        desc: "Run with specific template (usage: task run-template TEMPLATE=basic)"
+        deps: [build]
+        cmd: './{{.BUILD_DIR}}/{{.APP_NAME}} -template={{.TEMPLATE | default "vantage"}}'
+
+    # List available templates
+    list:
+        desc: List available templates
+        deps: [build]
+        cmd: ./{{.BUILD_DIR}}/{{.APP_NAME}} -list
+
+    # Start web server
+    serve:
+        desc: Start web server
+        deps: [build]
+        cmd: './{{.BUILD_DIR}}/{{.APP_NAME}} -serve -port={{.PORT | default "8080"}}'
+
+    # Clean build artifacts
+    clean:
+        desc: Clean build artifacts
+        cmd: rm -rf {{.BUILD_DIR}}
+
+    # Test the application
+    test:
+        desc: Run tests
+        cmd: go test ./...
+
+    # Lint the code
+    lint:
+        desc: Run golangci-lint
+        cmd: golangci-lint run
+
+    # Format the code
+    fmt:
+        desc: Format Go code
+        cmd: go fmt ./...
+
+    # Start development server with all watchers
+    dev:
+        desc: Start development server with all watchers
+        deps: [tailwind, templ, server]
+        cmd: echo "Development environment started with all watchers"

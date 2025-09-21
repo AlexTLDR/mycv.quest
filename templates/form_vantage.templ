@@ -1,0 +1,452 @@
+package templates
+
+import "strconv"
+
+type VantageFormData struct {
+	// Personal Contact Information
+	Name     string
+	Title    string
+	Email    string
+	Address  string
+	Location string
+
+	// Social Links
+	LinkedInURL         string
+	LinkedInDisplayText string
+	GithubURL           string
+	GithubDisplayText   string
+	WebsiteURL          string
+	WebsiteDisplayText  string
+
+	// Position and Summary
+	Position  string
+	Tagline   string
+	Objective string
+
+	// Jobs/Work Experience
+	Jobs []VantageJob
+
+	// Education
+	Education []VantageEducation
+
+	// Technical Expertise (with levels)
+	TechnicalExpertise []VantageTechnicalExpertise
+
+	// Skills, Methodology, Tools
+	Skills      []string
+	Methodology []string
+	Tools       []string
+
+	// Achievements
+	Achievements []VantageAchievement
+}
+
+type VantageJob struct {
+	Position    string
+	CompanyName string
+	CompanyLink string
+	ProductName string
+	ProductLink string
+	Description []string
+	From        string
+	To          string
+	Tags        []string
+	Location    string
+}
+
+type VantageEducation struct {
+	PlaceName string
+	PlaceLink string
+	Degree    string
+	Major     string
+	Track     string
+	From      string
+	To        string
+	Location  string
+}
+
+type VantageTechnicalExpertise struct {
+	Name  string
+	Level int
+}
+
+type VantageAchievement struct {
+	Name        string
+	Description string
+}
+
+templ VantageForm() {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Vantage Template - CV Form</title>
+			<script src="https://cdn.tailwindcss.com"></script>
+			<script>
+				function addJob() {
+					const container = document.getElementById('jobs-container');
+					const template = document.getElementById('job-template').content.cloneNode(true);
+					const index = container.children.length;
+
+					const inputs = template.querySelectorAll('input, textarea');
+					inputs.forEach(input => {
+						const name = input.getAttribute('name');
+						input.setAttribute('name', name.replace('[0]', `[${index}]`));
+					});
+
+					container.appendChild(template);
+				}
+
+				function addEducation() {
+					const container = document.getElementById('education-container');
+					const template = document.getElementById('education-template').content.cloneNode(true);
+					const index = container.children.length;
+
+					const inputs = template.querySelectorAll('input, textarea');
+					inputs.forEach(input => {
+						const name = input.getAttribute('name');
+						input.setAttribute('name', name.replace('[0]', `[${index}]`));
+					});
+
+					container.appendChild(template);
+				}
+
+				function addTechnicalExpertise() {
+					const container = document.getElementById('technical-container');
+					const template = document.getElementById('technical-template').content.cloneNode(true);
+					const index = container.children.length;
+
+					const inputs = template.querySelectorAll('input, select');
+					inputs.forEach(input => {
+						const name = input.getAttribute('name');
+						input.setAttribute('name', name.replace('[0]', `[${index}]`));
+					});
+
+					container.appendChild(template);
+				}
+
+				function addAchievement() {
+					const container = document.getElementById('achievements-container');
+					const template = document.getElementById('achievement-template').content.cloneNode(true);
+					const index = container.children.length;
+
+					const inputs = template.querySelectorAll('input, textarea');
+					inputs.forEach(input => {
+						const name = input.getAttribute('name');
+						input.setAttribute('name', name.replace('[0]', `[${index}]`));
+					});
+
+					container.appendChild(template);
+				}
+
+				function removeEntry(button) {
+					button.closest('.entry-item').remove();
+				}
+			</script>
+		</head>
+		<body class="bg-gray-50 min-h-screen">
+			<header class="bg-white shadow-sm border-b">
+				<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+					<h1 class="text-2xl font-bold text-gray-900">Vantage Template - CV Form</h1>
+					<p class="mt-1 text-gray-600">Fill in your details to generate your CV</p>
+				</div>
+			</header>
+			<main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+				<form method="POST" action="/generate/vantage" class="space-y-8">
+					<!-- Personal Information -->
+					<div class="bg-white rounded-lg shadow p-6">
+						<h2 class="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+								<input type="text" name="name" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Professional Title *</label>
+								<input type="text" name="title" required placeholder="Software Engineer" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+								<input type="email" name="email" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+								<input type="text" name="address" placeholder="City, Country" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+								<input type="text" name="location" placeholder="Country" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Position</label>
+								<input type="text" name="position" placeholder="Software Engineer" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div class="md:col-span-2">
+								<label class="block text-sm font-medium text-gray-700 mb-1">Professional Tagline</label>
+								<textarea name="tagline" rows="3" placeholder="Software engineer with 5 years of experience and a strong foundation in computer science..." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+							</div>
+							<div class="md:col-span-2">
+								<label class="block text-sm font-medium text-gray-700 mb-1">Career Objective</label>
+								<textarea name="objective" rows="2" placeholder="Seeking to advance my skills and build a strong career with a company that values innovation and creativity." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+							</div>
+						</div>
+					</div>
+					<!-- Social Links -->
+					<div class="bg-white rounded-lg shadow p-6">
+						<h2 class="text-lg font-semibold text-gray-900 mb-4">Social Links</h2>
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">LinkedIn URL</label>
+								<input type="text" name="linkedin_url" placeholder="https://www.linkedin.com/in/johndoe/" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">LinkedIn Display Text</label>
+								<input type="text" name="linkedin_display_text" placeholder="johndoe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">GitHub URL</label>
+								<input type="text" name="github_url" placeholder="https://github.com/johndoe/" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">GitHub Display Text</label>
+								<input type="text" name="github_display_text" placeholder="@johndoe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Website URL</label>
+								<input type="text" name="website_url" placeholder="https://johndoe.com" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Website Display Text</label>
+								<input type="text" name="website_display_text" placeholder="www.johndoe.com" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+							</div>
+						</div>
+					</div>
+					<!-- Work Experience Section -->
+					<div class="bg-white rounded-lg shadow p-6">
+						<div class="flex justify-between items-center mb-4">
+							<h2 class="text-lg font-semibold text-gray-900">Work Experience</h2>
+							<button type="button" onclick="addJob()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Add Job</button>
+						</div>
+						<div id="jobs-container">
+							@VantageJobEntry(0)
+						</div>
+					</div>
+					<!-- Education Section -->
+					<div class="bg-white rounded-lg shadow p-6">
+						<div class="flex justify-between items-center mb-4">
+							<h2 class="text-lg font-semibold text-gray-900">Education</h2>
+							<button type="button" onclick="addEducation()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Add Education</button>
+						</div>
+						<div id="education-container">
+							@VantageEducationEntry(0)
+						</div>
+					</div>
+					<!-- Technical Expertise Section -->
+					<div class="bg-white rounded-lg shadow p-6">
+						<div class="flex justify-between items-center mb-4">
+							<h2 class="text-lg font-semibold text-gray-900">Technical Expertise</h2>
+							<button type="button" onclick="addTechnicalExpertise()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Add Skill</button>
+						</div>
+						<div id="technical-container">
+							@VantageTechnicalEntry(0)
+						</div>
+					</div>
+					<!-- Skills, Methodology, Tools -->
+					<div class="bg-white rounded-lg shadow p-6">
+						<h2 class="text-lg font-semibold text-gray-900 mb-4">Skills, Methodology & Tools</h2>
+						<div class="space-y-4">
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Skills/Exposure</label>
+								<textarea name="skills" rows="3" placeholder="JavaScript, Python, Java, React, Node.js, Express, MongoDB, AWS, Docker, Git, HTML/CSS, SQL, Material UI, Tailwind CSS (separate with commas)" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Methodology/Approach</label>
+								<textarea name="methodology" rows="2" placeholder="Lean, Kanban, Design Thinking, Test-Driven Development, Pair Programming (separate with commas)" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+							</div>
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Tools</label>
+								<textarea name="tools" rows="2" placeholder="GitHub, IntelliJ IDEA, Asana, Slack, Adobe XD, Postman (separate with commas)" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+							</div>
+						</div>
+					</div>
+					<!-- Achievements Section -->
+					<div class="bg-white rounded-lg shadow p-6">
+						<div class="flex justify-between items-center mb-4">
+							<h2 class="text-lg font-semibold text-gray-900">Achievements/Certifications</h2>
+							<button type="button" onclick="addAchievement()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Add Achievement</button>
+						</div>
+						<div id="achievements-container">
+							@VantageAchievementEntry(0)
+						</div>
+					</div>
+					<!-- Submit Button -->
+					<div class="flex justify-end">
+						<button type="submit" class="bg-green-600 text-white px-8 py-3 rounded-md hover:bg-green-700 font-medium">
+							Generate CV
+						</button>
+					</div>
+				</form>
+			</main>
+			<!-- Templates for dynamic fields -->
+			<template id="job-template">
+				@VantageJobEntry(0)
+			</template>
+			<template id="education-template">
+				@VantageEducationEntry(0)
+			</template>
+			<template id="technical-template">
+				@VantageTechnicalEntry(0)
+			</template>
+			<template id="achievement-template">
+				@VantageAchievementEntry(0)
+			</template>
+		</body>
+	</html>
+}
+
+templ VantageJobEntry(index int) {
+	<div class="entry-item border border-gray-200 rounded-lg p-4 mb-4">
+		<div class="flex justify-between items-start mb-3">
+			<h3 class="font-medium text-gray-900">Job Entry</h3>
+			if index > 0 {
+				<button type="button" onclick="removeEntry(this)" class="text-red-600 hover:text-red-800 text-sm">Remove</button>
+			}
+		</div>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Position</label>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][position]" } placeholder="Lead Software Developer" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][company_name]" } placeholder="Quantum Innovations" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Company Link (optional)</label>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][company_link]" } placeholder="https://quantuminnovations.com/" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Product Name (optional)</label>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][product_name]" } placeholder="QuantumLeap" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Product Link (optional)</label>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][product_link]" } placeholder="https://quantumleap.com" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][location]" } placeholder="Remote" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][from]" } placeholder="2023 Mar." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][to]" } placeholder="present" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div class="md:col-span-2">
+				<label class="block text-sm font-medium text-gray-700 mb-1">Job Description</label>
+				<textarea name={ "jobs[" + strconv.Itoa(index) + "][description]" } rows="4" placeholder="- Spearheaded the development of a cutting-edge quantum computing simulator&#10;- Collaborated with a team to create intuitive user interfaces&#10;- Optimized algorithms for performance" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+			</div>
+			<div class="md:col-span-2">
+				<label class="block text-sm font-medium text-gray-700 mb-1">Tags/Skills Used</label>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][tags]" } placeholder="Quantum Computing, Algorithm Optimization, UI Design (separate with commas)" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+		</div>
+	</div>
+}
+
+templ VantageEducationEntry(index int) {
+	<div class="entry-item border border-gray-200 rounded-lg p-4 mb-4">
+		<div class="flex justify-between items-start mb-3">
+			<h3 class="font-medium text-gray-900">Education Entry</h3>
+			if index > 0 {
+				<button type="button" onclick="removeEntry(this)" class="text-red-600 hover:text-red-800 text-sm">Remove</button>
+			}
+		</div>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Institution Name</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][place_name]" } placeholder="Example University" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Institution Link (optional)</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][place_link]" } placeholder="http://exampleuniversity.edu" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Degree</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][degree]" } placeholder="B.Sc." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Major</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][major]" } placeholder="Computer Science" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Track/Specialization</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][track]" } placeholder="Computer Science" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][location]" } placeholder="City, Country" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Start Year</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][from]" } placeholder="2015" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">End Year</label>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][to]" } placeholder="2019" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+		</div>
+	</div>
+}
+
+templ VantageTechnicalEntry(index int) {
+	<div class="entry-item border border-gray-200 rounded-lg p-4 mb-4">
+		<div class="flex justify-between items-start mb-3">
+			<h3 class="font-medium text-gray-900">Technical Skill</h3>
+			if index > 0 {
+				<button type="button" onclick="removeEntry(this)" class="text-red-600 hover:text-red-800 text-sm">Remove</button>
+			}
+		</div>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Skill Name</label>
+				<input type="text" name={ "technical_expertise[" + strconv.Itoa(index) + "][name]" } placeholder="Kotlin" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Skill Level (1-5)</label>
+				<select name={ "technical_expertise[" + strconv.Itoa(index) + "][level]" } class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+					<option value="1">1 - Beginner</option>
+					<option value="2">2 - Novice</option>
+					<option value="3">3 - Intermediate</option>
+					<option value="4" selected>4 - Advanced</option>
+					<option value="5">5 - Expert</option>
+				</select>
+			</div>
+		</div>
+	</div>
+}
+
+templ VantageAchievementEntry(index int) {
+	<div class="entry-item border border-gray-200 rounded-lg p-4 mb-4">
+		<div class="flex justify-between items-start mb-3">
+			<h3 class="font-medium text-gray-900">Achievement Entry</h3>
+			if index > 0 {
+				<button type="button" onclick="removeEntry(this)" class="text-red-600 hover:text-red-800 text-sm">Remove</button>
+			}
+		</div>
+		<div class="space-y-4">
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Achievement Name</label>
+				<input type="text" name={ "achievements[" + strconv.Itoa(index) + "][name]" } placeholder="Best Project Award" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+			</div>
+			<div>
+				<label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+				<textarea name={ "achievements[" + strconv.Itoa(index) + "][description]" } rows="3" placeholder="Developed an innovative solution for community service management and received recognition from the university." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+			</div>
+		</div>
+	</div>
+}

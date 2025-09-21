@@ -1,0 +1,113 @@
+package templates
+
+import "github.com/AlexTLDR/mycv.quest/utils"
+
+type CVTemplate struct {
+	Key           string
+	Name          string
+	Description   string
+	PDFPath       string
+	ThumbnailPath string
+}
+
+templ Index(templates []CVTemplate) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>CV Templates - mycv.quest</title>
+			<script src="https://cdn.tailwindcss.com"></script>
+			<style>
+				.pdf-preview {
+					aspect-ratio: 3/4;
+					background: #f8f9fa;
+					border: 1px solid #e9ecef;
+				}
+				.template-card {
+					transition: all 0.3s ease;
+				}
+				.template-card:hover {
+					transform: translateY(-4px);
+					box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+				}
+			</style>
+		</head>
+		<body class="bg-gray-50 min-h-screen">
+			<header class="bg-white shadow-sm border-b">
+				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+					<h1 class="text-3xl font-bold text-gray-900">CV Templates</h1>
+					<p class="mt-2 text-gray-600">Choose from our professional CV templates</p>
+				</div>
+			</header>
+			<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+					for _, template := range templates {
+						@TemplateCard(template)
+					}
+				</div>
+			</main>
+			<footer class="bg-white border-t mt-20">
+				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+					<p class="text-center text-gray-500">© 2025 mycv.quest - Professional CV Generation</p>
+				</div>
+			</footer>
+		</body>
+	</html>
+}
+
+templ TemplateCard(template CVTemplate) {
+	<div class={ utils.TwMerge("template-card bg-white rounded-lg shadow-md overflow-hidden") }>
+		<div class="pdf-preview p-4">
+			if template.ThumbnailPath != "" {
+				<img
+					src={ template.ThumbnailPath }
+					alt={ template.Name + " preview" }
+					class="w-full h-full object-contain rounded"
+				/>
+			} else if template.PDFPath != "" {
+				<iframe
+					src={ template.PDFPath }
+					class="w-full h-full rounded border-0"
+					title={ template.Name + " PDF preview" }
+				></iframe>
+			} else {
+				<div class="w-full h-full flex items-center justify-center text-gray-400">
+					<div class="text-center">
+						<svg class="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+						</svg>
+						<p class="mt-2 text-sm">No preview available</p>
+					</div>
+				</div>
+			}
+		</div>
+		<div class="p-6">
+			<h3 class="text-xl font-semibold text-gray-900 mb-2">{ template.Name }</h3>
+			<p class="text-gray-600 mb-4">{ template.Description }</p>
+			<div class="flex gap-3">
+				<a
+					href={ templ.URL("/generate/" + template.Key) }
+					class={ utils.TwMerge(
+						"flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded-md",
+						"transition-colors duration-200 font-medium",
+					) }
+				>
+					Generate CV
+				</a>
+				if template.PDFPath != "" {
+					<a
+						href={ templ.URL(template.PDFPath) }
+						target="_blank"
+						class={ utils.TwMerge(
+							"bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md",
+							"transition-colors duration-200 font-medium",
+						) }
+					>
+						View PDF
+					</a>
+				}
+			</div>
+		</div>
+	</div>
+}
