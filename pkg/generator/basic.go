@@ -69,13 +69,13 @@ func (cv *CVGenerator) generateBasicCV(template config.Template, r *http.Request
 }
 
 func (cv *CVGenerator) generateBasicTypContent(r *http.Request) string {
-	name := r.FormValue("name")
-	location := r.FormValue("location")
-	email := r.FormValue("email")
-	github := r.FormValue("github")
-	linkedin := r.FormValue("linkedin")
-	phone := r.FormValue("phone")
-	personalSite := r.FormValue("personal_site")
+	name := utils.SanitizeFormValue(r.FormValue("name"))
+	location := utils.SanitizeFormValue(r.FormValue("location"))
+	email := utils.SanitizeFormValue(r.FormValue("email"))
+	github := utils.SanitizeFormValue(r.FormValue("github"))
+	linkedin := utils.SanitizeFormValue(r.FormValue("linkedin"))
+	phone := utils.SanitizeFormValue(r.FormValue("phone"))
+	personalSite := utils.SanitizeFormValue(r.FormValue("personal_site"))
 	accentColor := r.FormValue("accent_color")
 	if accentColor == "" {
 		accentColor = "#26428b"
@@ -112,15 +112,15 @@ func (cv *CVGenerator) generateBasicTypContent(r *http.Request) string {
 	// Add education section
 	content += "== Education\n\n"
 	for i := 0; ; i++ {
-		institution := r.FormValue(fmt.Sprintf("education[%d][institution]", i))
+		institution := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][institution]", i)))
 		if institution == "" {
 			break
 		}
-		location := r.FormValue(fmt.Sprintf("education[%d][location]", i))
-		startDate := r.FormValue(fmt.Sprintf("education[%d][start_date]", i))
-		endDate := r.FormValue(fmt.Sprintf("education[%d][end_date]", i))
-		degree := r.FormValue(fmt.Sprintf("education[%d][degree]", i))
-		details := r.FormValue(fmt.Sprintf("education[%d][details]", i))
+		location := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][location]", i)))
+		startDate := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][start_date]", i)))
+		endDate := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][end_date]", i)))
+		degree := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][degree]", i)))
+		details := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][details]", i)))
 
 		content += fmt.Sprintf(`#edu(
   institution: "%s",
@@ -144,15 +144,15 @@ func (cv *CVGenerator) generateBasicTypContent(r *http.Request) string {
 	// Add work experience section
 	content += "== Work Experience\n\n"
 	for i := 0; ; i++ {
-		title := r.FormValue(fmt.Sprintf("work[%d][title]", i))
+		title := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][title]", i)))
 		if title == "" {
 			break
 		}
-		company := r.FormValue(fmt.Sprintf("work[%d][company]", i))
-		location := r.FormValue(fmt.Sprintf("work[%d][location]", i))
-		startDate := r.FormValue(fmt.Sprintf("work[%d][start_date]", i))
-		endDate := r.FormValue(fmt.Sprintf("work[%d][end_date]", i))
-		description := r.FormValue(fmt.Sprintf("work[%d][description]", i))
+		company := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][company]", i)))
+		location := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][location]", i)))
+		startDate := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][start_date]", i)))
+		endDate := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][end_date]", i)))
+		description := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][description]", i)))
 
 		content += fmt.Sprintf(`#work(
   title: "%s",
@@ -176,15 +176,15 @@ func (cv *CVGenerator) generateBasicTypContent(r *http.Request) string {
 	// Add projects section
 	content += "== Projects\n\n"
 	for i := 0; ; i++ {
-		name := r.FormValue(fmt.Sprintf("projects[%d][name]", i))
+		name := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("projects[%d][name]", i)))
 		if name == "" {
 			break
 		}
-		role := r.FormValue(fmt.Sprintf("projects[%d][role]", i))
-		startDate := r.FormValue(fmt.Sprintf("projects[%d][start_date]", i))
-		endDate := r.FormValue(fmt.Sprintf("projects[%d][end_date]", i))
-		url := r.FormValue(fmt.Sprintf("projects[%d][url]", i))
-		description := r.FormValue(fmt.Sprintf("projects[%d][description]", i))
+		role := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("projects[%d][role]", i)))
+		startDate := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("projects[%d][start_date]", i)))
+		endDate := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("projects[%d][end_date]", i)))
+		url := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("projects[%d][url]", i)))
+		description := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("projects[%d][description]", i)))
 
 		projectCall := "#project(\n  name: \"" + name + "\","
 		if role != "" {
@@ -216,8 +216,8 @@ func (cv *CVGenerator) generateBasicTypContent(r *http.Request) string {
 	}
 
 	// Add skills section
-	programmingLanguages := r.FormValue("programming_languages")
-	technologies := r.FormValue("technologies")
+	programmingLanguages := utils.SanitizeFormValue(r.FormValue("programming_languages"))
+	technologies := utils.SanitizeFormValue(r.FormValue("technologies"))
 
 	if programmingLanguages != "" || technologies != "" {
 		content += "== Skills\n"

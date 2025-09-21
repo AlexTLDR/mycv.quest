@@ -204,22 +204,50 @@ func (cv *CVGenerator) handlePhotoUpload(r *http.Request, templateDir string) er
 	return err
 }
 
-func (cv *CVGenerator) handlePhotoUploadToWorkDir(r *http.Request, workDir string) error {
+func (cv *CVGenerator) handlePhotoUploadToWorkDir(r *http.Request, workDir string) (string, error) {
 	file, _, err := r.FormFile("avatar")
 	if err != nil {
 		// No file uploaded, that's okay
-		return nil
+		return "", nil
 	}
 	defer file.Close()
 
-	// Save uploaded file as avatar.png in work directory
-	avatarPath := filepath.Join(workDir, "avatar.png")
+	// Read first few bytes to detect file format
+	header := make([]byte, 512)
+	n, err := file.Read(header)
+	if err != nil {
+		return "", err
+	}
+
+	// Reset file pointer to beginning
+	if seeker, ok := file.(io.Seeker); ok {
+		_, err = seeker.Seek(0, 0)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	// Detect file format from header
+	var filename string
+	if n >= 8 && header[0] == 0x89 && header[1] == 0x50 && header[2] == 0x4E && header[3] == 0x47 {
+		// PNG format
+		filename = "avatar.png"
+	} else if n >= 3 && header[0] == 0xFF && header[1] == 0xD8 && header[2] == 0xFF {
+		// JPEG format
+		filename = "avatar.jpg"
+	} else {
+		// Default to PNG if format not recognized
+		filename = "avatar.png"
+	}
+
+	// Save uploaded file with detected extension
+	avatarPath := filepath.Join(workDir, filename)
 	dest, err := os.Create(avatarPath)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer dest.Close()
 
 	_, err = io.Copy(dest, file)
-	return err
+	return filename, err
 }

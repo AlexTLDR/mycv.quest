@@ -28,9 +28,16 @@ func (cv *CVGenerator) generateModernCV(template config.Template, r *http.Reques
 	defer os.RemoveAll(workDir) // Clean up
 
 	// Handle photo upload if present
+	var avatarFilename string
+	photoUploaded := false
 	if template.NeedsPhoto {
-		if err := cv.handlePhotoUploadToWorkDir(r, workDir); err != nil {
+		filename, err := cv.handlePhotoUploadToWorkDir(r, workDir)
+		if err != nil {
 			return nil, fmt.Errorf("failed to handle photo upload: %w", err)
+		}
+		if filename != "" {
+			avatarFilename = filename
+			photoUploaded = true
 		}
 	}
 
@@ -44,17 +51,20 @@ func (cv *CVGenerator) generateModernCV(template config.Template, r *http.Reques
 		}
 	}
 
-	// Copy avatar if it exists in template dir
-	avatarSrc := filepath.Join(template.Dir, "avatar.png")
-	if _, err := os.Stat(avatarSrc); err == nil {
-		avatarDst := filepath.Join(workDir, "avatar.png")
-		if err := utils.CopyFile(avatarSrc, avatarDst); err != nil {
-			return nil, fmt.Errorf("failed to copy avatar: %w", err)
+	// Copy template's default avatar only if no photo was uploaded
+	if !photoUploaded {
+		avatarSrc := filepath.Join(template.Dir, "avatar.png")
+		if _, err := os.Stat(avatarSrc); err == nil {
+			avatarDst := filepath.Join(workDir, "avatar.png")
+			if err := utils.CopyFile(avatarSrc, avatarDst); err != nil {
+				return nil, fmt.Errorf("failed to copy avatar: %w", err)
+			}
+			avatarFilename = "avatar.png"
 		}
 	}
 
 	// Generate main.typ with form data
-	typContent := cv.generateModernTypContent(r)
+	typContent := cv.generateModernTypContent(r, avatarFilename)
 	if err := os.WriteFile(filepath.Join(workDir, "main.typ"), []byte(typContent), 0o644); err != nil {
 		return nil, fmt.Errorf("failed to write main.typ: %w", err)
 	}
@@ -84,16 +94,16 @@ func (cv *CVGenerator) generateModernCV(template config.Template, r *http.Reques
 	return pdfData, nil
 }
 
-func (cv *CVGenerator) generateModernTypContent(r *http.Request) string {
-	author := r.FormValue("author")
-	jobTitle := r.FormValue("job_title")
-	bio := r.FormValue("bio")
-	email := r.FormValue("email")
-	mobile := r.FormValue("mobile")
-	location := r.FormValue("location")
-	linkedin := r.FormValue("linkedin")
-	github := r.FormValue("github")
-	website := r.FormValue("website")
+func (cv *CVGenerator) generateModernTypContent(r *http.Request, avatarFilename string) string {
+	author := utils.SanitizeFormValue(r.FormValue("author"))
+	jobTitle := utils.SanitizeFormValue(r.FormValue("job_title"))
+	bio := utils.SanitizeFormValue(r.FormValue("bio"))
+	email := utils.SanitizeFormValue(r.FormValue("email"))
+	mobile := utils.SanitizeFormValue(r.FormValue("mobile"))
+	location := utils.SanitizeFormValue(r.FormValue("location"))
+	linkedin := utils.SanitizeFormValue(r.FormValue("linkedin"))
+	github := utils.SanitizeFormValue(r.FormValue("github"))
+	website := utils.SanitizeFormValue(r.FormValue("website"))
 
 	content := fmt.Sprintf(`#import "@preview/modern-resume:0.1.0": modern-resume, experience-work, experience-edu, project, pill
 
@@ -101,10 +111,10 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request) string {
   author: "%s",
   job-title: "%s",
   bio: [%s],
-  avatar: image("avatar.png"),
+  avatar: image("%s"),
   contact-options: (
     email: link("mailto:%s")[%s],
-`, author, jobTitle, bio, email, strings.ReplaceAll(email, "@", "\\@"))
+`, author, jobTitle, bio, avatarFilename, email, strings.ReplaceAll(email, "@", "\\@"))
 
 	if mobile != "" {
 		content += fmt.Sprintf("    mobile: \"%s\",\n", mobile)
@@ -127,14 +137,14 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request) string {
 	// Add education section
 	content += "== Education\n\n"
 	for i := 0; ; i++ {
-		title := r.FormValue(fmt.Sprintf("education[%d][title]", i))
+		title := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][title]", i)))
 		if title == "" {
 			break
 		}
-		subtitle := r.FormValue(fmt.Sprintf("education[%d][subtitle]", i))
-		dateFrom := r.FormValue(fmt.Sprintf("education[%d][date_from]", i))
-		dateTo := r.FormValue(fmt.Sprintf("education[%d][date_to]", i))
-		taskDescription := r.FormValue(fmt.Sprintf("education[%d][task_description]", i))
+		subtitle := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][subtitle]", i)))
+		dateFrom := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][date_from]", i)))
+		dateTo := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][date_to]", i)))
+		taskDescription := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][task_description]", i)))
 
 		content += fmt.Sprintf(`#experience-edu(
   title: "%s",
@@ -164,15 +174,15 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request) string {
 	// Add work experience section
 	content += "== Work experience\n\n"
 	for i := 0; ; i++ {
-		title := r.FormValue(fmt.Sprintf("work[%d][title]", i))
+		title := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][title]", i)))
 		if title == "" {
 			break
 		}
-		subtitle := r.FormValue(fmt.Sprintf("work[%d][subtitle]", i))
-		facilityDescription := r.FormValue(fmt.Sprintf("work[%d][facility_description]", i))
-		dateFrom := r.FormValue(fmt.Sprintf("work[%d][date_from]", i))
-		dateTo := r.FormValue(fmt.Sprintf("work[%d][date_to]", i))
-		taskDescription := r.FormValue(fmt.Sprintf("work[%d][task_description]", i))
+		subtitle := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][subtitle]", i)))
+		facilityDescription := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][facility_description]", i)))
+		dateFrom := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][date_from]", i)))
+		dateTo := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][date_to]", i)))
+		taskDescription := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][task_description]", i)))
 
 		content += fmt.Sprintf(`#experience-work(
   title: "%s",
@@ -203,7 +213,7 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request) string {
 	content += "#colbreak()\n\n"
 
 	// Add skills section
-	skills := r.FormValue("skills")
+	skills := utils.SanitizeFormValue(r.FormValue("skills"))
 	if skills != "" {
 		content += "== Skills\n\n"
 		skillList := strings.Split(skills, ",")
@@ -219,14 +229,14 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request) string {
 	// Add projects section
 	content += "== Projects\n\n"
 	for i := 0; ; i++ {
-		title := r.FormValue(fmt.Sprintf("projects[%d][title]", i))
+		title := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("projects[%d][title]", i)))
 		if title == "" {
 			break
 		}
-		subtitle := r.FormValue(fmt.Sprintf("projects[%d][subtitle]", i))
-		dateFrom := r.FormValue(fmt.Sprintf("projects[%d][date_from]", i))
-		dateTo := r.FormValue(fmt.Sprintf("projects[%d][date_to]", i))
-		description := r.FormValue(fmt.Sprintf("projects[%d][description]", i))
+		subtitle := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("projects[%d][subtitle]", i)))
+		dateFrom := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("projects[%d][date_from]", i)))
+		dateTo := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("projects[%d][date_to]", i)))
+		description := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("projects[%d][description]", i)))
 
 		content += fmt.Sprintf(`#project(
   title: "%s",
@@ -259,13 +269,13 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request) string {
 	// Add certificates section
 	content += "== Certificates\n\n"
 	for i := 0; ; i++ {
-		title := r.FormValue(fmt.Sprintf("certificates[%d][title]", i))
+		title := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("certificates[%d][title]", i)))
 		if title == "" {
 			break
 		}
-		subtitle := r.FormValue(fmt.Sprintf("certificates[%d][subtitle]", i))
-		dateFrom := r.FormValue(fmt.Sprintf("certificates[%d][date_from]", i))
-		dateTo := r.FormValue(fmt.Sprintf("certificates[%d][date_to]", i))
+		subtitle := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("certificates[%d][subtitle]", i)))
+		dateFrom := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("certificates[%d][date_from]", i)))
+		dateTo := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("certificates[%d][date_to]", i)))
 
 		content += fmt.Sprintf(`#project(
   title: "%s",
@@ -284,7 +294,7 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request) string {
 	}
 
 	// Add languages section
-	languages := r.FormValue("languages")
+	languages := utils.SanitizeFormValue(r.FormValue("languages"))
 	if languages != "" {
 		content += "== Languages\n\n"
 		langList := strings.Split(languages, ",")
@@ -298,7 +308,7 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request) string {
 	}
 
 	// Add interests section
-	interests := r.FormValue("interests")
+	interests := utils.SanitizeFormValue(r.FormValue("interests"))
 	if interests != "" {
 		content += "== Interests\n\n"
 		interestList := strings.Split(interests, ",")

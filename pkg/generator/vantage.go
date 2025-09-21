@@ -82,33 +82,33 @@ func (cv *CVGenerator) generateVantageCV(template config.Template, r *http.Reque
 func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
 	data := map[string]interface{}{
 		"contacts": map[string]interface{}{
-			"name":     r.FormValue("name"),
-			"title":    r.FormValue("title"),
-			"email":    r.FormValue("email"),
-			"address":  r.FormValue("address"),
-			"location": r.FormValue("location"),
+			"name":     utils.SanitizeFormValue(r.FormValue("name")),
+			"title":    utils.SanitizeFormValue(r.FormValue("title")),
+			"email":    utils.SanitizeFormValue(r.FormValue("email")),
+			"address":  utils.SanitizeFormValue(r.FormValue("address")),
+			"location": utils.SanitizeFormValue(r.FormValue("location")),
 			"linkedin": map[string]string{
-				"url":         r.FormValue("linkedin_url"),
-				"displayText": r.FormValue("linkedin_display_text"),
+				"url":         utils.SanitizeFormValue(r.FormValue("linkedin_url")),
+				"displayText": utils.SanitizeFormValue(r.FormValue("linkedin_display_text")),
 			},
 			"github": map[string]string{
-				"url":         r.FormValue("github_url"),
-				"displayText": r.FormValue("github_display_text"),
+				"url":         utils.SanitizeFormValue(r.FormValue("github_url")),
+				"displayText": utils.SanitizeFormValue(r.FormValue("github_display_text")),
 			},
 			"website": map[string]string{
-				"url":         r.FormValue("website_url"),
-				"displayText": r.FormValue("website_display_text"),
+				"url":         utils.SanitizeFormValue(r.FormValue("website_url")),
+				"displayText": utils.SanitizeFormValue(r.FormValue("website_display_text")),
 			},
 		},
-		"position":  r.FormValue("position"),
-		"tagline":   r.FormValue("tagline"),
-		"objective": r.FormValue("objective"),
+		"position":  utils.SanitizeFormValue(r.FormValue("position")),
+		"tagline":   utils.SanitizeFormValue(r.FormValue("tagline")),
+		"objective": utils.SanitizeFormValue(r.FormValue("objective")),
 	}
 
 	// Parse jobs
 	var jobs []map[string]interface{}
 	for i := 0; ; i++ {
-		position := r.FormValue(fmt.Sprintf("jobs[%d][position]", i))
+		position := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][position]", i)))
 		if position == "" {
 			break
 		}
@@ -116,20 +116,20 @@ func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
 		job := map[string]interface{}{
 			"position": position,
 			"company": map[string]string{
-				"name": r.FormValue(fmt.Sprintf("jobs[%d][company_name]", i)),
-				"link": r.FormValue(fmt.Sprintf("jobs[%d][company_link]", i)),
+				"name": utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][company_name]", i))),
+				"link": utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][company_link]", i))),
 			},
 			"product": map[string]string{
-				"name": r.FormValue(fmt.Sprintf("jobs[%d][product_name]", i)),
-				"link": r.FormValue(fmt.Sprintf("jobs[%d][product_link]", i)),
+				"name": utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][product_name]", i))),
+				"link": utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][product_link]", i))),
 			},
-			"from":     r.FormValue(fmt.Sprintf("jobs[%d][from]", i)),
-			"to":       r.FormValue(fmt.Sprintf("jobs[%d][to]", i)),
-			"location": r.FormValue(fmt.Sprintf("jobs[%d][location]", i)),
+			"from":     utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][from]", i))),
+			"to":       utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][to]", i))),
+			"location": utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][location]", i))),
 		}
 
 		// Parse description
-		description := r.FormValue(fmt.Sprintf("jobs[%d][description]", i))
+		description := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][description]", i)))
 		if description != "" {
 			lines := strings.Split(description, "\n")
 			var descList []string
@@ -146,7 +146,7 @@ func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
 		}
 
 		// Parse tags
-		tags := r.FormValue(fmt.Sprintf("jobs[%d][tags]", i))
+		tags := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][tags]", i)))
 		if tags != "" {
 			tagList := strings.Split(tags, ",")
 			var cleanTags []string
@@ -169,7 +169,7 @@ func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
 	// Parse education
 	var education []map[string]interface{}
 	for i := 0; ; i++ {
-		placeName := r.FormValue(fmt.Sprintf("education[%d][place_name]", i))
+		placeName := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][place_name]", i)))
 		if placeName == "" {
 			break
 		}
@@ -177,14 +177,14 @@ func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
 		edu := map[string]interface{}{
 			"place": map[string]string{
 				"name": placeName,
-				"link": r.FormValue(fmt.Sprintf("education[%d][place_link]", i)),
+				"link": utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][place_link]", i))),
 			},
-			"degree":   r.FormValue(fmt.Sprintf("education[%d][degree]", i)),
-			"major":    r.FormValue(fmt.Sprintf("education[%d][major]", i)),
-			"track":    r.FormValue(fmt.Sprintf("education[%d][track]", i)),
-			"from":     r.FormValue(fmt.Sprintf("education[%d][from]", i)),
-			"to":       r.FormValue(fmt.Sprintf("education[%d][to]", i)),
-			"location": r.FormValue(fmt.Sprintf("education[%d][location]", i)),
+			"degree":   utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][degree]", i))),
+			"major":    utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][major]", i))),
+			"track":    utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][track]", i))),
+			"from":     utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][from]", i))),
+			"to":       utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][to]", i))),
+			"location": utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][location]", i))),
 		}
 
 		education = append(education, edu)
@@ -197,7 +197,7 @@ func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
 	// Parse technical expertise
 	var technicalExpertise []map[string]interface{}
 	for i := 0; ; i++ {
-		name := r.FormValue(fmt.Sprintf("technical_expertise[%d][name]", i))
+		name := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("technical_expertise[%d][name]", i)))
 		if name == "" {
 			break
 		}
@@ -221,14 +221,14 @@ func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
 	// Parse achievements
 	var achievements []map[string]interface{}
 	for i := 0; ; i++ {
-		name := r.FormValue(fmt.Sprintf("achievements[%d][name]", i))
+		name := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("achievements[%d][name]", i)))
 		if name == "" {
 			break
 		}
 
 		achievements = append(achievements, map[string]interface{}{
 			"name":        name,
-			"description": r.FormValue(fmt.Sprintf("achievements[%d][description]", i)),
+			"description": utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("achievements[%d][description]", i))),
 		})
 	}
 	if achievements == nil {
@@ -237,7 +237,7 @@ func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
 	data["achievements"] = achievements
 
 	// Parse comma-separated lists with defaults
-	skills := r.FormValue("skills")
+	skills := utils.SanitizeFormValue(r.FormValue("skills"))
 	var cleanSkills []string
 	if skills != "" {
 		skillList := strings.Split(skills, ",")
@@ -250,7 +250,7 @@ func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
 	}
 	data["skills"] = cleanSkills
 
-	methodology := r.FormValue("methodology")
+	methodology := utils.SanitizeFormValue(r.FormValue("methodology"))
 	var cleanMethods []string
 	if methodology != "" {
 		methodList := strings.Split(methodology, ",")
@@ -263,7 +263,7 @@ func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
 	}
 	data["methodology"] = cleanMethods
 
-	tools := r.FormValue("tools")
+	tools := utils.SanitizeFormValue(r.FormValue("tools"))
 	var cleanTools []string
 	if tools != "" {
 		toolList := strings.Split(tools, ",")
