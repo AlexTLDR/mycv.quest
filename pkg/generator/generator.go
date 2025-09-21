@@ -118,8 +118,21 @@ func (cv *CVGenerator) GetTemplateData() []templates.CVTemplate {
 		"modern":  "Contemporary design with visual elements and photo support",
 	}
 
+	// Map template keys to their example PDF paths
+	examplePDFs := map[string]string{
+		"vantage": "/static/templates/vantage/example.pdf",
+		"basic":   "/static/templates/basic/example-resume.pdf",
+		"modern":  "/static/templates/modern/template/test.pdf",
+	}
+
 	for key, template := range cv.config.Templates {
-		pdfPath := fmt.Sprintf("/static/output/cv-%s.pdf", key)
+		// Use example PDF for preview instead of generated CV
+		pdfPath := examplePDFs[key]
+		if pdfPath == "" {
+			// Fallback if no example PDF is found
+			pdfPath = fmt.Sprintf("/static/templates/%s/example.pdf", key)
+		}
+
 		thumbnailPath := ""
 
 		// Check for thumbnail images
@@ -141,28 +154,24 @@ func (cv *CVGenerator) GetTemplateData() []templates.CVTemplate {
 	return templateData
 }
 
-func (cv *CVGenerator) GenerateFromForm(templateKey string, r *http.Request) error {
+func (cv *CVGenerator) GenerateFromForm(templateKey string, r *http.Request) ([]byte, error) {
 	template, exists := cv.config.GetTemplate(templateKey)
 	if !exists {
-		return fmt.Errorf("template '%s' not found", templateKey)
-	}
-
-	if err := utils.EnsureDir(cv.config.OutputDir); err != nil {
-		return fmt.Errorf("failed to create output directory: %w", err)
+		return nil, fmt.Errorf("template '%s' not found", templateKey)
 	}
 
 	// Parse form data - handle both multipart and regular forms
 	if strings.Contains(r.Header.Get("Content-Type"), "multipart/form-data") {
 		if err := r.ParseMultipartForm(10 << 20); err != nil { // 10 MB max
-			return fmt.Errorf("failed to parse multipart form: %w", err)
+			return nil, fmt.Errorf("failed to parse multipart form: %w", err)
 		}
 	} else {
 		if err := r.ParseForm(); err != nil {
-			return fmt.Errorf("failed to parse form: %w", err)
+			return nil, fmt.Errorf("failed to parse form: %w", err)
 		}
 	}
 
-	// Generate template-specific files
+	// Generate template-specific files and return PDF data
 	switch templateKey {
 	case "basic":
 		return cv.generateBasicCV(template, r)
@@ -171,7 +180,7 @@ func (cv *CVGenerator) GenerateFromForm(templateKey string, r *http.Request) err
 	case "vantage":
 		return cv.generateVantageCV(template, r)
 	default:
-		return fmt.Errorf("unsupported template: %s", templateKey)
+		return nil, fmt.Errorf("unsupported template: %s", templateKey)
 	}
 }
 
@@ -185,6 +194,26 @@ func (cv *CVGenerator) handlePhotoUpload(r *http.Request, templateDir string) er
 
 	// Save uploaded file as avatar.png in template directory
 	avatarPath := filepath.Join(templateDir, "avatar.png")
+	dest, err := os.Create(avatarPath)
+	if err != nil {
+		return err
+	}
+	defer dest.Close()
+
+	_, err = io.Copy(dest, file)
+	return err
+}
+
+func (cv *CVGenerator) handlePhotoUploadToWorkDir(r *http.Request, workDir string) error {
+	file, _, err := r.FormFile("avatar")
+	if err != nil {
+		// No file uploaded, that's okay
+		return nil
+	}
+	defer file.Close()
+
+	// Save uploaded file as avatar.png in work directory
+	avatarPath := filepath.Join(workDir, "avatar.png")
 	dest, err := os.Create(avatarPath)
 	if err != nil {
 		return err

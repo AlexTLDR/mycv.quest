@@ -15,12 +15,17 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func (cv *CVGenerator) generateVantageCV(template config.Template, r *http.Request) error {
+func (cv *CVGenerator) generateVantageCV(template config.Template, r *http.Request) ([]byte, error) {
+	// Ensure temp directory exists
+	if err := os.MkdirAll("temp", 0o755); err != nil {
+		return nil, fmt.Errorf("failed to create temp directory: %w", err)
+	}
+
 	// Create a unique directory for this generation
 	timestamp := time.Now().Format("20060102_150405")
 	workDir := filepath.Join("temp", "vantage_"+timestamp)
 	if err := os.MkdirAll(workDir, 0o755); err != nil {
-		return fmt.Errorf("failed to create work directory: %w", err)
+		return nil, fmt.Errorf("failed to create work directory: %w", err)
 	}
 	defer os.RemoveAll(workDir) // Clean up
 
@@ -30,7 +35,7 @@ func (cv *CVGenerator) generateVantageCV(template config.Template, r *http.Reque
 		src := filepath.Join(template.Dir, file)
 		dst := filepath.Join(workDir, file)
 		if err := utils.CopyFile(src, dst); err != nil {
-			return fmt.Errorf("failed to copy %s: %w", file, err)
+			return nil, fmt.Errorf("failed to copy %s: %w", file, err)
 		}
 	}
 
@@ -39,30 +44,39 @@ func (cv *CVGenerator) generateVantageCV(template config.Template, r *http.Reque
 	if _, err := os.Stat(iconsDir); err == nil {
 		destIconsDir := filepath.Join(workDir, "icons")
 		if err := utils.CopyDir(iconsDir, destIconsDir); err != nil {
-			return fmt.Errorf("failed to copy icons directory: %w", err)
+			return nil, fmt.Errorf("failed to copy icons directory: %w", err)
 		}
 	}
 
 	// Generate configuration.yaml with form data
 	yamlContent := cv.generateVantageYAMLContent(r)
 	if err := os.WriteFile(filepath.Join(workDir, "configuration.yaml"), yamlContent, 0o644); err != nil {
-		return fmt.Errorf("failed to write configuration.yaml: %w", err)
+		return nil, fmt.Errorf("failed to write configuration.yaml: %w", err)
 	}
 
-	// Compile PDF
-	outputFile := filepath.Join(cv.config.OutputDir, "cv-vantage.pdf")
-	absOutputFile, _ := filepath.Abs(outputFile)
+	// Compile PDF to temporary file
+	outputFile := filepath.Join(workDir, "output.pdf")
+	absOutputFile, err := filepath.Abs(outputFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get absolute path for output file: %w", err)
+	}
 
 	cmd := exec.Command("typst", "compile", "example.typ", absOutputFile)
 	cmd.Dir = workDir
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("typst compilation failed: %w\nOutput: %s", err, string(output))
+		return nil, fmt.Errorf("typst compilation failed: %w\nOutput: %s", err, string(output))
 	}
 
-	fmt.Printf("CV generated successfully at %s\n", outputFile)
-	return nil
+	// Read the generated PDF into memory
+	pdfData, err := os.ReadFile(absOutputFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read generated PDF: %w", err)
+	}
+
+	fmt.Printf("CV generated successfully in memory\n")
+	return pdfData, nil
 }
 
 func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {

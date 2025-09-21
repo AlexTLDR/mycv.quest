@@ -13,21 +13,26 @@ import (
 	"github.com/AlexTLDR/mycv.quest/pkg/utils"
 )
 
-func (cv *CVGenerator) generateModernCV(template config.Template, r *http.Request) error {
-	// Handle photo upload if present
-	if template.NeedsPhoto {
-		if err := cv.handlePhotoUpload(r, template.Dir); err != nil {
-			return fmt.Errorf("failed to handle photo upload: %w", err)
-		}
+func (cv *CVGenerator) generateModernCV(template config.Template, r *http.Request) ([]byte, error) {
+	// Ensure temp directory exists
+	if err := os.MkdirAll("temp", 0o755); err != nil {
+		return nil, fmt.Errorf("failed to create temp directory: %w", err)
 	}
 
 	// Create a unique directory for this generation
 	timestamp := time.Now().Format("20060102_150405")
 	workDir := filepath.Join("temp", "modern_"+timestamp)
 	if err := os.MkdirAll(workDir, 0o755); err != nil {
-		return fmt.Errorf("failed to create work directory: %w", err)
+		return nil, fmt.Errorf("failed to create work directory: %w", err)
 	}
 	defer os.RemoveAll(workDir) // Clean up
+
+	// Handle photo upload if present
+	if template.NeedsPhoto {
+		if err := cv.handlePhotoUploadToWorkDir(r, workDir); err != nil {
+			return nil, fmt.Errorf("failed to handle photo upload: %w", err)
+		}
+	}
 
 	// Copy template files and avatar
 	srcFiles := []string{"main.typ", "config.yaml"}
@@ -35,39 +40,48 @@ func (cv *CVGenerator) generateModernCV(template config.Template, r *http.Reques
 		src := filepath.Join(template.Dir, file)
 		dst := filepath.Join(workDir, file)
 		if err := utils.CopyFile(src, dst); err != nil {
-			return fmt.Errorf("failed to copy %s: %w", file, err)
+			return nil, fmt.Errorf("failed to copy %s: %w", file, err)
 		}
 	}
 
-	// Copy avatar if it exists
+	// Copy avatar if it exists in template dir
 	avatarSrc := filepath.Join(template.Dir, "avatar.png")
 	if _, err := os.Stat(avatarSrc); err == nil {
 		avatarDst := filepath.Join(workDir, "avatar.png")
 		if err := utils.CopyFile(avatarSrc, avatarDst); err != nil {
-			return fmt.Errorf("failed to copy avatar: %w", err)
+			return nil, fmt.Errorf("failed to copy avatar: %w", err)
 		}
 	}
 
 	// Generate main.typ with form data
 	typContent := cv.generateModernTypContent(r)
 	if err := os.WriteFile(filepath.Join(workDir, "main.typ"), []byte(typContent), 0o644); err != nil {
-		return fmt.Errorf("failed to write main.typ: %w", err)
+		return nil, fmt.Errorf("failed to write main.typ: %w", err)
 	}
 
-	// Compile PDF
-	outputFile := filepath.Join(cv.config.OutputDir, "cv-modern.pdf")
-	absOutputFile, _ := filepath.Abs(outputFile)
+	// Compile PDF to temporary file
+	outputFile := filepath.Join(workDir, "output.pdf")
+	absOutputFile, err := filepath.Abs(outputFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get absolute path for output file: %w", err)
+	}
 
 	cmd := exec.Command("typst", "compile", "main.typ", absOutputFile)
 	cmd.Dir = workDir
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("typst compilation failed: %w\nOutput: %s", err, string(output))
+		return nil, fmt.Errorf("typst compilation failed: %w\nOutput: %s", err, string(output))
 	}
 
-	fmt.Printf("CV generated successfully at %s\n", outputFile)
-	return nil
+	// Read the generated PDF into memory
+	pdfData, err := os.ReadFile(absOutputFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read generated PDF: %w", err)
+	}
+
+	fmt.Printf("CV generated successfully in memory\n")
+	return pdfData, nil
 }
 
 func (cv *CVGenerator) generateModernTypContent(r *http.Request) string {

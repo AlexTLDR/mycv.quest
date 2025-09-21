@@ -10,12 +10,14 @@ import (
 )
 
 type Server struct {
-	generator *generator.CVGenerator
+	generator      *generator.CVGenerator
+	sessionManager *SessionManager
 }
 
 func New(gen *generator.CVGenerator) *Server {
 	return &Server{
-		generator: gen,
+		generator:      gen,
+		sessionManager: NewSessionManager(),
 	}
 }
 
@@ -31,6 +33,9 @@ func (s *Server) SetupRoutes() {
 
 	// Generate CV endpoint
 	http.HandleFunc("/generate/", s.handleGenerate)
+
+	// Serve session-specific generated PDFs
+	http.HandleFunc("/cv/", s.handleSessionPDF)
 }
 
 func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
@@ -68,15 +73,54 @@ func (s *Server) handleGenerate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		if err := s.generator.GenerateFromForm(templateKey, r); err != nil {
+		// Get or create session
+		session := s.sessionManager.GetOrCreateSession(r)
+		s.sessionManager.SetSessionCookie(w, session)
+
+		// Generate CV in memory
+		pdfData, err := s.generator.GenerateFromForm(templateKey, r)
+		if err != nil {
 			http.Error(w, fmt.Sprintf("Error generating CV: %v", err), http.StatusInternalServerError)
 			return
 		}
 
-		// Redirect to the generated PDF
-		http.Redirect(w, r, fmt.Sprintf("/static/output/cv-%s.pdf", templateKey), http.StatusSeeOther)
+		// Store PDF in session
+		s.sessionManager.StorePDF(session.ID, templateKey, pdfData)
+
+		// Redirect to the session-specific generated PDF
+		http.Redirect(w, r, fmt.Sprintf("/cv/%s/%s.pdf", session.ID, templateKey), http.StatusSeeOther)
 		return
 	}
 
 	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+}
+
+func (s *Server) handleSessionPDF(w http.ResponseWriter, r *http.Request) {
+	// Parse URL path: /cv/{sessionID}/{template}.pdf
+	pathParts := strings.Split(strings.TrimPrefix(r.URL.Path, "/cv/"), "/")
+	if len(pathParts) != 2 {
+		http.NotFound(w, r)
+		return
+	}
+
+	sessionID := pathParts[0]
+	templateFile := pathParts[1]
+
+	// Extract template key from filename
+	templateKey := strings.TrimSuffix(templateFile, ".pdf")
+
+	// Get PDF data from session
+	pdfData, exists := s.sessionManager.GetPDF(sessionID, templateKey)
+	if !exists {
+		http.NotFound(w, r)
+		return
+	}
+
+	// Set headers for PDF response
+	w.Header().Set("Content-Type", "application/pdf")
+	w.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=\"cv-%s.pdf\"", templateKey))
+	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(pdfData)))
+
+	// Write PDF data
+	w.Write(pdfData)
 }
