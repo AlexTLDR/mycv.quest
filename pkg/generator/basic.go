@@ -1,0 +1,219 @@
+package generator
+
+import (
+	"fmt"
+	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"time"
+
+	"github.com/AlexTLDR/mycv.quest/pkg/config"
+	"github.com/AlexTLDR/mycv.quest/pkg/utils"
+)
+
+func (cv *CVGenerator) generateBasicCV(template config.Template, r *http.Request) error {
+	// Create a unique directory for this generation
+	timestamp := time.Now().Format("20060102_150405")
+	workDir := filepath.Join("temp", "basic_"+timestamp)
+	if err := os.MkdirAll(workDir, 0o755); err != nil {
+		return fmt.Errorf("failed to create work directory: %w", err)
+	}
+	defer os.RemoveAll(workDir) // Clean up
+
+	// Copy template files
+	srcFiles := []string{"main.typ"}
+	for _, file := range srcFiles {
+		src := filepath.Join(template.Dir, file)
+		dst := filepath.Join(workDir, file)
+		if err := utils.CopyFile(src, dst); err != nil {
+			return fmt.Errorf("failed to copy %s: %w", file, err)
+		}
+	}
+
+	// Generate main.typ with form data
+	typContent := cv.generateBasicTypContent(r)
+	if err := os.WriteFile(filepath.Join(workDir, "main.typ"), []byte(typContent), 0o644); err != nil {
+		return fmt.Errorf("failed to write main.typ: %w", err)
+	}
+
+	// Compile PDF
+	outputFile := filepath.Join(cv.config.OutputDir, "cv-basic.pdf")
+	absOutputFile, _ := filepath.Abs(outputFile)
+
+	cmd := exec.Command("typst", "compile", "main.typ", absOutputFile)
+	cmd.Dir = workDir
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("typst compilation failed: %w\nOutput: %s", err, string(output))
+	}
+
+	fmt.Printf("CV generated successfully at %s\n", outputFile)
+	return nil
+}
+
+func (cv *CVGenerator) generateBasicTypContent(r *http.Request) string {
+	name := r.FormValue("name")
+	location := r.FormValue("location")
+	email := r.FormValue("email")
+	github := r.FormValue("github")
+	linkedin := r.FormValue("linkedin")
+	phone := r.FormValue("phone")
+	personalSite := r.FormValue("personal_site")
+	accentColor := r.FormValue("accent_color")
+	if accentColor == "" {
+		accentColor = "#26428b"
+	}
+
+	content := fmt.Sprintf(`#import "@preview/basic-resume:0.2.8": *
+
+// Personal information
+#let name = "%s"
+#let location = "%s"
+#let email = "%s"
+#let github = "%s"
+#let linkedin = "%s"
+#let phone = "%s"
+#let personal-site = "%s"
+
+#show: resume.with(
+  author: name,
+  location: location,
+  email: email,
+  github: github,
+  linkedin: linkedin,
+  phone: phone,
+  personal-site: personal-site,
+  accent-color: "%s",
+  font: "New Computer Modern",
+  paper: "us-letter",
+  author-position: left,
+  personal-info-position: left,
+)
+
+`, name, location, email, github, linkedin, phone, personalSite, accentColor)
+
+	// Add education section
+	content += "== Education\n\n"
+	for i := 0; ; i++ {
+		institution := r.FormValue(fmt.Sprintf("education[%d][institution]", i))
+		if institution == "" {
+			break
+		}
+		location := r.FormValue(fmt.Sprintf("education[%d][location]", i))
+		startDate := r.FormValue(fmt.Sprintf("education[%d][start_date]", i))
+		endDate := r.FormValue(fmt.Sprintf("education[%d][end_date]", i))
+		degree := r.FormValue(fmt.Sprintf("education[%d][degree]", i))
+		details := r.FormValue(fmt.Sprintf("education[%d][details]", i))
+
+		content += fmt.Sprintf(`#edu(
+  institution: "%s",
+  location: "%s",
+  dates: dates-helper(start-date: "%s", end-date: "%s"),
+  degree: "%s",
+)
+`, institution, location, startDate, endDate, degree)
+
+		if details != "" {
+			lines := strings.Split(details, "\n")
+			for _, line := range lines {
+				if strings.TrimSpace(line) != "" {
+					content += fmt.Sprintf("- %s\n", strings.TrimSpace(line))
+				}
+			}
+		}
+		content += "\n"
+	}
+
+	// Add work experience section
+	content += "== Work Experience\n\n"
+	for i := 0; ; i++ {
+		title := r.FormValue(fmt.Sprintf("work[%d][title]", i))
+		if title == "" {
+			break
+		}
+		company := r.FormValue(fmt.Sprintf("work[%d][company]", i))
+		location := r.FormValue(fmt.Sprintf("work[%d][location]", i))
+		startDate := r.FormValue(fmt.Sprintf("work[%d][start_date]", i))
+		endDate := r.FormValue(fmt.Sprintf("work[%d][end_date]", i))
+		description := r.FormValue(fmt.Sprintf("work[%d][description]", i))
+
+		content += fmt.Sprintf(`#work(
+  title: "%s",
+  location: "%s",
+  company: "%s",
+  dates: dates-helper(start-date: "%s", end-date: "%s"),
+)
+`, title, location, company, startDate, endDate)
+
+		if description != "" {
+			lines := strings.Split(description, "\n")
+			for _, line := range lines {
+				if strings.TrimSpace(line) != "" {
+					content += fmt.Sprintf("%s\n", strings.TrimSpace(line))
+				}
+			}
+		}
+		content += "\n"
+	}
+
+	// Add projects section
+	content += "== Projects\n\n"
+	for i := 0; ; i++ {
+		name := r.FormValue(fmt.Sprintf("projects[%d][name]", i))
+		if name == "" {
+			break
+		}
+		role := r.FormValue(fmt.Sprintf("projects[%d][role]", i))
+		startDate := r.FormValue(fmt.Sprintf("projects[%d][start_date]", i))
+		endDate := r.FormValue(fmt.Sprintf("projects[%d][end_date]", i))
+		url := r.FormValue(fmt.Sprintf("projects[%d][url]", i))
+		description := r.FormValue(fmt.Sprintf("projects[%d][description]", i))
+
+		projectCall := "#project(\n  name: \"" + name + "\","
+		if role != "" {
+			projectCall += "\n  role: \"" + role + "\","
+		}
+		if startDate != "" {
+			if endDate != "" {
+				projectCall += fmt.Sprintf("\n  dates: dates-helper(start-date: \"%s\", end-date: \"%s\"),", startDate, endDate)
+			} else {
+				projectCall += fmt.Sprintf("\n  dates: dates-helper(start-date: \"%s\"),", startDate)
+			}
+		}
+		if url != "" {
+			projectCall += "\n  url: \"" + url + "\","
+		}
+		projectCall += "\n)\n"
+
+		content += projectCall
+
+		if description != "" {
+			lines := strings.Split(description, "\n")
+			for _, line := range lines {
+				if strings.TrimSpace(line) != "" {
+					content += fmt.Sprintf("%s\n", strings.TrimSpace(line))
+				}
+			}
+		}
+		content += "\n"
+	}
+
+	// Add skills section
+	programmingLanguages := r.FormValue("programming_languages")
+	technologies := r.FormValue("technologies")
+
+	if programmingLanguages != "" || technologies != "" {
+		content += "== Skills\n"
+		if programmingLanguages != "" {
+			content += fmt.Sprintf("- *Programming Languages*: %s\n", programmingLanguages)
+		}
+		if technologies != "" {
+			content += fmt.Sprintf("- *Technologies*: %s\n", technologies)
+		}
+	}
+
+	return content
+}
