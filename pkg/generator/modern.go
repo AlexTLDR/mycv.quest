@@ -126,10 +126,12 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request, avatarFilename 
 		content += fmt.Sprintf("    linkedin: link(\"https://www.linkedin.com/in/%s\")[linkedin/%s],\n", linkedin, linkedin)
 	}
 	if github != "" {
-		content += fmt.Sprintf("    github: link(\"%s\")[%s],\n", github, github)
+		githubURL := utils.NormalizeURL(github)
+		content += fmt.Sprintf("    github: link(\"%s\")[%s],\n", githubURL, github)
 	}
 	if website != "" {
-		content += fmt.Sprintf("    website: link(\"https://%s\")[%s],\n", website, website)
+		websiteURL := utils.NormalizeURL(website)
+		content += fmt.Sprintf("    website: link(\"%s\")[%s],\n", websiteURL, website)
 	}
 
 	content += "  ),\n)\n\n"

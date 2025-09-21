@@ -28,3 +28,17 @@ func SanitizeForTypst(input string) string {
 func SanitizeFormValue(value string) string {
 	return SanitizeForTypst(strings.TrimSpace(value))
 }
+
+// NormalizeURL ensures a URL has a proper protocol prefix
+func NormalizeURL(url string) string {
+	if url == "" {
+		return url
+	}
+
+	url = strings.TrimSpace(url)
+	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
+		return "https://" + url
+	}
+
+	return url
+}

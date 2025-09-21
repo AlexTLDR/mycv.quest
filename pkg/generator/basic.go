@@ -72,10 +72,10 @@ func (cv *CVGenerator) generateBasicTypContent(r *http.Request) string {
 	name := utils.SanitizeFormValue(r.FormValue("name"))
 	location := utils.SanitizeFormValue(r.FormValue("location"))
 	email := utils.SanitizeFormValue(r.FormValue("email"))
-	github := utils.SanitizeFormValue(r.FormValue("github"))
-	linkedin := utils.SanitizeFormValue(r.FormValue("linkedin"))
+	github := utils.NormalizeURL(utils.SanitizeFormValue(r.FormValue("github")))
+	linkedin := utils.NormalizeURL(utils.SanitizeFormValue(r.FormValue("linkedin")))
 	phone := utils.SanitizeFormValue(r.FormValue("phone"))
-	personalSite := utils.SanitizeFormValue(r.FormValue("personal_site"))
+	personalSite := utils.NormalizeURL(utils.SanitizeFormValue(r.FormValue("personal_site")))
 	accentColor := r.FormValue("accent_color")
 	if accentColor == "" {
 		accentColor = "#26428b"

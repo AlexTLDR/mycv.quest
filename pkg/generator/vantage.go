@@ -88,15 +88,15 @@ func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
 			"address":  utils.SanitizeFormValue(r.FormValue("address")),
 			"location": utils.SanitizeFormValue(r.FormValue("location")),
 			"linkedin": map[string]string{
-				"url":         utils.SanitizeFormValue(r.FormValue("linkedin_url")),
+				"url":         utils.NormalizeURL(utils.SanitizeFormValue(r.FormValue("linkedin_url"))),
 				"displayText": utils.SanitizeFormValue(r.FormValue("linkedin_display_text")),
 			},
 			"github": map[string]string{
-				"url":         utils.SanitizeFormValue(r.FormValue("github_url")),
+				"url":         utils.NormalizeURL(utils.SanitizeFormValue(r.FormValue("github_url"))),
 				"displayText": utils.SanitizeFormValue(r.FormValue("github_display_text")),
 			},
 			"website": map[string]string{
-				"url":         utils.SanitizeFormValue(r.FormValue("website_url")),
+				"url":         utils.NormalizeURL(utils.SanitizeFormValue(r.FormValue("website_url"))),
 				"displayText": utils.SanitizeFormValue(r.FormValue("website_display_text")),
 			},
 		},
@@ -117,11 +117,11 @@ func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
 			"position": position,
 			"company": map[string]string{
 				"name": utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][company_name]", i))),
-				"link": utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][company_link]", i))),
+				"link": utils.NormalizeURL(utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][company_link]", i)))),
 			},
 			"product": map[string]string{
 				"name": utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][product_name]", i))),
-				"link": utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][product_link]", i))),
+				"link": utils.NormalizeURL(utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][product_link]", i)))),
 			},
 			"from":     utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][from]", i))),
 			"to":       utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][to]", i))),
@@ -177,7 +177,7 @@ func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
 		edu := map[string]interface{}{
 			"place": map[string]string{
 				"name": placeName,
-				"link": utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][place_link]", i))),
+				"link": utils.NormalizeURL(utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][place_link]", i)))),
 			},
 			"degree":   utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][degree]", i))),
 			"major":    utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][major]", i))),
