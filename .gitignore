@@ -37,6 +37,8 @@ Thumbs.db
 output/
 temp/
 *.pdf
+# But allow example PDFs for templates
+!templates/*/*.pdf
 
 # Log files
 *.log
