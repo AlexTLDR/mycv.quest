@@ -16,7 +16,7 @@ tasks:
         cmd: |
             air \
             --build.cmd "go build -o tmp/bin/main ." \
-            --build.bin "tmp/bin/main" \
+            --build.bin "tmp/bin/main -serve" \
             --build.delay "100" \
             --build.exclude_dir "node_modules,tmp" \
             --build.include_ext "go" \
