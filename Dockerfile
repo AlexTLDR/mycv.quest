@@ -1,8 +1,11 @@
 # Build stage
-FROM golang:1.25-alpine AS builder
+FROM golang:latest AS builder
 
 # Install build dependencies
 RUN apk add --no-cache git
+
+# Install templ CLI
+RUN go install github.com/a-h/templ/cmd/templ@latest
 
 # Set working directory
 WORKDIR /app
@@ -15,6 +18,9 @@ RUN go mod download
 
 # Copy source code
 COPY . .
+
+# Generate templates
+RUN templ generate
 
 # Build the application
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
