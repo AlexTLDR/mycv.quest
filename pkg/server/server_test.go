@@ -1,4 +1,4 @@
-package server
+package server_test
 
 import (
 	"bytes"
@@ -12,9 +12,10 @@ import (
 
 	"github.com/AlexTLDR/mycv.quest/pkg/config"
 	"github.com/AlexTLDR/mycv.quest/pkg/generator"
+	"github.com/AlexTLDR/mycv.quest/pkg/server"
 )
 
-func setupTestServer() *Server {
+func setupTestServer() *server.Server {
 	cfg := &config.Config{
 		Templates: map[string]config.Template{
 			"basic": {
@@ -38,16 +39,16 @@ func setupTestServer() *Server {
 	}
 
 	gen := generator.New(cfg)
-	return New(gen)
+	return server.New(gen)
 }
 
 func TestHandleIndex(t *testing.T) {
 	server := setupTestServer()
 
-	req := httptest.NewRequest("GET", "/", nil)
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	w := httptest.NewRecorder()
 
-	server.handleIndex(w, req)
+	server.HandleIndex(w, req)
 
 	resp := w.Result()
 	if resp.StatusCode != http.StatusOK {
@@ -78,10 +79,10 @@ func TestHandleIndex(t *testing.T) {
 func TestHandleIndexNotFound(t *testing.T) {
 	server := setupTestServer()
 
-	req := httptest.NewRequest("GET", "/nonexistent", nil)
+	req := httptest.NewRequest(http.MethodGet, "/nonexistent", nil)
 	w := httptest.NewRecorder()
 
-	server.handleIndex(w, req)
+	server.HandleIndex(w, req)
 
 	resp := w.Result()
 	if resp.StatusCode != http.StatusNotFound {
@@ -104,10 +105,10 @@ func TestHandleForm(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		req := httptest.NewRequest("GET", tc.path, nil)
+		req := httptest.NewRequest(http.MethodGet, tc.path, nil)
 		w := httptest.NewRecorder()
 
-		server.handleForm(w, req)
+		server.HandleForm(w, req)
 
 		resp := w.Result()
 		if resp.StatusCode != tc.expectedStatus {
@@ -131,10 +132,10 @@ func TestHandleForm(t *testing.T) {
 func TestHandleGenerateGET(t *testing.T) {
 	server := setupTestServer()
 
-	req := httptest.NewRequest("GET", "/generate/basic", nil)
+	req := httptest.NewRequest(http.MethodGet, "/generate/basic", nil)
 	w := httptest.NewRecorder()
 
-	server.handleGenerate(w, req)
+	server.HandleGenerate(w, req)
 
 	resp := w.Result()
 	if resp.StatusCode != http.StatusSeeOther {
@@ -151,10 +152,10 @@ func TestHandleGenerateGET(t *testing.T) {
 func TestHandleGenerateMethodNotAllowed(t *testing.T) {
 	server := setupTestServer()
 
-	req := httptest.NewRequest("PUT", "/generate/basic", nil)
+	req := httptest.NewRequest(http.MethodPut, "/generate/basic", nil)
 	w := httptest.NewRecorder()
 
-	server.handleGenerate(w, req)
+	server.HandleGenerate(w, req)
 
 	resp := w.Result()
 	if resp.StatusCode != http.StatusMethodNotAllowed {
@@ -177,11 +178,11 @@ func TestHandleGeneratePOSTBasic(t *testing.T) {
 		"work[0][company]":          {"Test Company"},
 	}
 
-	req := httptest.NewRequest("POST", "/generate/basic", strings.NewReader(formData.Encode()))
+	req := httptest.NewRequest(http.MethodPost, "/generate/basic", strings.NewReader(formData.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	w := httptest.NewRecorder()
 
-	server.handleGenerate(w, req)
+	server.HandleGenerate(w, req)
 
 	resp := w.Result()
 	if resp.StatusCode != http.StatusSeeOther {
@@ -246,11 +247,11 @@ func TestHandleGeneratePOSTModernWithPhoto(t *testing.T) {
 
 	writer.Close()
 
-	req := httptest.NewRequest("POST", "/generate/modern", &buf)
+	req := httptest.NewRequest(http.MethodPost, "/generate/modern", &buf)
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	w := httptest.NewRecorder()
 
-	server.handleGenerate(w, req)
+	server.HandleGenerate(w, req)
 
 	resp := w.Result()
 
@@ -284,11 +285,11 @@ func TestHandleSessionPDF(t *testing.T) {
 		"email": {"test@example.com"},
 	}
 
-	req := httptest.NewRequest("POST", "/generate/basic", strings.NewReader(formData.Encode()))
+	req := httptest.NewRequest(http.MethodPost, "/generate/basic", strings.NewReader(formData.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	w := httptest.NewRecorder()
 
-	server.handleGenerate(w, req)
+	server.HandleGenerate(w, req)
 
 	// Extract session ID from redirect location
 	location := w.Header().Get("Location")
@@ -298,10 +299,10 @@ func TestHandleSessionPDF(t *testing.T) {
 	}
 
 	// Now test accessing the PDF
-	pdfReq := httptest.NewRequest("GET", location, nil)
+	pdfReq := httptest.NewRequest(http.MethodGet, location, nil)
 	pdfW := httptest.NewRecorder()
 
-	server.handleSessionPDF(pdfW, pdfReq)
+	server.HandleSessionPDF(pdfW, pdfReq)
 
 	resp := pdfW.Result()
 	if resp.StatusCode != http.StatusOK {
@@ -345,10 +346,10 @@ func TestHandleSessionPDFNotFound(t *testing.T) {
 	}
 
 	for _, path := range testCases {
-		req := httptest.NewRequest("GET", path, nil)
+		req := httptest.NewRequest(http.MethodGet, path, nil)
 		w := httptest.NewRecorder()
 
-		server.handleSessionPDF(w, req)
+		server.HandleSessionPDF(w, req)
 
 		resp := w.Result()
 		if resp.StatusCode != http.StatusNotFound {
@@ -367,11 +368,11 @@ func TestSessionManagement(t *testing.T) {
 	}
 
 	// Generate basic CV
-	req1 := httptest.NewRequest("POST", "/generate/basic", strings.NewReader(formData.Encode()))
+	req1 := httptest.NewRequest(http.MethodPost, "/generate/basic", strings.NewReader(formData.Encode()))
 	req1.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	w1 := httptest.NewRecorder()
 
-	server.handleGenerate(w1, req1)
+	server.HandleGenerate(w1, req1)
 
 	// Extract session cookie
 	resp1 := w1.Result()
@@ -394,29 +395,29 @@ func TestSessionManagement(t *testing.T) {
 		"position": {"Developer"},
 	}
 
-	req2 := httptest.NewRequest("POST", "/generate/vantage", strings.NewReader(formData2.Encode()))
+	req2 := httptest.NewRequest(http.MethodPost, "/generate/vantage", strings.NewReader(formData2.Encode()))
 	req2.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req2.AddCookie(sessionCookie) // Use existing session
 	w2 := httptest.NewRecorder()
 
-	server.handleGenerate(w2, req2)
+	server.HandleGenerate(w2, req2)
 
 	// Both PDFs should be accessible with the same session
 	sessionID := sessionCookie.Value
 
 	// Test basic PDF
-	basicReq := httptest.NewRequest("GET", "/cv/"+sessionID+"/basic.pdf", nil)
+	basicReq := httptest.NewRequest(http.MethodGet, "/cv/"+sessionID+"/basic.pdf", nil)
 	basicW := httptest.NewRecorder()
-	server.handleSessionPDF(basicW, basicReq)
+	server.HandleSessionPDF(basicW, basicReq)
 
 	if basicW.Result().StatusCode != http.StatusOK {
 		t.Error("Basic PDF should be accessible")
 	}
 
 	// Test vantage PDF
-	vantageReq := httptest.NewRequest("GET", "/cv/"+sessionID+"/vantage.pdf", nil)
+	vantageReq := httptest.NewRequest(http.MethodGet, "/cv/"+sessionID+"/vantage.pdf", nil)
 	vantageW := httptest.NewRecorder()
-	server.handleSessionPDF(vantageW, vantageReq)
+	server.HandleSessionPDF(vantageW, vantageReq)
 
 	if vantageW.Result().StatusCode != http.StatusOK {
 		t.Error("Vantage PDF should be accessible")
@@ -432,22 +433,22 @@ func TestConcurrentSessions(t *testing.T) {
 		"email": {"user1@example.com"},
 	}
 
-	req1 := httptest.NewRequest("POST", "/generate/basic", strings.NewReader(formData.Encode()))
+	req1 := httptest.NewRequest(http.MethodPost, "/generate/basic", strings.NewReader(formData.Encode()))
 	req1.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	w1 := httptest.NewRecorder()
 
-	server.handleGenerate(w1, req1)
+	server.HandleGenerate(w1, req1)
 
 	formData2 := url.Values{
 		"name":  {"User Two"},
 		"email": {"user2@example.com"},
 	}
 
-	req2 := httptest.NewRequest("POST", "/generate/basic", strings.NewReader(formData2.Encode()))
+	req2 := httptest.NewRequest(http.MethodPost, "/generate/basic", strings.NewReader(formData2.Encode()))
 	req2.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	w2 := httptest.NewRecorder()
 
-	server.handleGenerate(w2, req2)
+	server.HandleGenerate(w2, req2)
 
 	// Extract session IDs
 	location1 := w1.Header().Get("Location")
@@ -462,17 +463,17 @@ func TestConcurrentSessions(t *testing.T) {
 	}
 
 	// Each user should only be able to access their own PDF
-	req1PDF := httptest.NewRequest("GET", location1, nil)
+	req1PDF := httptest.NewRequest(http.MethodGet, location1, nil)
 	w1PDF := httptest.NewRecorder()
-	server.handleSessionPDF(w1PDF, req1PDF)
+	server.HandleSessionPDF(w1PDF, req1PDF)
 
 	if w1PDF.Result().StatusCode != http.StatusOK {
 		t.Error("User 1 should be able to access their PDF")
 	}
 
-	req2PDF := httptest.NewRequest("GET", location2, nil)
+	req2PDF := httptest.NewRequest(http.MethodGet, location2, nil)
 	w2PDF := httptest.NewRecorder()
-	server.handleSessionPDF(w2PDF, req2PDF)
+	server.HandleSessionPDF(w2PDF, req2PDF)
 
 	if w2PDF.Result().StatusCode != http.StatusOK {
 		t.Error("User 2 should be able to access their PDF")

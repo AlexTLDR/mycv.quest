@@ -14,6 +14,10 @@ import (
 	"github.com/AlexTLDR/mycv.quest/templates"
 )
 
+const (
+	DefaultAvatarFilename = "avatar.png"
+)
+
 type CVGenerator struct {
 	config *config.Config
 }
@@ -42,7 +46,7 @@ func (cv *CVGenerator) Generate(templateKey string) error {
 	}
 
 	if template.NeedsPhoto {
-		if err := cv.copyPhoto(template.Dir); err != nil {
+		if err := cv.CopyPhoto(template.Dir); err != nil {
 			return fmt.Errorf("failed to copy photo for %s template: %w", template.Name, err)
 		}
 	}
@@ -63,49 +67,6 @@ func (cv *CVGenerator) Generate(templateKey string) error {
 	}
 
 	fmt.Printf("CV generated successfully using %s template at %s/cv-%s.pdf\n", template.Name, cv.config.OutputDir, templateKey)
-	return nil
-}
-
-func (cv *CVGenerator) copyPhoto(templateDir string) error {
-	photoFiles, err := filepath.Glob("cv-photos/*")
-	if err != nil {
-		return fmt.Errorf("failed to find photos: %w", err)
-	}
-
-	if len(photoFiles) == 0 {
-		return fmt.Errorf("no photos found in cv-photos/ directory")
-	}
-
-	sourcePhoto := photoFiles[0]
-
-	if err := config.ValidatePath(sourcePhoto, "cv-photos"); err != nil {
-		return fmt.Errorf("invalid source photo path: %w", err)
-	}
-
-	destPhoto := filepath.Join(templateDir, "avatar.png")
-
-	if err := config.ValidatePath(templateDir, "templates"); err != nil {
-		return fmt.Errorf("invalid template directory: %w", err)
-	}
-
-	source, err := os.Open(sourcePhoto)
-	if err != nil {
-		return fmt.Errorf("failed to open source photo: %w", err)
-	}
-	defer source.Close()
-
-	dest, err := os.Create(destPhoto)
-	if err != nil {
-		return fmt.Errorf("failed to create destination photo: %w", err)
-	}
-	defer dest.Close()
-
-	_, err = io.Copy(dest, source)
-	if err != nil {
-		return fmt.Errorf("failed to copy photo: %w", err)
-	}
-
-	fmt.Printf("Copied photo %s to %s\n", sourcePhoto, destPhoto)
 	return nil
 }
 
@@ -174,14 +135,57 @@ func (cv *CVGenerator) GenerateFromForm(templateKey string, r *http.Request) ([]
 	// Generate template-specific files and return PDF data
 	switch templateKey {
 	case "basic":
-		return cv.generateBasicCV(template, r)
+		return cv.GenerateBasicCV(template, r)
 	case "modern":
-		return cv.generateModernCV(template, r)
+		return cv.GenerateModernCV(template, r)
 	case "vantage":
-		return cv.generateVantageCV(template, r)
+		return cv.GenerateVantageCV(template, r)
 	default:
 		return nil, fmt.Errorf("unsupported template: %s", templateKey)
 	}
+}
+
+func (cv *CVGenerator) CopyPhoto(templateDir string) error {
+	photoFiles, err := filepath.Glob("cv-photos/*")
+	if err != nil {
+		return fmt.Errorf("failed to find photos: %w", err)
+	}
+
+	if len(photoFiles) == 0 {
+		return fmt.Errorf("no photos found in cv-photos/ directory")
+	}
+
+	sourcePhoto := photoFiles[0]
+
+	if err := config.ValidatePath(sourcePhoto, "cv-photos"); err != nil {
+		return fmt.Errorf("invalid source photo path: %w", err)
+	}
+
+	destPhoto := filepath.Join(templateDir, "avatar.png")
+
+	if err := config.ValidatePath(templateDir, "templates"); err != nil {
+		return fmt.Errorf("invalid template directory: %w", err)
+	}
+
+	source, err := os.Open(sourcePhoto)
+	if err != nil {
+		return fmt.Errorf("failed to open source photo: %w", err)
+	}
+	defer source.Close()
+
+	dest, err := os.Create(destPhoto)
+	if err != nil {
+		return fmt.Errorf("failed to create destination photo: %w", err)
+	}
+	defer dest.Close()
+
+	_, err = io.Copy(dest, source)
+	if err != nil {
+		return fmt.Errorf("failed to copy photo: %w", err)
+	}
+
+	fmt.Printf("Copied photo %s to %s\n", sourcePhoto, destPhoto)
+	return nil
 }
 
 func (cv *CVGenerator) handlePhotoUpload(r *http.Request, templateDir string) error {
@@ -204,7 +208,7 @@ func (cv *CVGenerator) handlePhotoUpload(r *http.Request, templateDir string) er
 	return err
 }
 
-func (cv *CVGenerator) handlePhotoUploadToWorkDir(r *http.Request, workDir string) (string, error) {
+func (cv *CVGenerator) HandlePhotoUploadToWorkDir(r *http.Request, workDir string) (string, error) {
 	file, _, err := r.FormFile("avatar")
 	if err != nil {
 		// No file uploaded, that's okay
@@ -229,15 +233,16 @@ func (cv *CVGenerator) handlePhotoUploadToWorkDir(r *http.Request, workDir strin
 
 	// Detect file format from header
 	var filename string
-	if n >= 8 && header[0] == 0x89 && header[1] == 0x50 && header[2] == 0x4E && header[3] == 0x47 {
+	switch {
+	case n >= 8 && header[0] == 0x89 && header[1] == 0x50 && header[2] == 0x4E && header[3] == 0x47:
 		// PNG format
-		filename = "avatar.png"
-	} else if n >= 3 && header[0] == 0xFF && header[1] == 0xD8 && header[2] == 0xFF {
+		filename = DefaultAvatarFilename
+	case n >= 3 && header[0] == 0xFF && header[1] == 0xD8 && header[2] == 0xFF:
 		// JPEG format
 		filename = "avatar.jpg"
-	} else {
+	default:
 		// Default to PNG if format not recognized
-		filename = "avatar.png"
+		filename = DefaultAvatarFilename
 	}
 
 	// Save uploaded file with detected extension

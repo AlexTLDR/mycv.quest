@@ -15,7 +15,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func (cv *CVGenerator) generateVantageCV(template config.Template, r *http.Request) ([]byte, error) {
+func (cv *CVGenerator) GenerateVantageCV(template config.Template, r *http.Request) ([]byte, error) {
 	// Ensure temp directory exists
 	if err := os.MkdirAll("temp", 0o755); err != nil {
 		return nil, fmt.Errorf("failed to create temp directory: %w", err)
@@ -49,7 +49,7 @@ func (cv *CVGenerator) generateVantageCV(template config.Template, r *http.Reque
 	}
 
 	// Generate configuration.yaml with form data
-	yamlContent := cv.generateVantageYAMLContent(r)
+	yamlContent := cv.GenerateVantageYAMLContent(r)
 	if err := os.WriteFile(filepath.Join(workDir, "configuration.yaml"), yamlContent, 0o644); err != nil {
 		return nil, fmt.Errorf("failed to write configuration.yaml: %w", err)
 	}
@@ -79,7 +79,7 @@ func (cv *CVGenerator) generateVantageCV(template config.Template, r *http.Reque
 	return pdfData, nil
 }
 
-func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
+func (cv *CVGenerator) GenerateVantageYAMLContent(r *http.Request) []byte {
 	data := map[string]interface{}{
 		"contacts": map[string]interface{}{
 			"name":     utils.SanitizeFormValue(r.FormValue("name")),

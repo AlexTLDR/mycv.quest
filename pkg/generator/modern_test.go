@@ -1,4 +1,4 @@
-package generator
+package generator_test
 
 import (
 	"net/http"
@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/AlexTLDR/mycv.quest/pkg/config"
+	"github.com/AlexTLDR/mycv.quest/pkg/generator"
 )
 
 func TestGenerateModernCV(t *testing.T) {
@@ -23,7 +24,7 @@ func TestGenerateModernCV(t *testing.T) {
 		OutputDir: "test_output",
 	}
 
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Create test form data
 	formData := url.Values{
@@ -63,14 +64,14 @@ func TestGenerateModernCV(t *testing.T) {
 
 	// Create HTTP request with form data
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   formData,
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	// Generate CV
-	pdfData, err := generator.generateModernCV(cfg.Templates["modern"], req)
+	pdfData, err := gen.GenerateModernCV(cfg.Templates["modern"], req)
 	if err != nil {
 		t.Fatalf("Failed to generate modern CV: %v", err)
 	}
@@ -88,7 +89,7 @@ func TestGenerateModernCV(t *testing.T) {
 
 func TestGenerateModernTypContent(t *testing.T) {
 	cfg := &config.Config{}
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Create test form data
 	formData := url.Values{
@@ -123,13 +124,13 @@ func TestGenerateModernTypContent(t *testing.T) {
 	}
 
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   formData,
 	}
 
-	avatarFilename := "avatar.png"
-	content := generator.generateModernTypContent(req, avatarFilename)
+	avatarFilename := generator.DefaultAvatarFilename
+	content := gen.GenerateModernTypContent(req, avatarFilename)
 
 	// Test that content includes expected sections and data
 	expectedSections := []string{
@@ -169,7 +170,7 @@ func TestGenerateModernTypContent(t *testing.T) {
 
 func TestGenerateModernTypContentMinimal(t *testing.T) {
 	cfg := &config.Config{}
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Create minimal form data - only required fields
 	formData := url.Values{
@@ -180,13 +181,13 @@ func TestGenerateModernTypContentMinimal(t *testing.T) {
 	}
 
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   formData,
 	}
 
 	avatarFilename := "default.png"
-	content := generator.generateModernTypContent(req, avatarFilename)
+	content := gen.GenerateModernTypContent(req, avatarFilename)
 
 	// Should still generate valid typst content with minimal data
 	expectedElements := []string{
@@ -209,7 +210,7 @@ func TestGenerateModernTypContentMinimal(t *testing.T) {
 
 func TestGenerateModernTypContentSanitization(t *testing.T) {
 	cfg := &config.Config{}
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Create form data with Typst-problematic content
 	formData := url.Values{
@@ -222,13 +223,13 @@ func TestGenerateModernTypContentSanitization(t *testing.T) {
 	}
 
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   formData,
 	}
 
-	avatarFilename := "avatar.png"
-	content := generator.generateModernTypContent(req, avatarFilename)
+	avatarFilename := generator.DefaultAvatarFilename
+	content := gen.GenerateModernTypContent(req, avatarFilename)
 
 	// Check that Typst special characters are properly escaped
 	expectedEscaped := []string{
@@ -251,7 +252,7 @@ func TestGenerateModernTypContentSanitization(t *testing.T) {
 
 func TestGenerateModernTypContentSkillsParsing(t *testing.T) {
 	cfg := &config.Config{}
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Test skills parsing with various formats
 	formData := url.Values{
@@ -265,13 +266,13 @@ func TestGenerateModernTypContentSkillsParsing(t *testing.T) {
 	}
 
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   formData,
 	}
 
-	avatarFilename := "avatar.png"
-	content := generator.generateModernTypContent(req, avatarFilename)
+	avatarFilename := generator.DefaultAvatarFilename
+	content := gen.GenerateModernTypContent(req, avatarFilename)
 
 	// Check that skills are properly parsed and formatted as pills
 	expectedSkills := []string{
