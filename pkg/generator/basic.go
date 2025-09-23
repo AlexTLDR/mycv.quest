@@ -15,14 +15,14 @@ import (
 
 func (cv *CVGenerator) GenerateBasicCV(template config.Template, r *http.Request) ([]byte, error) {
 	// Ensure temp directory exists
-	if err := os.MkdirAll("temp", 0o755); err != nil {
+	if err := os.MkdirAll("temp", 0o750); err != nil {
 		return nil, fmt.Errorf("failed to create temp directory: %w", err)
 	}
 
 	// Create a unique directory for this generation
 	timestamp := time.Now().Format("20060102_150405")
 	workDir := filepath.Join("temp", "basic_"+timestamp)
-	if err := os.MkdirAll(workDir, 0o755); err != nil {
+	if err := os.MkdirAll(workDir, 0o750); err != nil {
 		return nil, fmt.Errorf("failed to create work directory: %w", err)
 	}
 	defer os.RemoveAll(workDir) // Clean up

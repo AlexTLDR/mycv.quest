@@ -57,17 +57,17 @@ func TestGetTemplateData(t *testing.T) {
 	modernDir := filepath.Join(tempDir, "modern")
 	vantageDir := filepath.Join(tempDir, "vantage")
 
-	err := os.MkdirAll(basicDir, 0o755)
+	err := os.MkdirAll(basicDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create basic dir: %v", err)
 	}
 
-	err = os.MkdirAll(modernDir, 0o755)
+	err = os.MkdirAll(modernDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create modern dir: %v", err)
 	}
 
-	err = os.MkdirAll(vantageDir, 0o755)
+	err = os.MkdirAll(vantageDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create vantage dir: %v", err)
 	}
@@ -214,12 +214,12 @@ func TestCopyPhoto(t *testing.T) {
 	templateDir := filepath.Join(templatesDir, "test")
 	photosDir := filepath.Join(tempDir, "cv-photos")
 
-	err = os.MkdirAll(templateDir, 0o755)
+	err = os.MkdirAll(templateDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create template dir: %v", err)
 	}
 
-	err = os.MkdirAll(photosDir, 0o755)
+	err = os.MkdirAll(photosDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create photos dir: %v", err)
 	}
@@ -267,12 +267,12 @@ func TestGenerate(t *testing.T) {
 	templateDir := filepath.Join(templatesDir, "basic")
 	outputDir := filepath.Join(tempDir, "output")
 
-	err := os.MkdirAll(templateDir, 0o755)
+	err := os.MkdirAll(templateDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create template dir: %v", err)
 	}
 
-	err = os.MkdirAll(outputDir, 0o755)
+	err = os.MkdirAll(outputDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create output dir: %v", err)
 	}
