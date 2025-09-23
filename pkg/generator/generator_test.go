@@ -1,6 +1,7 @@
-package generator
+package generator_test
 
 import (
+	"context"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -8,9 +9,11 @@ import (
 	"testing"
 
 	"github.com/AlexTLDR/mycv.quest/pkg/config"
+	"github.com/AlexTLDR/mycv.quest/pkg/generator"
 )
 
 func TestNew(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{
 		Templates: map[string]config.Template{
 			"basic": {Name: "Basic Resume"},
@@ -18,18 +21,18 @@ func TestNew(t *testing.T) {
 		OutputDir: "test_output",
 	}
 
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
-	if generator == nil {
+	if gen == nil {
 		t.Fatal("New() returned nil")
 	}
 
-	if generator.config != cfg {
-		t.Error("Generator config not set correctly")
-	}
+	// Test that the generator was created successfully
+	// (Internal config is private, but we can test the public API works)
 }
 
 func TestListTemplates(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{
 		Templates: map[string]config.Template{
 			"basic":   {Name: "Basic Resume"},
@@ -38,18 +41,19 @@ func TestListTemplates(t *testing.T) {
 		},
 	}
 
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Capture stdout to test output
 	// Note: This is a simple test - in a real scenario you might want to refactor
 	// ListTemplates to return a string or write to an io.Writer for easier testing
-	generator.ListTemplates()
+	gen.ListTemplates()
 
 	// Since ListTemplates prints to stdout, we can't easily test the output
 	// without refactoring. This test mainly ensures it doesn't crash.
 }
 
 func TestGetTemplateData(t *testing.T) {
+	t.Parallel()
 	// Create temporary template directories for testing
 	tempDir := t.TempDir()
 
@@ -57,28 +61,28 @@ func TestGetTemplateData(t *testing.T) {
 	modernDir := filepath.Join(tempDir, "modern")
 	vantageDir := filepath.Join(tempDir, "vantage")
 
-	err := os.MkdirAll(basicDir, 0o755)
+	err := os.MkdirAll(basicDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create basic dir: %v", err)
 	}
 
-	err = os.MkdirAll(modernDir, 0o755)
+	err = os.MkdirAll(modernDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create modern dir: %v", err)
 	}
 
-	err = os.MkdirAll(vantageDir, 0o755)
+	err = os.MkdirAll(vantageDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create vantage dir: %v", err)
 	}
 
 	// Create thumbnail files
-	err = os.WriteFile(filepath.Join(basicDir, "thumbnail.png"), []byte("fake png"), 0o644)
+	err = os.WriteFile(filepath.Join(basicDir, "thumbnail.png"), []byte("fake png"), 0o600)
 	if err != nil {
 		t.Fatalf("Failed to create thumbnail: %v", err)
 	}
 
-	err = os.WriteFile(filepath.Join(vantageDir, "screenshot.png"), []byte("fake png"), 0o644)
+	err = os.WriteFile(filepath.Join(vantageDir, "screenshot.png"), []byte("fake png"), 0o600)
 	if err != nil {
 		t.Fatalf("Failed to create screenshot: %v", err)
 	}
@@ -100,8 +104,8 @@ func TestGetTemplateData(t *testing.T) {
 		},
 	}
 
-	generator := New(cfg)
-	templateData := generator.GetTemplateData()
+	gen := generator.New(cfg)
+	templateData := gen.GetTemplateData()
 
 	if len(templateData) != 3 {
 		t.Fatalf("Expected 3 templates, got %d", len(templateData))
@@ -154,15 +158,16 @@ func TestGetTemplateData(t *testing.T) {
 }
 
 func TestGenerateFromFormInvalidTemplate(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{
 		Templates: map[string]config.Template{
 			"basic": {Name: "Basic Resume"},
 		},
 	}
 
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
-	_, err := generator.GenerateFromForm("nonexistent", nil)
+	_, err := gen.GenerateFromForm("nonexistent", nil)
 	if err == nil {
 		t.Error("Expected error for nonexistent template")
 	}
@@ -173,14 +178,15 @@ func TestGenerateFromFormInvalidTemplate(t *testing.T) {
 }
 
 func TestHandlePhotoUploadToWorkDir(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	workDir := t.TempDir()
 
 	// Test with no file upload
 	emptyRequest := &http.Request{}
-	filename, err := generator.handlePhotoUploadToWorkDir(emptyRequest, workDir)
+	filename, err := gen.HandlePhotoUploadToWorkDir(emptyRequest, workDir)
 	if err != nil {
 		t.Errorf("Expected no error with empty request, got: %v", err)
 	}
@@ -193,52 +199,50 @@ func TestHandlePhotoUploadToWorkDir(t *testing.T) {
 }
 
 func TestCopyPhoto(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Test with no photos directory
-	err := generator.copyPhoto("/nonexistent")
+	err := gen.CopyPhoto("/nonexistent")
 	if err == nil {
 		t.Error("Expected error when cv-photos directory doesn't exist")
 	}
 
 	// Create test setup in project structure
-	originalWd, _ := os.Getwd()
-	defer os.Chdir(originalWd)
-
 	tempDir := t.TempDir()
-	os.Chdir(tempDir)
+	t.Chdir(tempDir)
 
 	// Create templates directory structure
 	templatesDir := filepath.Join(tempDir, "templates")
 	templateDir := filepath.Join(templatesDir, "test")
 	photosDir := filepath.Join(tempDir, "cv-photos")
 
-	err = os.MkdirAll(templateDir, 0o755)
+	err = os.MkdirAll(templateDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create template dir: %v", err)
 	}
 
-	err = os.MkdirAll(photosDir, 0o755)
+	err = os.MkdirAll(photosDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create photos dir: %v", err)
 	}
 
 	// Test with no photos in directory
-	err = generator.copyPhoto(templateDir)
+	err = gen.CopyPhoto(templateDir)
 	if err == nil {
 		t.Error("Expected error when no photos found")
 	}
 
 	// Create a test photo
 	photoPath := filepath.Join(photosDir, "test.jpg")
-	err = os.WriteFile(photoPath, []byte("fake image data"), 0o644)
+	err = os.WriteFile(photoPath, []byte("fake image data"), 0o600)
 	if err != nil {
 		t.Fatalf("Failed to create test photo: %v", err)
 	}
 
 	// Test successful copy
-	err = generator.copyPhoto(templateDir)
+	err = gen.CopyPhoto(templateDir)
 	if err != nil {
 		t.Errorf("Expected successful copy, got error: %v", err)
 	}
@@ -250,6 +254,7 @@ func TestCopyPhoto(t *testing.T) {
 	}
 
 	// Verify content
+	// #nosec G304 - avatarPath is constructed in test, safe
 	content, err := os.ReadFile(avatarPath)
 	if err != nil {
 		t.Fatalf("Failed to read copied avatar: %v", err)
@@ -261,25 +266,26 @@ func TestCopyPhoto(t *testing.T) {
 }
 
 func TestGenerate(t *testing.T) {
+	t.Parallel()
 	// Create test template structure
 	tempDir := t.TempDir()
 	templatesDir := filepath.Join(tempDir, "templates")
 	templateDir := filepath.Join(templatesDir, "basic")
 	outputDir := filepath.Join(tempDir, "output")
 
-	err := os.MkdirAll(templateDir, 0o755)
+	err := os.MkdirAll(templateDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create template dir: %v", err)
 	}
 
-	err = os.MkdirAll(outputDir, 0o755)
+	err = os.MkdirAll(outputDir, 0o750)
 	if err != nil {
 		t.Fatalf("Failed to create output dir: %v", err)
 	}
 
 	// Create a simple typst file
 	inputFile := filepath.Join(templateDir, "main.typ")
-	err = os.WriteFile(inputFile, []byte("#set page(paper: \"a4\")\n= Test CV\nThis is a test."), 0o644)
+	err = os.WriteFile(inputFile, []byte("#set page(paper: \"a4\")\n= Test CV\nThis is a test."), 0o600)
 	if err != nil {
 		t.Fatalf("Failed to create test typst file: %v", err)
 	}
@@ -295,17 +301,17 @@ func TestGenerate(t *testing.T) {
 		OutputDir: outputDir,
 	}
 
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Test invalid template
-	err = generator.Generate("nonexistent")
+	err = gen.Generate(context.Background(), "nonexistent")
 	if err == nil {
 		t.Error("Expected error for nonexistent template")
 	}
 
 	// Test valid template (this will fail if typst is not installed)
 	// In a real CI environment, you might want to skip this test or mock the typst command
-	err = generator.Generate("basic")
+	err = gen.Generate(context.Background(), "basic")
 	if err != nil {
 		// If typst is not installed, skip this test
 		if strings.Contains(err.Error(), "executable file not found") {

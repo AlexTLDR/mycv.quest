@@ -7,12 +7,14 @@ import (
 )
 
 func CopyFile(src, dst string) error {
+	// #nosec G304 - src path is from caller, assumed trusted
 	sourceFile, err := os.Open(src)
 	if err != nil {
 		return err
 	}
 	defer sourceFile.Close()
 
+	// #nosec G304 - dst path is from caller, assumed trusted
 	destFile, err := os.Create(dst)
 	if err != nil {
 		return err

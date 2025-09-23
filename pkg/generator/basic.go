@@ -13,16 +13,16 @@ import (
 	"github.com/AlexTLDR/mycv.quest/pkg/utils"
 )
 
-func (cv *CVGenerator) generateBasicCV(template config.Template, r *http.Request) ([]byte, error) {
+func (cv *CVGenerator) GenerateBasicCV(template config.Template, r *http.Request) ([]byte, error) {
 	// Ensure temp directory exists
-	if err := os.MkdirAll("temp", 0o755); err != nil {
+	if err := os.MkdirAll("temp", 0o750); err != nil {
 		return nil, fmt.Errorf("failed to create temp directory: %w", err)
 	}
 
 	// Create a unique directory for this generation
 	timestamp := time.Now().Format("20060102_150405")
 	workDir := filepath.Join("temp", "basic_"+timestamp)
-	if err := os.MkdirAll(workDir, 0o755); err != nil {
+	if err := os.MkdirAll(workDir, 0o750); err != nil {
 		return nil, fmt.Errorf("failed to create work directory: %w", err)
 	}
 	defer os.RemoveAll(workDir) // Clean up
@@ -38,8 +38,8 @@ func (cv *CVGenerator) generateBasicCV(template config.Template, r *http.Request
 	}
 
 	// Generate main.typ with form data
-	typContent := cv.generateBasicTypContent(r)
-	if err := os.WriteFile(filepath.Join(workDir, "main.typ"), []byte(typContent), 0o644); err != nil {
+	typContent := cv.GenerateBasicTypContent(r)
+	if err := os.WriteFile(filepath.Join(workDir, "main.typ"), []byte(typContent), 0o600); err != nil {
 		return nil, fmt.Errorf("failed to write main.typ: %w", err)
 	}
 
@@ -50,7 +50,13 @@ func (cv *CVGenerator) generateBasicCV(template config.Template, r *http.Request
 		return nil, fmt.Errorf("failed to get absolute path for output file: %w", err)
 	}
 
-	cmd := exec.Command("typst", "compile", "main.typ", absOutputFile)
+	// Validate arguments before executing command
+	if err := validateTypstArgs("main.typ", absOutputFile); err != nil {
+		return nil, fmt.Errorf("invalid typst arguments: %w", err)
+	}
+
+	// #nosec G204 - arguments are validated above
+	cmd := exec.CommandContext(r.Context(), "typst", "compile", "main.typ", absOutputFile)
 	cmd.Dir = workDir
 
 	output, err := cmd.CombinedOutput()
@@ -59,6 +65,7 @@ func (cv *CVGenerator) generateBasicCV(template config.Template, r *http.Request
 	}
 
 	// Read the generated PDF into memory
+	// #nosec G304 - absOutputFile is validated and safe
 	pdfData, err := os.ReadFile(absOutputFile)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read generated PDF: %w", err)
@@ -68,7 +75,7 @@ func (cv *CVGenerator) generateBasicCV(template config.Template, r *http.Request
 	return pdfData, nil
 }
 
-func (cv *CVGenerator) generateBasicTypContent(r *http.Request) string {
+func (cv *CVGenerator) GenerateBasicTypContent(r *http.Request) string {
 	name := utils.SanitizeFormValue(r.FormValue("name"))
 	location := utils.SanitizeFormValue(r.FormValue("location"))
 	email := utils.SanitizeFormValue(r.FormValue("email"))
@@ -111,67 +118,11 @@ func (cv *CVGenerator) generateBasicTypContent(r *http.Request) string {
 
 	// Add education section
 	content += "== Education\n\n"
-	for i := 0; ; i++ {
-		institution := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][institution]", i)))
-		if institution == "" {
-			break
-		}
-		location := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][location]", i)))
-		startDate := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][start_date]", i)))
-		endDate := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][end_date]", i)))
-		degree := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][degree]", i)))
-		details := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][details]", i)))
-
-		content += fmt.Sprintf(`#edu(
-  institution: "%s",
-  location: "%s",
-  dates: dates-helper(start-date: "%s", end-date: "%s"),
-  degree: "%s",
-)
-`, institution, location, startDate, endDate, degree)
-
-		if details != "" {
-			lines := strings.Split(details, "\n")
-			for _, line := range lines {
-				if strings.TrimSpace(line) != "" {
-					content += fmt.Sprintf("- %s\n", strings.TrimSpace(line))
-				}
-			}
-		}
-		content += "\n"
-	}
+	content += addEducationEntries(r)
 
 	// Add work experience section
 	content += "== Work Experience\n\n"
-	for i := 0; ; i++ {
-		title := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][title]", i)))
-		if title == "" {
-			break
-		}
-		company := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][company]", i)))
-		location := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][location]", i)))
-		startDate := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][start_date]", i)))
-		endDate := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][end_date]", i)))
-		description := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][description]", i)))
-
-		content += fmt.Sprintf(`#work(
-  title: "%s",
-  location: "%s",
-  company: "%s",
-  dates: dates-helper(start-date: "%s", end-date: "%s"),
-)
-`, title, location, company, startDate, endDate)
-
-		if description != "" {
-			lines := strings.Split(description, "\n")
-			for _, line := range lines {
-				if strings.TrimSpace(line) != "" {
-					content += fmt.Sprintf("%s\n", strings.TrimSpace(line))
-				}
-			}
-		}
-		content += "\n"
-	}
+	content += addWorkEntries(r)
 
 	// Add projects section
 	content += "== Projects\n\n"
@@ -229,5 +180,88 @@ func (cv *CVGenerator) generateBasicTypContent(r *http.Request) string {
 		}
 	}
 
+	return content
+}
+
+func addEducationEntries(r *http.Request) string {
+	return processFormEntries(r, "education", func(fields map[string]string, details string) string {
+		content := fmt.Sprintf(`#edu(
+  institution: "%s",
+  location: "%s",
+  dates: dates-helper(start-date: "%s", end-date: "%s"),
+  degree: "%s",
+)
+`, fields["institution"], fields["location"], fields["start_date"], fields["end_date"], fields["degree"])
+		content += formatMultilineDetails(details, "- %s\n")
+		return content
+	})
+}
+
+func addWorkEntries(r *http.Request) string {
+	return processFormEntries(r, "work", func(fields map[string]string, details string) string {
+		content := fmt.Sprintf(`#work(
+  title: "%s",
+  location: "%s",
+  company: "%s",
+  dates: dates-helper(start-date: "%s", end-date: "%s"),
+)
+`, fields["title"], fields["location"], fields["company"], fields["start_date"], fields["end_date"])
+		content += formatMultilineDetails(details, "%s\n")
+		return content
+	})
+}
+
+func processFormEntries(r *http.Request, entryType string, formatter func(map[string]string, string) string) string {
+	var content string
+
+	for i := 0; ; i++ {
+		// Define the primary field that determines if entry exists
+		primaryField := "institution"
+		if entryType == "work" {
+			primaryField = "title"
+		}
+
+		primaryValue := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("%s[%d][%s]", entryType, i, primaryField)))
+		if primaryValue == "" {
+			break
+		}
+
+		// Collect all fields for this entry
+		fields := make(map[string]string)
+		var detailsField string
+
+		if entryType == "education" {
+			fields["institution"] = primaryValue
+			fields["location"] = utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][location]", i)))
+			fields["start_date"] = utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][start_date]", i)))
+			fields["end_date"] = utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][end_date]", i)))
+			fields["degree"] = utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][degree]", i)))
+			detailsField = utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("education[%d][details]", i)))
+		} else {
+			fields["title"] = primaryValue
+			fields["company"] = utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][company]", i)))
+			fields["location"] = utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][location]", i)))
+			fields["start_date"] = utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][start_date]", i)))
+			fields["end_date"] = utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][end_date]", i)))
+			detailsField = utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("work[%d][description]", i)))
+		}
+
+		content += formatter(fields, detailsField)
+		content += "\n"
+	}
+	return content
+}
+
+func formatMultilineDetails(details, format string) string {
+	if details == "" {
+		return ""
+	}
+	var content string
+	lines := strings.Split(details, "\n")
+	for _, line := range lines {
+		if strings.TrimSpace(line) != "" {
+			content += fmt.Sprintf(format, strings.TrimSpace(line))
+		}
+	}
 	return content
 }

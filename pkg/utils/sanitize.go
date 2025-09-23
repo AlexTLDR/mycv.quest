@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-// SanitizeForTypst sanitizes user input to prevent Typst syntax errors
+// SanitizeForTypst sanitizes user input to prevent Typst syntax errors.
 func SanitizeForTypst(input string) string {
 	if input == "" {
 		return input
@@ -24,12 +24,12 @@ func SanitizeForTypst(input string) string {
 	return result
 }
 
-// SanitizeFormValue is a convenience function for sanitizing HTTP form values
+// SanitizeFormValue is a convenience function for sanitizing HTTP form values.
 func SanitizeFormValue(value string) string {
 	return SanitizeForTypst(strings.TrimSpace(value))
 }
 
-// NormalizeURL ensures a URL has a proper protocol prefix
+// NormalizeURL ensures a URL has a proper protocol prefix.
 func NormalizeURL(url string) string {
 	if url == "" {
 		return url

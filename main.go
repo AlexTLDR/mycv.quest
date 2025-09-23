@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/AlexTLDR/mycv.quest/pkg/config"
 	"github.com/AlexTLDR/mycv.quest/pkg/generator"
@@ -26,7 +28,15 @@ func main() {
 		srv := server.New(gen)
 		srv.SetupRoutes()
 		fmt.Printf("Starting server on http://localhost:%s\n", *portFlag)
-		log.Fatal(http.ListenAndServe(":"+*portFlag, nil))
+
+		httpServer := &http.Server{
+			Addr:         ":" + *portFlag,
+			Handler:      nil,
+			ReadTimeout:  15 * time.Second,
+			WriteTimeout: 15 * time.Second,
+			IdleTimeout:  60 * time.Second,
+		}
+		log.Fatal(httpServer.ListenAndServe())
 		return
 	}
 
@@ -35,7 +45,7 @@ func main() {
 		return
 	}
 
-	if err := gen.Generate(*templateFlag); err != nil {
+	if err := gen.Generate(context.Background(), *templateFlag); err != nil {
 		log.Fatalf("Error generating CV: %v", err)
 	}
 }

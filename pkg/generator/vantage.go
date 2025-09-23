@@ -15,16 +15,16 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func (cv *CVGenerator) generateVantageCV(template config.Template, r *http.Request) ([]byte, error) {
+func (cv *CVGenerator) GenerateVantageCV(template config.Template, r *http.Request) ([]byte, error) {
 	// Ensure temp directory exists
-	if err := os.MkdirAll("temp", 0o755); err != nil {
+	if err := os.MkdirAll("temp", 0o750); err != nil {
 		return nil, fmt.Errorf("failed to create temp directory: %w", err)
 	}
 
 	// Create a unique directory for this generation
 	timestamp := time.Now().Format("20060102_150405")
 	workDir := filepath.Join("temp", "vantage_"+timestamp)
-	if err := os.MkdirAll(workDir, 0o755); err != nil {
+	if err := os.MkdirAll(workDir, 0o750); err != nil {
 		return nil, fmt.Errorf("failed to create work directory: %w", err)
 	}
 	defer os.RemoveAll(workDir) // Clean up
@@ -49,8 +49,8 @@ func (cv *CVGenerator) generateVantageCV(template config.Template, r *http.Reque
 	}
 
 	// Generate configuration.yaml with form data
-	yamlContent := cv.generateVantageYAMLContent(r)
-	if err := os.WriteFile(filepath.Join(workDir, "configuration.yaml"), yamlContent, 0o644); err != nil {
+	yamlContent := cv.GenerateVantageYAMLContent(r)
+	if err := os.WriteFile(filepath.Join(workDir, "configuration.yaml"), yamlContent, 0o600); err != nil {
 		return nil, fmt.Errorf("failed to write configuration.yaml: %w", err)
 	}
 
@@ -61,7 +61,13 @@ func (cv *CVGenerator) generateVantageCV(template config.Template, r *http.Reque
 		return nil, fmt.Errorf("failed to get absolute path for output file: %w", err)
 	}
 
-	cmd := exec.Command("typst", "compile", "example.typ", absOutputFile)
+	// Validate arguments before executing command
+	if err := validateTypstArgs("example.typ", absOutputFile); err != nil {
+		return nil, fmt.Errorf("invalid typst arguments: %w", err)
+	}
+
+	// #nosec G204 - arguments are validated above
+	cmd := exec.CommandContext(r.Context(), "typst", "compile", "example.typ", absOutputFile)
 	cmd.Dir = workDir
 
 	output, err := cmd.CombinedOutput()
@@ -70,6 +76,7 @@ func (cv *CVGenerator) generateVantageCV(template config.Template, r *http.Reque
 	}
 
 	// Read the generated PDF into memory
+	// #nosec G304 - absOutputFile is validated and safe
 	pdfData, err := os.ReadFile(absOutputFile)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read generated PDF: %w", err)
@@ -79,7 +86,7 @@ func (cv *CVGenerator) generateVantageCV(template config.Template, r *http.Reque
 	return pdfData, nil
 }
 
-func (cv *CVGenerator) generateVantageYAMLContent(r *http.Request) []byte {
+func (cv *CVGenerator) GenerateVantageYAMLContent(r *http.Request) []byte {
 	data := map[string]interface{}{
 		"contacts": map[string]interface{}{
 			"name":     utils.SanitizeFormValue(r.FormValue("name")),

@@ -26,53 +26,61 @@ func (s *Server) SetupRoutes() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("."))))
 
 	// Home page
-	http.HandleFunc("/", s.handleIndex)
+	http.HandleFunc("/", s.HandleIndex)
 
 	// Form endpoints
-	http.HandleFunc("/form/", s.handleForm)
+	http.HandleFunc("/form/", s.HandleForm)
 
 	// Generate CV endpoint
-	http.HandleFunc("/generate/", s.handleGenerate)
+	http.HandleFunc("/generate/", s.HandleGenerate)
 
 	// Serve session-specific generated PDFs
-	http.HandleFunc("/cv/", s.handleSessionPDF)
+	http.HandleFunc("/cv/", s.HandleSessionPDF)
 }
 
-func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
+func (s *Server) HandleIndex(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
 		return
 	}
 
 	templateData := s.generator.GetTemplateData()
-	templates.Index(templateData).Render(r.Context(), w)
+	if err := templates.Index(templateData).Render(r.Context(), w); err != nil {
+		http.Error(w, "Failed to render template", http.StatusInternalServerError)
+	}
 }
 
-func (s *Server) handleForm(w http.ResponseWriter, r *http.Request) {
+func (s *Server) HandleForm(w http.ResponseWriter, r *http.Request) {
 	templateKey := strings.TrimPrefix(r.URL.Path, "/form/")
 
 	switch templateKey {
 	case "basic":
-		templates.BasicForm().Render(r.Context(), w)
+		if err := templates.BasicForm().Render(r.Context(), w); err != nil {
+			http.Error(w, "Failed to render template", http.StatusInternalServerError)
+		}
 	case "modern":
-		templates.ModernForm().Render(r.Context(), w)
+		if err := templates.ModernForm().Render(r.Context(), w); err != nil {
+			http.Error(w, "Failed to render template", http.StatusInternalServerError)
+		}
 	case "vantage":
-		templates.VantageForm().Render(r.Context(), w)
+		if err := templates.VantageForm().Render(r.Context(), w); err != nil {
+			http.Error(w, "Failed to render template", http.StatusInternalServerError)
+		}
 	default:
 		http.NotFound(w, r)
 	}
 }
 
-func (s *Server) handleGenerate(w http.ResponseWriter, r *http.Request) {
+func (s *Server) HandleGenerate(w http.ResponseWriter, r *http.Request) {
 	templateKey := strings.TrimPrefix(r.URL.Path, "/generate/")
 
-	if r.Method == "GET" {
+	if r.Method == http.MethodGet {
 		// Redirect to form page
 		http.Redirect(w, r, fmt.Sprintf("/form/%s", templateKey), http.StatusSeeOther)
 		return
 	}
 
-	if r.Method == "POST" {
+	if r.Method == http.MethodPost {
 		// Get or create session
 		session := s.sessionManager.GetOrCreateSession(r)
 		s.sessionManager.SetSessionCookie(w, session)
@@ -95,7 +103,7 @@ func (s *Server) handleGenerate(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 }
 
-func (s *Server) handleSessionPDF(w http.ResponseWriter, r *http.Request) {
+func (s *Server) HandleSessionPDF(w http.ResponseWriter, r *http.Request) {
 	// Parse URL path: /cv/{sessionID}/{template}.pdf
 	pathParts := strings.Split(strings.TrimPrefix(r.URL.Path, "/cv/"), "/")
 	if len(pathParts) != 2 {
@@ -122,5 +130,7 @@ func (s *Server) handleSessionPDF(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(pdfData)))
 
 	// Write PDF data
-	w.Write(pdfData)
+	if _, err := w.Write(pdfData); err != nil {
+		http.Error(w, "Failed to write PDF data", http.StatusInternalServerError)
+	}
 }

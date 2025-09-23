@@ -1,4 +1,4 @@
-package generator
+package generator_test
 
 import (
 	"net/http"
@@ -7,9 +7,11 @@ import (
 	"testing"
 
 	"github.com/AlexTLDR/mycv.quest/pkg/config"
+	"github.com/AlexTLDR/mycv.quest/pkg/generator"
 )
 
 func TestGenerateBasicCV(t *testing.T) {
+	t.Parallel()
 	// Create test configuration
 	cfg := &config.Config{
 		Templates: map[string]config.Template{
@@ -22,7 +24,7 @@ func TestGenerateBasicCV(t *testing.T) {
 		OutputDir: "test_output",
 	}
 
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Create test form data
 	formData := url.Values{
@@ -58,14 +60,14 @@ func TestGenerateBasicCV(t *testing.T) {
 
 	// Create HTTP request with form data
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   formData,
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	// Generate CV
-	pdfData, err := generator.generateBasicCV(cfg.Templates["basic"], req)
+	pdfData, err := gen.GenerateBasicCV(cfg.Templates["basic"], req)
 	if err != nil {
 		t.Fatalf("Failed to generate basic CV: %v", err)
 	}
@@ -82,8 +84,9 @@ func TestGenerateBasicCV(t *testing.T) {
 }
 
 func TestGenerateBasicTypContent(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Create test form data
 	formData := url.Values{
@@ -111,12 +114,12 @@ func TestGenerateBasicTypContent(t *testing.T) {
 	}
 
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   formData,
 	}
 
-	content := generator.generateBasicTypContent(req)
+	content := gen.GenerateBasicTypContent(req)
 
 	// Test that content includes expected sections
 	expectedSections := []string{
@@ -146,17 +149,18 @@ func TestGenerateBasicTypContent(t *testing.T) {
 }
 
 func TestGenerateBasicTypContentEmpty(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Create empty request
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   url.Values{},
 	}
 
-	content := generator.generateBasicTypContent(req)
+	content := gen.GenerateBasicTypContent(req)
 
 	// Should still generate valid typst content with defaults
 	expectedDefaults := []string{
@@ -174,8 +178,9 @@ func TestGenerateBasicTypContentEmpty(t *testing.T) {
 }
 
 func TestGenerateBasicTypContentSanitization(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Create form data with Typst-problematic content
 	formData := url.Values{
@@ -186,12 +191,12 @@ func TestGenerateBasicTypContentSanitization(t *testing.T) {
 	}
 
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   formData,
 	}
 
-	content := generator.generateBasicTypContent(req)
+	content := gen.GenerateBasicTypContent(req)
 
 	// Check that Typst special characters are properly escaped
 	expectedEscaped := []string{

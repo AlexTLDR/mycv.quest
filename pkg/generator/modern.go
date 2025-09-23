@@ -13,16 +13,21 @@ import (
 	"github.com/AlexTLDR/mycv.quest/pkg/utils"
 )
 
-func (cv *CVGenerator) generateModernCV(template config.Template, r *http.Request) ([]byte, error) {
+const (
+	arrayClosing   = "  ],\n"
+	sectionClosing = ")\n\n"
+)
+
+func (cv *CVGenerator) GenerateModernCV(template config.Template, r *http.Request) ([]byte, error) {
 	// Ensure temp directory exists
-	if err := os.MkdirAll("temp", 0o755); err != nil {
+	if err := os.MkdirAll("temp", 0o750); err != nil {
 		return nil, fmt.Errorf("failed to create temp directory: %w", err)
 	}
 
 	// Create a unique directory for this generation
 	timestamp := time.Now().Format("20060102_150405")
 	workDir := filepath.Join("temp", "modern_"+timestamp)
-	if err := os.MkdirAll(workDir, 0o755); err != nil {
+	if err := os.MkdirAll(workDir, 0o750); err != nil {
 		return nil, fmt.Errorf("failed to create work directory: %w", err)
 	}
 	defer os.RemoveAll(workDir) // Clean up
@@ -31,7 +36,7 @@ func (cv *CVGenerator) generateModernCV(template config.Template, r *http.Reques
 	var avatarFilename string
 	photoUploaded := false
 	if template.NeedsPhoto {
-		filename, err := cv.handlePhotoUploadToWorkDir(r, workDir)
+		filename, err := cv.HandlePhotoUploadToWorkDir(r, workDir)
 		if err != nil {
 			return nil, fmt.Errorf("failed to handle photo upload: %w", err)
 		}
@@ -59,13 +64,13 @@ func (cv *CVGenerator) generateModernCV(template config.Template, r *http.Reques
 			if err := utils.CopyFile(avatarSrc, avatarDst); err != nil {
 				return nil, fmt.Errorf("failed to copy avatar: %w", err)
 			}
-			avatarFilename = "avatar.png"
+			avatarFilename = DefaultAvatarFilename
 		}
 	}
 
 	// Generate main.typ with form data
-	typContent := cv.generateModernTypContent(r, avatarFilename)
-	if err := os.WriteFile(filepath.Join(workDir, "main.typ"), []byte(typContent), 0o644); err != nil {
+	typContent := cv.GenerateModernTypContent(r, avatarFilename)
+	if err := os.WriteFile(filepath.Join(workDir, "main.typ"), []byte(typContent), 0o600); err != nil {
 		return nil, fmt.Errorf("failed to write main.typ: %w", err)
 	}
 
@@ -76,7 +81,13 @@ func (cv *CVGenerator) generateModernCV(template config.Template, r *http.Reques
 		return nil, fmt.Errorf("failed to get absolute path for output file: %w", err)
 	}
 
-	cmd := exec.Command("typst", "compile", "main.typ", absOutputFile)
+	// Validate arguments before executing command
+	if err := validateTypstArgs("main.typ", absOutputFile); err != nil {
+		return nil, fmt.Errorf("invalid typst arguments: %w", err)
+	}
+
+	// #nosec G204 - arguments are validated above
+	cmd := exec.CommandContext(r.Context(), "typst", "compile", "main.typ", absOutputFile)
 	cmd.Dir = workDir
 
 	output, err := cmd.CombinedOutput()
@@ -85,6 +96,7 @@ func (cv *CVGenerator) generateModernCV(template config.Template, r *http.Reques
 	}
 
 	// Read the generated PDF into memory
+	// #nosec G304 - absOutputFile is validated and safe
 	pdfData, err := os.ReadFile(absOutputFile)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read generated PDF: %w", err)
@@ -94,7 +106,7 @@ func (cv *CVGenerator) generateModernCV(template config.Template, r *http.Reques
 	return pdfData, nil
 }
 
-func (cv *CVGenerator) generateModernTypContent(r *http.Request, avatarFilename string) string {
+func (cv *CVGenerator) GenerateModernTypContent(r *http.Request, avatarFilename string) string {
 	author := utils.SanitizeFormValue(r.FormValue("author"))
 	jobTitle := utils.SanitizeFormValue(r.FormValue("job_title"))
 	bio := utils.SanitizeFormValue(r.FormValue("bio"))
@@ -163,14 +175,14 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request, avatarFilename 
 			}
 		}
 
-		content += "  ],\n"
+		content += arrayClosing
 		if dateFrom != "" {
 			content += fmt.Sprintf("  date-from: \"%s\",\n", dateFrom)
 		}
 		if dateTo != "" {
 			content += fmt.Sprintf("  date-to: \"%s\",\n", dateTo)
 		}
-		content += ")\n\n"
+		content += sectionClosing
 	}
 
 	// Add work experience section
@@ -202,14 +214,14 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request, avatarFilename 
 			}
 		}
 
-		content += "  ],\n"
+		content += arrayClosing
 		if dateFrom != "" {
 			content += fmt.Sprintf("  date-from: \"%s\",\n", dateFrom)
 		}
 		if dateTo != "" {
 			content += fmt.Sprintf("  date-to: \"%s\",\n", dateTo)
 		}
-		content += ")\n\n"
+		content += sectionClosing
 	}
 
 	content += "#colbreak()\n\n"
@@ -256,7 +268,7 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request, avatarFilename 
 					content += fmt.Sprintf("    %s\n", strings.TrimSpace(line))
 				}
 			}
-			content += "  ],\n"
+			content += arrayClosing
 		}
 
 		if dateFrom != "" {
@@ -265,7 +277,7 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request, avatarFilename 
 		if dateTo != "" {
 			content += fmt.Sprintf("  date-to: \"%s\",\n", dateTo)
 		}
-		content += ")\n\n"
+		content += sectionClosing
 	}
 
 	// Add certificates section
@@ -292,7 +304,7 @@ func (cv *CVGenerator) generateModernTypContent(r *http.Request, avatarFilename 
 		if dateTo != "" {
 			content += fmt.Sprintf("  date-to: \"%s\",\n", dateTo)
 		}
-		content += ")\n\n"
+		content += sectionClosing
 	}
 
 	// Add languages section

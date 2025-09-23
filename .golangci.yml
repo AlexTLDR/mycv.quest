@@ -24,6 +24,7 @@ linters:
         - wsl_v5 # Whitespace rules too pedantic
         - revive # Package comments not needed for main
         - perfsprint # Minor performance optimizations not critical
+        - depguard # Allow internal imports
 
 formatters:
     enable:

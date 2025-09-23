@@ -1,4 +1,4 @@
-package generator
+package generator_test
 
 import (
 	"net/http"
@@ -7,10 +7,12 @@ import (
 	"testing"
 
 	"github.com/AlexTLDR/mycv.quest/pkg/config"
+	"github.com/AlexTLDR/mycv.quest/pkg/generator"
 	"gopkg.in/yaml.v2"
 )
 
 func TestGenerateVantageCV(t *testing.T) {
+	t.Parallel()
 	// Create test configuration
 	cfg := &config.Config{
 		Templates: map[string]config.Template{
@@ -23,7 +25,7 @@ func TestGenerateVantageCV(t *testing.T) {
 		OutputDir: "test_output",
 	}
 
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Create test form data
 	formData := url.Values{
@@ -72,14 +74,14 @@ func TestGenerateVantageCV(t *testing.T) {
 
 	// Create HTTP request with form data
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   formData,
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	// Generate CV
-	pdfData, err := generator.generateVantageCV(cfg.Templates["vantage"], req)
+	pdfData, err := gen.GenerateVantageCV(cfg.Templates["vantage"], req)
 	if err != nil {
 		t.Fatalf("Failed to generate vantage CV: %v", err)
 	}
@@ -96,8 +98,9 @@ func TestGenerateVantageCV(t *testing.T) {
 }
 
 func TestGenerateVantageYAMLContent(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Create comprehensive test form data
 	formData := url.Values{
@@ -159,12 +162,12 @@ func TestGenerateVantageYAMLContent(t *testing.T) {
 	}
 
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   formData,
 	}
 
-	yamlContent := generator.generateVantageYAMLContent(req)
+	yamlContent := gen.GenerateVantageYAMLContent(req)
 
 	// Parse the generated YAML to verify structure
 	var data map[string]interface{}
@@ -287,8 +290,9 @@ func TestGenerateVantageYAMLContent(t *testing.T) {
 }
 
 func TestGenerateVantageYAMLContentMinimal(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Create minimal form data
 	formData := url.Values{
@@ -299,12 +303,12 @@ func TestGenerateVantageYAMLContentMinimal(t *testing.T) {
 	}
 
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   formData,
 	}
 
-	yamlContent := generator.generateVantageYAMLContent(req)
+	yamlContent := gen.GenerateVantageYAMLContent(req)
 
 	// Parse the generated YAML
 	var data map[string]interface{}
@@ -336,8 +340,9 @@ func TestGenerateVantageYAMLContentMinimal(t *testing.T) {
 }
 
 func TestGenerateVantageYAMLContentSanitization(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Create form data with Typst-problematic content
 	formData := url.Values{
@@ -352,12 +357,12 @@ func TestGenerateVantageYAMLContentSanitization(t *testing.T) {
 	}
 
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   formData,
 	}
 
-	yamlContent := generator.generateVantageYAMLContent(req)
+	yamlContent := gen.GenerateVantageYAMLContent(req)
 
 	// Parse the YAML - it should still be valid
 	var data map[string]interface{}
@@ -394,8 +399,9 @@ func TestGenerateVantageYAMLContentSanitization(t *testing.T) {
 }
 
 func TestGenerateVantageYAMLContentTechnicalExpertiseLevels(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
-	generator := New(cfg)
+	gen := generator.New(cfg)
 
 	// Test different level values including edge cases
 	formData := url.Values{
@@ -412,12 +418,12 @@ func TestGenerateVantageYAMLContentTechnicalExpertiseLevels(t *testing.T) {
 	}
 
 	req := &http.Request{
-		Method: "POST",
+		Method: http.MethodPost,
 		Header: make(http.Header),
 		Form:   formData,
 	}
 
-	yamlContent := generator.generateVantageYAMLContent(req)
+	yamlContent := gen.GenerateVantageYAMLContent(req)
 
 	var data map[string]interface{}
 	err := yaml.Unmarshal(yamlContent, &data)
