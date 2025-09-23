@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -44,7 +45,7 @@ func main() {
 		return
 	}
 
-	if err := gen.Generate(*templateFlag); err != nil {
+	if err := gen.Generate(context.Background(), *templateFlag); err != nil {
 		log.Fatalf("Error generating CV: %v", err)
 	}
 }

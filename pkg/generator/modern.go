@@ -70,7 +70,7 @@ func (cv *CVGenerator) GenerateModernCV(template config.Template, r *http.Reques
 
 	// Generate main.typ with form data
 	typContent := cv.GenerateModernTypContent(r, avatarFilename)
-	if err := os.WriteFile(filepath.Join(workDir, "main.typ"), []byte(typContent), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(workDir, "main.typ"), []byte(typContent), 0o600); err != nil {
 		return nil, fmt.Errorf("failed to write main.typ: %w", err)
 	}
 
@@ -81,7 +81,13 @@ func (cv *CVGenerator) GenerateModernCV(template config.Template, r *http.Reques
 		return nil, fmt.Errorf("failed to get absolute path for output file: %w", err)
 	}
 
-	cmd := exec.Command("typst", "compile", "main.typ", absOutputFile)
+	// Validate arguments before executing command
+	if err := validateTypstArgs("main.typ", absOutputFile); err != nil {
+		return nil, fmt.Errorf("invalid typst arguments: %w", err)
+	}
+
+	// #nosec G204 - arguments are validated above
+	cmd := exec.CommandContext(r.Context(), "typst", "compile", "main.typ", absOutputFile)
 	cmd.Dir = workDir
 
 	output, err := cmd.CombinedOutput()
@@ -90,6 +96,7 @@ func (cv *CVGenerator) GenerateModernCV(template config.Template, r *http.Reques
 	}
 
 	// Read the generated PDF into memory
+	// #nosec G304 - absOutputFile is validated and safe
 	pdfData, err := os.ReadFile(absOutputFile)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read generated PDF: %w", err)

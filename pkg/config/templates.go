@@ -92,6 +92,11 @@ func ValidateTemplateArgs(template Template, outputFile string) error {
 		return fmt.Errorf("invalid input file: %s", template.InputFile)
 	}
 
+	// Check for command injection attempts
+	if strings.ContainsAny(template.InputFile, ";|&$`") || strings.ContainsAny(outputFile, ";|&$`") {
+		return fmt.Errorf("invalid characters in file paths")
+	}
+
 	if !strings.HasSuffix(outputFile, ".pdf") {
 		return fmt.Errorf("output file must have .pdf extension")
 	}

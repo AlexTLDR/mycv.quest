@@ -231,7 +231,9 @@ func TestHandleGeneratePOSTModernWithPhoto(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Failed to create form field: %v", err)
 		}
-		field.Write([]byte(value))
+		if _, err := field.Write([]byte(value)); err != nil {
+			t.Fatalf("Failed to write form field: %v", err)
+		}
 	}
 
 	// Add fake image file
@@ -242,10 +244,16 @@ func TestHandleGeneratePOSTModernWithPhoto(t *testing.T) {
 
 	// Write a minimal PNG header (enough for detection)
 	pngHeader := []byte{0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A}
-	fileWriter.Write(pngHeader)
-	fileWriter.Write([]byte("fake png data"))
+	if _, err := fileWriter.Write(pngHeader); err != nil {
+		t.Fatalf("Failed to write PNG header: %v", err)
+	}
+	if _, err := fileWriter.Write([]byte("fake png data")); err != nil {
+		t.Fatalf("Failed to write PNG data: %v", err)
+	}
 
-	writer.Close()
+	if err := writer.Close(); err != nil {
+		t.Fatalf("Failed to close writer: %v", err)
+	}
 
 	req := httptest.NewRequest(http.MethodPost, "/generate/modern", &buf)
 	req.Header.Set("Content-Type", writer.FormDataContentType())

@@ -1,6 +1,7 @@
 package generator_test
 
 import (
+	"context"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -73,12 +74,12 @@ func TestGetTemplateData(t *testing.T) {
 	}
 
 	// Create thumbnail files
-	err = os.WriteFile(filepath.Join(basicDir, "thumbnail.png"), []byte("fake png"), 0o644)
+	err = os.WriteFile(filepath.Join(basicDir, "thumbnail.png"), []byte("fake png"), 0o600)
 	if err != nil {
 		t.Fatalf("Failed to create thumbnail: %v", err)
 	}
 
-	err = os.WriteFile(filepath.Join(vantageDir, "screenshot.png"), []byte("fake png"), 0o644)
+	err = os.WriteFile(filepath.Join(vantageDir, "screenshot.png"), []byte("fake png"), 0o600)
 	if err != nil {
 		t.Fatalf("Failed to create screenshot: %v", err)
 	}
@@ -207,7 +208,9 @@ func TestCopyPhoto(t *testing.T) {
 	defer os.Chdir(originalWd)
 
 	tempDir := t.TempDir()
-	os.Chdir(tempDir)
+	if err := os.Chdir(tempDir); err != nil {
+		t.Fatalf("Failed to change directory: %v", err)
+	}
 
 	// Create templates directory structure
 	templatesDir := filepath.Join(tempDir, "templates")
@@ -232,7 +235,7 @@ func TestCopyPhoto(t *testing.T) {
 
 	// Create a test photo
 	photoPath := filepath.Join(photosDir, "test.jpg")
-	err = os.WriteFile(photoPath, []byte("fake image data"), 0o644)
+	err = os.WriteFile(photoPath, []byte("fake image data"), 0o600)
 	if err != nil {
 		t.Fatalf("Failed to create test photo: %v", err)
 	}
@@ -250,6 +253,7 @@ func TestCopyPhoto(t *testing.T) {
 	}
 
 	// Verify content
+	// #nosec G304 - avatarPath is constructed in test, safe
 	content, err := os.ReadFile(avatarPath)
 	if err != nil {
 		t.Fatalf("Failed to read copied avatar: %v", err)
@@ -279,7 +283,7 @@ func TestGenerate(t *testing.T) {
 
 	// Create a simple typst file
 	inputFile := filepath.Join(templateDir, "main.typ")
-	err = os.WriteFile(inputFile, []byte("#set page(paper: \"a4\")\n= Test CV\nThis is a test."), 0o644)
+	err = os.WriteFile(inputFile, []byte("#set page(paper: \"a4\")\n= Test CV\nThis is a test."), 0o600)
 	if err != nil {
 		t.Fatalf("Failed to create test typst file: %v", err)
 	}
@@ -298,14 +302,14 @@ func TestGenerate(t *testing.T) {
 	gen := generator.New(cfg)
 
 	// Test invalid template
-	err = gen.Generate("nonexistent")
+	err = gen.Generate(context.Background(), "nonexistent")
 	if err == nil {
 		t.Error("Expected error for nonexistent template")
 	}
 
 	// Test valid template (this will fail if typst is not installed)
 	// In a real CI environment, you might want to skip this test or mock the typst command
-	err = gen.Generate("basic")
+	err = gen.Generate(context.Background(), "basic")
 	if err != nil {
 		// If typst is not installed, skip this test
 		if strings.Contains(err.Error(), "executable file not found") {

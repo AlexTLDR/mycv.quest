@@ -45,7 +45,9 @@ func (s *Server) HandleIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	templateData := s.generator.GetTemplateData()
-	templates.Index(templateData).Render(r.Context(), w)
+	if err := templates.Index(templateData).Render(r.Context(), w); err != nil {
+		http.Error(w, "Failed to render template", http.StatusInternalServerError)
+	}
 }
 
 func (s *Server) HandleForm(w http.ResponseWriter, r *http.Request) {
@@ -53,11 +55,17 @@ func (s *Server) HandleForm(w http.ResponseWriter, r *http.Request) {
 
 	switch templateKey {
 	case "basic":
-		templates.BasicForm().Render(r.Context(), w)
+		if err := templates.BasicForm().Render(r.Context(), w); err != nil {
+			http.Error(w, "Failed to render template", http.StatusInternalServerError)
+		}
 	case "modern":
-		templates.ModernForm().Render(r.Context(), w)
+		if err := templates.ModernForm().Render(r.Context(), w); err != nil {
+			http.Error(w, "Failed to render template", http.StatusInternalServerError)
+		}
 	case "vantage":
-		templates.VantageForm().Render(r.Context(), w)
+		if err := templates.VantageForm().Render(r.Context(), w); err != nil {
+			http.Error(w, "Failed to render template", http.StatusInternalServerError)
+		}
 	default:
 		http.NotFound(w, r)
 	}
@@ -122,5 +130,7 @@ func (s *Server) HandleSessionPDF(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(pdfData)))
 
 	// Write PDF data
-	w.Write(pdfData)
+	if _, err := w.Write(pdfData); err != nil {
+		http.Error(w, "Failed to write PDF data", http.StatusInternalServerError)
+	}
 }

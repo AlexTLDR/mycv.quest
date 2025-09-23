@@ -50,7 +50,7 @@ func (cv *CVGenerator) GenerateVantageCV(template config.Template, r *http.Reque
 
 	// Generate configuration.yaml with form data
 	yamlContent := cv.GenerateVantageYAMLContent(r)
-	if err := os.WriteFile(filepath.Join(workDir, "configuration.yaml"), yamlContent, 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(workDir, "configuration.yaml"), yamlContent, 0o600); err != nil {
 		return nil, fmt.Errorf("failed to write configuration.yaml: %w", err)
 	}
 
@@ -61,7 +61,13 @@ func (cv *CVGenerator) GenerateVantageCV(template config.Template, r *http.Reque
 		return nil, fmt.Errorf("failed to get absolute path for output file: %w", err)
 	}
 
-	cmd := exec.Command("typst", "compile", "example.typ", absOutputFile)
+	// Validate arguments before executing command
+	if err := validateTypstArgs("example.typ", absOutputFile); err != nil {
+		return nil, fmt.Errorf("invalid typst arguments: %w", err)
+	}
+
+	// #nosec G204 - arguments are validated above
+	cmd := exec.CommandContext(r.Context(), "typst", "compile", "example.typ", absOutputFile)
 	cmd.Dir = workDir
 
 	output, err := cmd.CombinedOutput()
@@ -70,6 +76,7 @@ func (cv *CVGenerator) GenerateVantageCV(template config.Template, r *http.Reque
 	}
 
 	// Read the generated PDF into memory
+	// #nosec G304 - absOutputFile is validated and safe
 	pdfData, err := os.ReadFile(absOutputFile)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read generated PDF: %w", err)
