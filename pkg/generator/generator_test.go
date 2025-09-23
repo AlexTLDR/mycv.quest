@@ -13,6 +13,7 @@ import (
 )
 
 func TestNew(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{
 		Templates: map[string]config.Template{
 			"basic": {Name: "Basic Resume"},
@@ -31,6 +32,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestListTemplates(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{
 		Templates: map[string]config.Template{
 			"basic":   {Name: "Basic Resume"},
@@ -51,6 +53,7 @@ func TestListTemplates(t *testing.T) {
 }
 
 func TestGetTemplateData(t *testing.T) {
+	t.Parallel()
 	// Create temporary template directories for testing
 	tempDir := t.TempDir()
 
@@ -155,6 +158,7 @@ func TestGetTemplateData(t *testing.T) {
 }
 
 func TestGenerateFromFormInvalidTemplate(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{
 		Templates: map[string]config.Template{
 			"basic": {Name: "Basic Resume"},
@@ -174,6 +178,7 @@ func TestGenerateFromFormInvalidTemplate(t *testing.T) {
 }
 
 func TestHandlePhotoUploadToWorkDir(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
 	gen := generator.New(cfg)
 
@@ -194,6 +199,7 @@ func TestHandlePhotoUploadToWorkDir(t *testing.T) {
 }
 
 func TestCopyPhoto(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
 	gen := generator.New(cfg)
 
@@ -204,13 +210,8 @@ func TestCopyPhoto(t *testing.T) {
 	}
 
 	// Create test setup in project structure
-	originalWd, _ := os.Getwd()
-	defer os.Chdir(originalWd)
-
 	tempDir := t.TempDir()
-	if err := os.Chdir(tempDir); err != nil {
-		t.Fatalf("Failed to change directory: %v", err)
-	}
+	t.Chdir(tempDir)
 
 	// Create templates directory structure
 	templatesDir := filepath.Join(tempDir, "templates")
@@ -265,6 +266,7 @@ func TestCopyPhoto(t *testing.T) {
 }
 
 func TestGenerate(t *testing.T) {
+	t.Parallel()
 	// Create test template structure
 	tempDir := t.TempDir()
 	templatesDir := filepath.Join(tempDir, "templates")

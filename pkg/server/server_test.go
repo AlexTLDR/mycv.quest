@@ -43,6 +43,7 @@ func setupTestServer() *server.Server {
 }
 
 func TestHandleIndex(t *testing.T) {
+	t.Parallel()
 	server := setupTestServer()
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -77,6 +78,7 @@ func TestHandleIndex(t *testing.T) {
 }
 
 func TestHandleIndexNotFound(t *testing.T) {
+	t.Parallel()
 	server := setupTestServer()
 
 	req := httptest.NewRequest(http.MethodGet, "/nonexistent", nil)
@@ -91,6 +93,7 @@ func TestHandleIndexNotFound(t *testing.T) {
 }
 
 func TestHandleForm(t *testing.T) {
+	t.Parallel()
 	server := setupTestServer()
 
 	testCases := []struct {
@@ -130,6 +133,7 @@ func TestHandleForm(t *testing.T) {
 }
 
 func TestHandleGenerateGET(t *testing.T) {
+	t.Parallel()
 	server := setupTestServer()
 
 	req := httptest.NewRequest(http.MethodGet, "/generate/basic", nil)
@@ -150,6 +154,7 @@ func TestHandleGenerateGET(t *testing.T) {
 }
 
 func TestHandleGenerateMethodNotAllowed(t *testing.T) {
+	t.Parallel()
 	server := setupTestServer()
 
 	req := httptest.NewRequest(http.MethodPut, "/generate/basic", nil)
@@ -164,6 +169,7 @@ func TestHandleGenerateMethodNotAllowed(t *testing.T) {
 }
 
 func TestHandleGeneratePOSTBasic(t *testing.T) {
+	t.Parallel()
 	server := setupTestServer()
 
 	// Create form data
@@ -212,6 +218,7 @@ func TestHandleGeneratePOSTBasic(t *testing.T) {
 }
 
 func TestHandleGeneratePOSTModernWithPhoto(t *testing.T) {
+	t.Parallel()
 	server := setupTestServer()
 
 	// Create multipart form with photo upload
@@ -285,6 +292,7 @@ func TestHandleGeneratePOSTModernWithPhoto(t *testing.T) {
 }
 
 func TestHandleSessionPDF(t *testing.T) {
+	t.Parallel()
 	server := setupTestServer()
 
 	// First generate a CV to create session data
@@ -345,6 +353,7 @@ func TestHandleSessionPDF(t *testing.T) {
 }
 
 func TestHandleSessionPDFNotFound(t *testing.T) {
+	t.Parallel()
 	server := setupTestServer()
 
 	testCases := []string{
@@ -367,6 +376,7 @@ func TestHandleSessionPDFNotFound(t *testing.T) {
 }
 
 func TestSessionManagement(t *testing.T) {
+	t.Parallel()
 	server := setupTestServer()
 
 	// Generate two CVs with different templates
@@ -433,6 +443,7 @@ func TestSessionManagement(t *testing.T) {
 }
 
 func TestConcurrentSessions(t *testing.T) {
+	t.Parallel()
 	server := setupTestServer()
 
 	// Generate CVs from two different "users" (no cookies)

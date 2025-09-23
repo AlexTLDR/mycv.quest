@@ -91,7 +91,7 @@ func (cv *CVGenerator) Generate(ctx context.Context, templateKey string) error {
 }
 
 func (cv *CVGenerator) GetTemplateData() []templates.CVTemplate {
-	var templateData []templates.CVTemplate
+	templateData := make([]templates.CVTemplate, 0, len(cv.config.Templates))
 
 	descriptions := map[string]string{
 		"vantage": "Clean and professional design with modern typography",

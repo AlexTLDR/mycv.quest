@@ -12,6 +12,7 @@ import (
 )
 
 func TestGenerateVantageCV(t *testing.T) {
+	t.Parallel()
 	// Create test configuration
 	cfg := &config.Config{
 		Templates: map[string]config.Template{
@@ -97,6 +98,7 @@ func TestGenerateVantageCV(t *testing.T) {
 }
 
 func TestGenerateVantageYAMLContent(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
 	gen := generator.New(cfg)
 
@@ -288,6 +290,7 @@ func TestGenerateVantageYAMLContent(t *testing.T) {
 }
 
 func TestGenerateVantageYAMLContentMinimal(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
 	gen := generator.New(cfg)
 
@@ -337,6 +340,7 @@ func TestGenerateVantageYAMLContentMinimal(t *testing.T) {
 }
 
 func TestGenerateVantageYAMLContentSanitization(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
 	gen := generator.New(cfg)
 
@@ -395,6 +399,7 @@ func TestGenerateVantageYAMLContentSanitization(t *testing.T) {
 }
 
 func TestGenerateVantageYAMLContentTechnicalExpertiseLevels(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
 	gen := generator.New(cfg)
 

@@ -11,6 +11,7 @@ import (
 )
 
 func TestGenerateBasicCV(t *testing.T) {
+	t.Parallel()
 	// Create test configuration
 	cfg := &config.Config{
 		Templates: map[string]config.Template{
@@ -83,6 +84,7 @@ func TestGenerateBasicCV(t *testing.T) {
 }
 
 func TestGenerateBasicTypContent(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
 	gen := generator.New(cfg)
 
@@ -147,6 +149,7 @@ func TestGenerateBasicTypContent(t *testing.T) {
 }
 
 func TestGenerateBasicTypContentEmpty(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
 	gen := generator.New(cfg)
 
@@ -175,6 +178,7 @@ func TestGenerateBasicTypContentEmpty(t *testing.T) {
 }
 
 func TestGenerateBasicTypContentSanitization(t *testing.T) {
+	t.Parallel()
 	cfg := &config.Config{}
 	gen := generator.New(cfg)
 
