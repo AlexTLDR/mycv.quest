@@ -159,35 +159,35 @@ templ VantageForm() {
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-								<input type="text" name="name" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="name" required value="John Doe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Professional Title *</label>
-								<input type="text" name="title" required placeholder="Software Engineer" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="title" required value="Software Engineer" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-								<input type="email" name="email" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="email" name="email" required value="johndoe@example.com" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-								<input type="tel" name="phone" placeholder="+1 234 567 8900" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="tel" name="phone" value="+1 234 567 8900" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-								<input type="text" name="address" placeholder="City, Country" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="address" value="City, Country" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Position</label>
-								<input type="text" name="position" placeholder="Software Engineer" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="position" value="Software Engineer" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div class="md:col-span-2">
 								<label class="block text-sm font-medium text-gray-700 mb-1">Professional Tagline</label>
-								<textarea name="tagline" rows="3" placeholder="Software engineer with 5 years of experience and a strong foundation in computer science..." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+								<textarea name="tagline" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">Software engineer with 5 years of experience and a strong foundation in computer science, skilled in developing software for innovative industries. Proficient in JavaScript/TypeScript, Python, and C/C++, with a solid understanding of system architecture and design principles.</textarea>
 							</div>
 							<div class="md:col-span-2">
 								<label class="block text-sm font-medium text-gray-700 mb-1">Career Objective</label>
-								<textarea name="objective" rows="2" placeholder="Seeking to advance my skills and build a strong career with a company that values innovation and creativity." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+								<textarea name="objective" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">Seeking to advance my skills and build a strong career with a company that values innovation and creativity.</textarea>
 							</div>
 						</div>
 					</div>
@@ -197,27 +197,27 @@ templ VantageForm() {
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">LinkedIn URL</label>
-								<input type="text" name="linkedin_url" placeholder="https://www.linkedin.com/in/johndoe/" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="linkedin_url" value="https://www.linkedin.com/in/johndoe/" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">LinkedIn Display Text</label>
-								<input type="text" name="linkedin_display_text" placeholder="johndoe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="linkedin_display_text" value="johndoe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">GitHub URL</label>
-								<input type="text" name="github_url" placeholder="https://github.com/johndoe/" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="github_url" value="https://github.com/johndoe/" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">GitHub Display Text</label>
-								<input type="text" name="github_display_text" placeholder="@johndoe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="github_display_text" value="@johndoe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Website URL</label>
-								<input type="text" name="website_url" placeholder="https://johndoe.com" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="website_url" value="https://johndoe.com" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Website Display Text</label>
-								<input type="text" name="website_display_text" placeholder="www.johndoe.com" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="website_display_text" value="www.johndoe.com" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 						</div>
 					</div>
@@ -257,15 +257,15 @@ templ VantageForm() {
 						<div class="space-y-4">
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Skills/Exposure</label>
-								<textarea name="skills" rows="3" placeholder="JavaScript, Python, Java, React, Node.js, Express, MongoDB, AWS, Docker, Git, HTML/CSS, SQL, Material UI, Tailwind CSS (separate with commas)" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+								<textarea name="skills" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">JavaScript, Python, Java, React, Node.js, Express, MongoDB, AWS, Docker, Git, HTML/CSS, SQL, Material UI, Tailwind CSS</textarea>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Methodology/Approach</label>
-								<textarea name="methodology" rows="2" placeholder="Lean, Kanban, Design Thinking, Test-Driven Development, Pair Programming (separate with commas)" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+								<textarea name="methodology" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">Lean, Kanban, Design Thinking, Test-Driven Development, Pair Programming</textarea>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Tools</label>
-								<textarea name="tools" rows="2" placeholder="GitHub, IntelliJ IDEA, Asana, Slack, Adobe XD, Postman (separate with commas)" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+								<textarea name="tools" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">GitHub, IntelliJ IDEA, Asana, Slack, Adobe XD, Postman</textarea>
 							</div>
 						</div>
 					</div>
@@ -315,39 +315,42 @@ templ VantageJobEntry(index int) {
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Position</label>
-				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][position]" } placeholder="Lead Software Developer" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][position]" } value="Lead Software Developer" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][company_name]" } placeholder="Quantum Innovations" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][company_name]" } value="Quantum Innovations" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Company Link (optional)</label>
-				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][company_link]" } placeholder="https://quantuminnovations.com/" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][company_link]" } value="https://quantuminnovations.com/" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Product Name (optional)</label>
-				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][product_name]" } placeholder="QuantumLeap" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][product_name]" } value="QuantumLeap" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Product Link (optional)</label>
-				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][product_link]" } placeholder="https://quantumleap.com" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][product_link]" } value="https://quantumleap.com" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][location]" } placeholder="Remote" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][location]" } value="Remote" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][from]" } placeholder="2023 Mar." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][from]" } value="2023 Mar." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][to]" } placeholder="present" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][to]" } value="present" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div class="md:col-span-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">Job Description</label>
-				<textarea name={ "jobs[" + strconv.Itoa(index) + "][description]" } rows="4" placeholder="- Spearheaded the development of a cutting-edge quantum computing simulator&#10;- Collaborated with a team to create intuitive user interfaces&#10;- Optimized algorithms for performance" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+				<textarea name={ "jobs[" + strconv.Itoa(index) + "][description]" } rows="4" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+					- Spearheaded the development of a cutting-edge quantum computing simulator, optimizing algorithms for performance.
+					- Collaborated with a team to create intuitive user interfaces that simplified complex scientific data for end-users.
+				</textarea>
 			</div>
 		</div>
 	</div>
@@ -364,35 +367,35 @@ templ VantageEducationEntry(index int) {
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Institution Name</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][place_name]" } placeholder="Example University" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][place_name]" } value="Example University" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Institution Link (optional)</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][place_link]" } placeholder="http://exampleuniversity.edu" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][place_link]" } value="http://exampleuniversity.edu" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Degree</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][degree]" } placeholder="B.Sc." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][degree]" } value="B.Sc." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Major</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][major]" } placeholder="Computer Science" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][major]" } value="Computer Science" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Track/Specialization</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][track]" } placeholder="Computer Science" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][track]" } value="Computer Science" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][location]" } placeholder="City, Country" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][location]" } value="City, Country" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Start Year</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][from]" } placeholder="2015" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][from]" } value="2015" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">End Year</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][to]" } placeholder="2019" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][to]" } value="2019" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 		</div>
 	</div>
@@ -409,7 +412,7 @@ templ VantageTechnicalEntry(index int) {
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Skill Name</label>
-				<input type="text" name={ "technical_expertise[" + strconv.Itoa(index) + "][name]" } placeholder="Kotlin" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "technical_expertise[" + strconv.Itoa(index) + "][name]" } value="Kotlin" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Skill Level (1-5)</label>
@@ -436,11 +439,11 @@ templ VantageAchievementEntry(index int) {
 		<div class="space-y-4">
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Achievement Name</label>
-				<input type="text" name={ "achievements[" + strconv.Itoa(index) + "][name]" } placeholder="Best Project Award" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "achievements[" + strconv.Itoa(index) + "][name]" } value="Best Project Award" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-				<textarea name={ "achievements[" + strconv.Itoa(index) + "][description]" } rows="3" placeholder="Developed an innovative solution for community service management and received recognition from the university." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+				<textarea name={ "achievements[" + strconv.Itoa(index) + "][description]" } rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">Developed an innovative solution for community service management and received recognition from the university.</textarea>
 			</div>
 		</div>
 	</div>

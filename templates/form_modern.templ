@@ -153,39 +153,39 @@ templ ModernForm() {
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-								<input type="text" name="author" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="author" required value="John Doe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Job Title *</label>
-								<input type="text" name="job_title" required placeholder="Data Scientist" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="job_title" required value="Data Scientist" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div class="md:col-span-2">
 								<label class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
-								<textarea name="bio" rows="3" placeholder="Brief professional summary" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+								<textarea name="bio" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">Experienced data scientist with 5+ years of expertise in machine learning, statistical analysis, and data visualization. Proven track record of delivering actionable insights and building predictive models that drive business growth.</textarea>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-								<input type="email" name="email" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="email" name="email" required value="johndoe@example.com" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Mobile</label>
-								<input type="text" name="mobile" placeholder="+43 1234 5678" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="mobile" value="+43 1234 5678" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-								<input type="text" name="location" placeholder="Austria" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="location" value="Austria" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
-								<input type="text" name="linkedin" placeholder="linkedin/jdoe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="linkedin" value="linkedin/jdoe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">GitHub</label>
-								<input type="text" name="github" placeholder="github.com/jdoe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="github" value="github.com/jdoe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Website</label>
-								<input type="text" name="website" placeholder="jdoe.dev" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="website" value="jdoe.dev" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div class="md:col-span-2">
 								<label class="block text-sm font-medium text-gray-700 mb-1">Avatar Photo</label>
@@ -240,15 +240,15 @@ templ ModernForm() {
 						<div class="space-y-4">
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Skills</label>
-								<textarea name="skills" rows="3" placeholder="Teamwork, Critical thinking, Problem solving (separate with commas)" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+								<textarea name="skills" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">Python, R, SQL, Machine Learning, Deep Learning, Statistical Analysis, Data Visualization, Tableau, Power BI, TensorFlow, PyTorch, Scikit-learn</textarea>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Languages</label>
-								<textarea name="languages" rows="2" placeholder="German (native), English (C1) (separate with commas)" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+								<textarea name="languages" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">German (native), English (C1), Spanish (B2)</textarea>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Interests</label>
-								<textarea name="interests" rows="2" placeholder="Maker-culture, Science, Sports (separate with commas)" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+								<textarea name="interests" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">Data Science, Machine Learning, Artificial Intelligence, Open Source Projects, Hiking, Photography</textarea>
 							</div>
 						</div>
 					</div>
@@ -288,23 +288,26 @@ templ ModernEducationEntry(index int) {
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Degree/Title</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][title]" } placeholder="Master's degree" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][title]" } value="Master's degree" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Institution</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][subtitle]" } placeholder="University of Sciences" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][subtitle]" } value="University of Sciences" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][date_from]" } placeholder="10/2021" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][date_from]" } value="10/2021" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][date_to]" } placeholder="07/2023" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][date_to]" } value="07/2023" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div class="md:col-span-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-				<textarea name={ "education[" + strconv.Itoa(index) + "][task_description]" } rows="3" placeholder="- Short summary of the most important courses&#10;- Explanation of thesis topic" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+				<textarea name={ "education[" + strconv.Itoa(index) + "][task_description]" } rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+					- Short summary of the most important courses: Data Structures, Machine Learning, Statistical Analysis
+					- Explanation of thesis topic: Predictive modeling for customer behavior analysis using deep learning techniques
+				</textarea>
 			</div>
 		</div>
 	</div>
@@ -321,27 +324,32 @@ templ ModernWorkEntry(index int) {
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
-				<input type="text" name={ "work[" + strconv.Itoa(index) + "][title]" } placeholder="Data Scientist" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][title]" } value="Data Scientist" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Company</label>
-				<input type="text" name={ "work[" + strconv.Itoa(index) + "][subtitle]" } placeholder="Some Company" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][subtitle]" } value="TechData Analytics Inc." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-				<input type="text" name={ "work[" + strconv.Itoa(index) + "][date_from]" } placeholder="08/2021" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][date_from]" } value="08/2021" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-				<input type="text" name={ "work[" + strconv.Itoa(index) + "][date_to]" } placeholder="07/2023 or leave empty for current" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][date_to]" } value="Present" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div class="md:col-span-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">Company Description</label>
-				<input type="text" name={ "work[" + strconv.Itoa(index) + "][facility_description]" } placeholder="Company operating in sector XY" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][facility_description]" } value="Leading technology company specializing in data analytics and machine learning solutions" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div class="md:col-span-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">Responsibilities</label>
-				<textarea name={ "work[" + strconv.Itoa(index) + "][task_description]" } rows="4" placeholder="- Short summary of your responsibilities&#10;- Key achievements and contributions" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+				<textarea name={ "work[" + strconv.Itoa(index) + "][task_description]" } rows="4" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+					- Developed and implemented machine learning models for predictive analytics
+					- Led cross-functional team of 5 data scientists and engineers
+					- Improved model accuracy by 25% through advanced feature engineering
+					- Created automated reporting systems reducing manual work by 40%
+				</textarea>
 			</div>
 		</div>
 	</div>
@@ -358,23 +366,27 @@ templ ModernProjectEntry(index int) {
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
-				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][title]" } placeholder="Project 1" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][title]" } value="Customer Behavior Analysis Platform" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Subtitle/Technologies</label>
-				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][subtitle]" } placeholder="Data Visualization, Data Engineering" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][subtitle]" } value="Python, TensorFlow, PostgreSQL, Docker" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][date_from]" } placeholder="08/2022" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][date_from]" } value="08/2022" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">End Date (optional)</label>
-				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][date_to]" } placeholder="09/2022" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][date_to]" } value="Present" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div class="md:col-span-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-				<textarea name={ "projects[" + strconv.Itoa(index) + "][description]" } rows="3" placeholder="- Brief description of the project and your contributions" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+				<textarea name={ "projects[" + strconv.Itoa(index) + "][description]" } rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+					- Built end-to-end machine learning pipeline for customer behavior prediction
+					- Implemented real-time data processing system handling 1M+ daily transactions
+					- Achieved 92% prediction accuracy using ensemble methods and feature engineering
+				</textarea>
 			</div>
 		</div>
 	</div>
@@ -391,19 +403,19 @@ templ ModernCertificateEntry(index int) {
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Certificate Name</label>
-				<input type="text" name={ "certificates[" + strconv.Itoa(index) + "][title]" } placeholder="Certificate of XY" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "certificates[" + strconv.Itoa(index) + "][title]" } value="AWS Certified Solutions Architect" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Issued By</label>
-				<input type="text" name={ "certificates[" + strconv.Itoa(index) + "][subtitle]" } placeholder="Issued by authority XY" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "certificates[" + strconv.Itoa(index) + "][subtitle]" } value="Amazon Web Services" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Issue Date</label>
-				<input type="text" name={ "certificates[" + strconv.Itoa(index) + "][date_from]" } placeholder="08/2022" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "certificates[" + strconv.Itoa(index) + "][date_from]" } value="08/2022" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Expiry Date (optional)</label>
-				<input type="text" name={ "certificates[" + strconv.Itoa(index) + "][date_to]" } placeholder="09/2025" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "certificates[" + strconv.Itoa(index) + "][date_to]" } value="08/2025" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 		</div>
 	</div>

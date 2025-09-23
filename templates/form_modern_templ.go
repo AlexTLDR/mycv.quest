@@ -97,7 +97,7 @@ func ModernForm() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Modern Template - CV Form</title><script src=\"https://cdn.tailwindcss.com\"></script><script>\n\t\t\t\tfunction addEducation() {\n\t\t\t\t\tconst container = document.getElementById('education-container');\n\t\t\t\t\tconst template = document.getElementById('education-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction addWork() {\n\t\t\t\t\tconst container = document.getElementById('work-container');\n\t\t\t\t\tconst template = document.getElementById('work-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction addProject() {\n\t\t\t\t\tconst container = document.getElementById('projects-container');\n\t\t\t\t\tconst template = document.getElementById('project-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction addCertificate() {\n\t\t\t\t\tconst container = document.getElementById('certificates-container');\n\t\t\t\t\tconst template = document.getElementById('certificate-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction removeEntry(button) {\n\t\t\t\t\tbutton.closest('.entry-item').remove();\n\t\t\t\t}\n\t\t\t</script></head><body class=\"bg-gray-50 min-h-screen\"><header class=\"bg-white shadow-sm border-b\"><div class=\"max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6\"><h1 class=\"text-2xl font-bold text-gray-900\">Modern Template - CV Form</h1><p class=\"mt-1 text-gray-600\">Fill in your details to generate your CV</p></div></header><main class=\"max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8\"><form method=\"POST\" action=\"/generate/modern\" enctype=\"multipart/form-data\" class=\"space-y-8\"><!-- Personal Information --><div class=\"bg-white rounded-lg shadow p-6\"><h2 class=\"text-lg font-semibold text-gray-900 mb-4\">Personal Information</h2><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Full Name *</label> <input type=\"text\" name=\"author\" required class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Job Title *</label> <input type=\"text\" name=\"job_title\" required placeholder=\"Data Scientist\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Bio</label> <textarea name=\"bio\" rows=\"3\" placeholder=\"Brief professional summary\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Email *</label> <input type=\"email\" name=\"email\" required class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Mobile</label> <input type=\"text\" name=\"mobile\" placeholder=\"+43 1234 5678\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Location</label> <input type=\"text\" name=\"location\" placeholder=\"Austria\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">LinkedIn</label> <input type=\"text\" name=\"linkedin\" placeholder=\"linkedin/jdoe\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">GitHub</label> <input type=\"text\" name=\"github\" placeholder=\"github.com/jdoe\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Website</label> <input type=\"text\" name=\"website\" placeholder=\"jdoe.dev\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Avatar Photo</label> <input type=\"file\" name=\"avatar\" accept=\"image/*\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"><p class=\"text-sm text-gray-500 mt-1\">Upload a professional headshot photo (optional)</p></div></div></div><!-- Education Section --><div class=\"bg-white rounded-lg shadow p-6\"><div class=\"flex justify-between items-center mb-4\"><h2 class=\"text-lg font-semibold text-gray-900\">Education</h2><button type=\"button\" onclick=\"addEducation()\" class=\"bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700\">Add Education</button></div><div id=\"education-container\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Modern Template - CV Form</title><script src=\"https://cdn.tailwindcss.com\"></script><script>\n\t\t\t\tfunction addEducation() {\n\t\t\t\t\tconst container = document.getElementById('education-container');\n\t\t\t\t\tconst template = document.getElementById('education-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction addWork() {\n\t\t\t\t\tconst container = document.getElementById('work-container');\n\t\t\t\t\tconst template = document.getElementById('work-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction addProject() {\n\t\t\t\t\tconst container = document.getElementById('projects-container');\n\t\t\t\t\tconst template = document.getElementById('project-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction addCertificate() {\n\t\t\t\t\tconst container = document.getElementById('certificates-container');\n\t\t\t\t\tconst template = document.getElementById('certificate-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction removeEntry(button) {\n\t\t\t\t\tbutton.closest('.entry-item').remove();\n\t\t\t\t}\n\t\t\t</script></head><body class=\"bg-gray-50 min-h-screen\"><header class=\"bg-white shadow-sm border-b\"><div class=\"max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6\"><h1 class=\"text-2xl font-bold text-gray-900\">Modern Template - CV Form</h1><p class=\"mt-1 text-gray-600\">Fill in your details to generate your CV</p></div></header><main class=\"max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8\"><form method=\"POST\" action=\"/generate/modern\" enctype=\"multipart/form-data\" class=\"space-y-8\"><!-- Personal Information --><div class=\"bg-white rounded-lg shadow p-6\"><h2 class=\"text-lg font-semibold text-gray-900 mb-4\">Personal Information</h2><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Full Name *</label> <input type=\"text\" name=\"author\" required value=\"John Doe\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Job Title *</label> <input type=\"text\" name=\"job_title\" required value=\"Data Scientist\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Bio</label> <textarea name=\"bio\" rows=\"3\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\">Experienced data scientist with 5+ years of expertise in machine learning, statistical analysis, and data visualization. Proven track record of delivering actionable insights and building predictive models that drive business growth.</textarea></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Email *</label> <input type=\"email\" name=\"email\" required value=\"johndoe@example.com\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Mobile</label> <input type=\"text\" name=\"mobile\" value=\"+43 1234 5678\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Location</label> <input type=\"text\" name=\"location\" value=\"Austria\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">LinkedIn</label> <input type=\"text\" name=\"linkedin\" value=\"linkedin/jdoe\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">GitHub</label> <input type=\"text\" name=\"github\" value=\"github.com/jdoe\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Website</label> <input type=\"text\" name=\"website\" value=\"jdoe.dev\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Avatar Photo</label> <input type=\"file\" name=\"avatar\" accept=\"image/*\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"><p class=\"text-sm text-gray-500 mt-1\">Upload a professional headshot photo (optional)</p></div></div></div><!-- Education Section --><div class=\"bg-white rounded-lg shadow p-6\"><div class=\"flex justify-between items-center mb-4\"><h2 class=\"text-lg font-semibold text-gray-900\">Education</h2><button type=\"button\" onclick=\"addEducation()\" class=\"bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700\">Add Education</button></div><div id=\"education-container\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -129,7 +129,7 @@ func ModernForm() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div></div><!-- Skills and Other Sections --><div class=\"bg-white rounded-lg shadow p-6\"><h2 class=\"text-lg font-semibold text-gray-900 mb-4\">Skills, Languages & Interests</h2><div class=\"space-y-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Skills</label> <textarea name=\"skills\" rows=\"3\" placeholder=\"Teamwork, Critical thinking, Problem solving (separate with commas)\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Languages</label> <textarea name=\"languages\" rows=\"2\" placeholder=\"German (native), English (C1) (separate with commas)\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Interests</label> <textarea name=\"interests\" rows=\"2\" placeholder=\"Maker-culture, Science, Sports (separate with commas)\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div></div></div><!-- Submit Button --><div class=\"flex justify-end\"><button type=\"submit\" class=\"bg-green-600 text-white px-8 py-3 rounded-md hover:bg-green-700 font-medium\">Generate CV</button></div></form></main><!-- Templates for dynamic fields --><template id=\"education-template\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div></div><!-- Skills and Other Sections --><div class=\"bg-white rounded-lg shadow p-6\"><h2 class=\"text-lg font-semibold text-gray-900 mb-4\">Skills, Languages & Interests</h2><div class=\"space-y-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Skills</label> <textarea name=\"skills\" rows=\"3\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\">Python, R, SQL, Machine Learning, Deep Learning, Statistical Analysis, Data Visualization, Tableau, Power BI, TensorFlow, PyTorch, Scikit-learn</textarea></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Languages</label> <textarea name=\"languages\" rows=\"2\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\">German (native), English (C1), Spanish (B2)</textarea></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Interests</label> <textarea name=\"interests\" rows=\"2\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\">Data Science, Machine Learning, Artificial Intelligence, Open Source Projects, Hiking, Photography</textarea></div></div></div><!-- Submit Button --><div class=\"flex justify-end\"><button type=\"submit\" class=\"bg-green-600 text-white px-8 py-3 rounded-md hover:bg-green-700 font-medium\">Generate CV</button></div></form></main><!-- Templates for dynamic fields --><template id=\"education-template\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -213,7 +213,7 @@ func ModernEducationEntry(index int) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\" placeholder=\"Master's degree\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Institution</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\" value=\"Master's degree\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Institution</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -226,7 +226,7 @@ func ModernEducationEntry(index int) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\" placeholder=\"University of Sciences\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Start Date</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\" value=\"University of Sciences\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Start Date</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -239,7 +239,7 @@ func ModernEducationEntry(index int) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "\" placeholder=\"10/2021\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">End Date</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "\" value=\"10/2021\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">End Date</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -252,7 +252,7 @@ func ModernEducationEntry(index int) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\" placeholder=\"07/2023\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Description</label> <textarea name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\" value=\"07/2023\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Description</label> <textarea name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -265,7 +265,7 @@ func ModernEducationEntry(index int) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\" rows=\"3\" placeholder=\"- Short summary of the most important courses&#10;- Explanation of thesis topic\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\" rows=\"3\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\">- Short summary of the most important courses: Data Structures, Machine Learning, Statistical Analysis - Explanation of thesis topic: Predictive modeling for customer behavior analysis using deep learning techniques</textarea></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -311,78 +311,78 @@ func ModernWorkEntry(index int) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs("work[" + strconv.Itoa(index) + "][title]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 324, Col: 72}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 327, Col: 72}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\" placeholder=\"Data Scientist\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Company</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\" value=\"Data Scientist\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Company</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs("work[" + strconv.Itoa(index) + "][subtitle]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 328, Col: 75}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 331, Col: 75}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\" placeholder=\"Some Company\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Start Date</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\" value=\"TechData Analytics Inc.\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Start Date</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs("work[" + strconv.Itoa(index) + "][date_from]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 332, Col: 76}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 335, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\" placeholder=\"08/2021\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">End Date</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\" value=\"08/2021\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">End Date</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs("work[" + strconv.Itoa(index) + "][date_to]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 336, Col: 74}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 339, Col: 74}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\" placeholder=\"07/2023 or leave empty for current\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Company Description</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\" value=\"Present\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Company Description</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs("work[" + strconv.Itoa(index) + "][facility_description]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 340, Col: 87}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 343, Col: 87}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\" placeholder=\"Company operating in sector XY\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Responsibilities</label> <textarea name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\" value=\"Leading technology company specializing in data analytics and machine learning solutions\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Responsibilities</label> <textarea name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var14 string
 		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs("work[" + strconv.Itoa(index) + "][task_description]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 344, Col: 74}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 347, Col: 74}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "\" rows=\"4\" placeholder=\"- Short summary of your responsibilities&#10;- Key achievements and contributions\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "\" rows=\"4\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\">- Developed and implemented machine learning models for predictive analytics - Led cross-functional team of 5 data scientists and engineers - Improved model accuracy by 25% through advanced feature engineering - Created automated reporting systems reducing manual work by 40%</textarea></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -428,65 +428,65 @@ func ModernProjectEntry(index int) templ.Component {
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs("projects[" + strconv.Itoa(index) + "][title]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 361, Col: 76}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 369, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "\" placeholder=\"Project 1\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Subtitle/Technologies</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "\" value=\"Customer Behavior Analysis Platform\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Subtitle/Technologies</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var17 string
 		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs("projects[" + strconv.Itoa(index) + "][subtitle]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 365, Col: 79}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 373, Col: 79}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "\" placeholder=\"Data Visualization, Data Engineering\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Start Date</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "\" value=\"Python, TensorFlow, PostgreSQL, Docker\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Start Date</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var18 string
 		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs("projects[" + strconv.Itoa(index) + "][date_from]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 369, Col: 80}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 377, Col: 80}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "\" placeholder=\"08/2022\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">End Date (optional)</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "\" value=\"08/2022\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">End Date (optional)</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var19 string
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs("projects[" + strconv.Itoa(index) + "][date_to]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 373, Col: 78}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 381, Col: 78}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "\" placeholder=\"09/2022\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Description</label> <textarea name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "\" value=\"Present\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Description</label> <textarea name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs("projects[" + strconv.Itoa(index) + "][description]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 377, Col: 73}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 385, Col: 73}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "\" rows=\"3\" placeholder=\"- Brief description of the project and your contributions\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "\" rows=\"3\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\">- Built end-to-end machine learning pipeline for customer behavior prediction - Implemented real-time data processing system handling 1M+ daily transactions - Achieved 92% prediction accuracy using ensemble methods and feature engineering</textarea></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -532,52 +532,52 @@ func ModernCertificateEntry(index int) templ.Component {
 		var templ_7745c5c3_Var22 string
 		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs("certificates[" + strconv.Itoa(index) + "][title]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 394, Col: 80}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 406, Col: 80}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "\" placeholder=\"Certificate of XY\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Issued By</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "\" value=\"AWS Certified Solutions Architect\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Issued By</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var23 string
 		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs("certificates[" + strconv.Itoa(index) + "][subtitle]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 398, Col: 83}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 410, Col: 83}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "\" placeholder=\"Issued by authority XY\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Issue Date</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "\" value=\"Amazon Web Services\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Issue Date</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var24 string
 		templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs("certificates[" + strconv.Itoa(index) + "][date_from]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 402, Col: 84}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 414, Col: 84}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "\" placeholder=\"08/2022\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Expiry Date (optional)</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "\" value=\"08/2022\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Expiry Date (optional)</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var25 string
 		templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs("certificates[" + strconv.Itoa(index) + "][date_to]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 406, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_modern.templ`, Line: 418, Col: 82}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "\" placeholder=\"09/2025\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "\" value=\"08/2025\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

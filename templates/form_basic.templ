@@ -127,31 +127,31 @@ templ BasicForm() {
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-								<input type="text" name="name" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="name" required value="John Doe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-								<input type="text" name="location" placeholder="San Diego, CA" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="location" value="San Diego, CA" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-								<input type="email" name="email" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="email" name="email" required value="johndoe@example.com" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-								<input type="text" name="phone" placeholder="+1 (xxx) xxx-xxxx" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="phone" value="+1 (555) 123-4567" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">GitHub</label>
-								<input type="text" name="github" placeholder="github.com/username" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="github" value="github.com/johndoe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
-								<input type="text" name="linkedin" placeholder="linkedin.com/in/username" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="linkedin" value="linkedin.com/in/johndoe" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Personal Website</label>
-								<input type="text" name="personal_site" placeholder="yoursite.dev" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<input type="text" name="personal_site" value="johndoe.dev" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Accent Color</label>
@@ -195,11 +195,11 @@ templ BasicForm() {
 						<div class="space-y-4">
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Programming Languages</label>
-								<textarea name="programming_languages" rows="3" placeholder="JavaScript, Python, C/C++, HTML/CSS, Java, Bash, R, Flutter, Dart" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+								<textarea name="programming_languages" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">JavaScript, Python, C/C++, HTML/CSS, Java, Bash, R, Flutter, Dart</textarea>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Technologies</label>
-								<textarea name="technologies" rows="3" placeholder="React, Astro, Svelte, Tailwind CSS, Git, UNIX, Docker, Caddy, NGINX, Google Cloud Platform" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+								<textarea name="technologies" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">React, Astro, Svelte, Tailwind CSS, Git, UNIX, Docker, Caddy, NGINX, Google Cloud Platform</textarea>
 							</div>
 						</div>
 					</div>
@@ -236,31 +236,31 @@ templ BasicEducationEntry(index int) {
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Institution</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][institution]" } class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][institution]" } value="University of California, San Diego" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][location]" } class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][location]" } value="San Diego, CA" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][start_date]" } placeholder="Aug 2023" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][start_date]" } value="Aug 2023" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][end_date]" } placeholder="May 2027" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][end_date]" } value="May 2027" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div class="md:col-span-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">Degree</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][degree]" } placeholder="Bachelor's of Science, Computer Science and Mathematics" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][degree]" } value="Bachelor's of Science, Computer Science and Mathematics" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">GPA (optional)</label>
-				<input type="text" name={ "education[" + strconv.Itoa(index) + "][gpa]" } placeholder="4.0/4.0" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "education[" + strconv.Itoa(index) + "][gpa]" } value="4.0/4.0" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div class="md:col-span-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">Additional Details</label>
-				<textarea name={ "education[" + strconv.Itoa(index) + "][details]" } rows="3" placeholder="Relevant coursework, achievements, etc." class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+				<textarea name={ "education[" + strconv.Itoa(index) + "][details]" } rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">Relevant coursework: Data Structures, Algorithms, Software Engineering, Database Systems. Dean's List for 3 consecutive semesters.</textarea>
 			</div>
 		</div>
 	</div>
@@ -277,27 +277,32 @@ templ BasicWorkEntry(index int) {
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
-				<input type="text" name={ "work[" + strconv.Itoa(index) + "][title]" } class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][title]" } value="Software Engineering Intern" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Company</label>
-				<input type="text" name={ "work[" + strconv.Itoa(index) + "][company]" } class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][company]" } value="TechCorp Solutions" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-				<input type="text" name={ "work[" + strconv.Itoa(index) + "][location]" } class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][location]" } value="San Diego, CA" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-				<input type="text" name={ "work[" + strconv.Itoa(index) + "][start_date]" } placeholder="May 2024" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][start_date]" } value="May 2024" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-				<input type="text" name={ "work[" + strconv.Itoa(index) + "][end_date]" } placeholder="Present" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "work[" + strconv.Itoa(index) + "][end_date]" } value="Present" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div class="md:col-span-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-				<textarea name={ "work[" + strconv.Itoa(index) + "][description]" } rows="4" placeholder="- Bullet point describing your responsibilities and achievements" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+				<textarea name={ "work[" + strconv.Itoa(index) + "][description]" } rows="4" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+					- Developed and maintained web applications using React and Node.js
+					- Collaborated with senior engineers to implement new features and fix bugs
+					- Participated in code reviews and contributed to improving development processes
+					- Gained experience with modern software development tools and methodologies
+				</textarea>
 			</div>
 		</div>
 	</div>
@@ -314,27 +319,32 @@ templ BasicProjectEntry(index int) {
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
-				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][name]" } class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][name]" } value="Personal Portfolio Website" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Role (optional)</label>
-				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][role]" } placeholder="Maintainer" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][role]" } value="Lead Developer" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][start_date]" } placeholder="Nov 2023" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][start_date]" } value="Nov 2023" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">End Date (optional)</label>
-				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][end_date]" } placeholder="Present" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][end_date]" } value="Present" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div>
 				<label class="block text-sm font-medium text-gray-700 mb-1">URL (optional)</label>
-				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][url]" } placeholder="hyperschedule.io" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+				<input type="text" name={ "projects[" + strconv.Itoa(index) + "][url]" } value="johndoe.dev" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 			<div class="md:col-span-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-				<textarea name={ "projects[" + strconv.Itoa(index) + "][description]" } rows="4" placeholder="- Bullet point describing the project and your contributions" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+				<textarea name={ "projects[" + strconv.Itoa(index) + "][description]" } rows="4" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+					- Built a responsive personal portfolio website using React and Tailwind CSS
+					- Implemented modern design principles and accessibility features
+					- Integrated contact form with backend API for message handling
+					- Deployed using Docker and configured CI/CD pipeline for automatic updates
+				</textarea>
 			</div>
 		</div>
 	</div>
