@@ -15,7 +15,7 @@ import (
 	"github.com/AlexTLDR/mycv.quest/templates"
 )
 
-// validateTypstArgs validates and sanitizes arguments for typst command execution
+// validateTypstArgs validates and sanitizes arguments for typst command execution.
 func validateTypstArgs(inputFile, outputFile string) error {
 	// Check for command injection attempts
 	if strings.ContainsAny(inputFile, ";|&$`") || strings.ContainsAny(outputFile, ";|&$`") {
