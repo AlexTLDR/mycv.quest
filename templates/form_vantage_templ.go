@@ -12,11 +12,11 @@ import "strconv"
 
 type VantageFormData struct {
 	// Personal Contact Information
-	Name     string
-	Title    string
-	Email    string
-	Address  string
-	Location string
+	Name    string
+	Title   string
+	Email   string
+	Phone   string
+	Address string
 
 	// Social Links
 	LinkedInURL         string
@@ -58,7 +58,6 @@ type VantageJob struct {
 	Description []string
 	From        string
 	To          string
-	Tags        []string
 	Location    string
 }
 
@@ -104,7 +103,7 @@ func VantageForm() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Vantage Template - CV Form</title><script src=\"https://cdn.tailwindcss.com\"></script><script>\n\t\t\t\tfunction addJob() {\n\t\t\t\t\tconst container = document.getElementById('jobs-container');\n\t\t\t\t\tconst template = document.getElementById('job-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction addEducation() {\n\t\t\t\t\tconst container = document.getElementById('education-container');\n\t\t\t\t\tconst template = document.getElementById('education-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction addTechnicalExpertise() {\n\t\t\t\t\tconst container = document.getElementById('technical-container');\n\t\t\t\t\tconst template = document.getElementById('technical-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, select');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction addAchievement() {\n\t\t\t\t\tconst container = document.getElementById('achievements-container');\n\t\t\t\t\tconst template = document.getElementById('achievement-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction removeEntry(button) {\n\t\t\t\t\tbutton.closest('.entry-item').remove();\n\t\t\t\t}\n\t\t\t</script></head><body class=\"bg-gray-50 min-h-screen\"><header class=\"bg-white shadow-sm border-b\"><div class=\"max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6\"><h1 class=\"text-2xl font-bold text-gray-900\">Vantage Template - CV Form</h1><p class=\"mt-1 text-gray-600\">Fill in your details to generate your CV</p></div></header><main class=\"max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8\"><form method=\"POST\" action=\"/generate/vantage\" class=\"space-y-8\"><!-- Personal Information --><div class=\"bg-white rounded-lg shadow p-6\"><h2 class=\"text-lg font-semibold text-gray-900 mb-4\">Personal Information</h2><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Full Name *</label> <input type=\"text\" name=\"name\" required class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Professional Title *</label> <input type=\"text\" name=\"title\" required placeholder=\"Software Engineer\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Email *</label> <input type=\"email\" name=\"email\" required class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Address</label> <input type=\"text\" name=\"address\" placeholder=\"City, Country\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Location</label> <input type=\"text\" name=\"location\" placeholder=\"Country\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Position</label> <input type=\"text\" name=\"position\" placeholder=\"Software Engineer\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Professional Tagline</label> <textarea name=\"tagline\" rows=\"3\" placeholder=\"Software engineer with 5 years of experience and a strong foundation in computer science...\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Career Objective</label> <textarea name=\"objective\" rows=\"2\" placeholder=\"Seeking to advance my skills and build a strong career with a company that values innovation and creativity.\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div></div></div><!-- Social Links --><div class=\"bg-white rounded-lg shadow p-6\"><h2 class=\"text-lg font-semibold text-gray-900 mb-4\">Social Links</h2><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">LinkedIn URL</label> <input type=\"text\" name=\"linkedin_url\" placeholder=\"https://www.linkedin.com/in/johndoe/\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">LinkedIn Display Text</label> <input type=\"text\" name=\"linkedin_display_text\" placeholder=\"johndoe\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">GitHub URL</label> <input type=\"text\" name=\"github_url\" placeholder=\"https://github.com/johndoe/\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">GitHub Display Text</label> <input type=\"text\" name=\"github_display_text\" placeholder=\"@johndoe\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Website URL</label> <input type=\"text\" name=\"website_url\" placeholder=\"https://johndoe.com\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Website Display Text</label> <input type=\"text\" name=\"website_display_text\" placeholder=\"www.johndoe.com\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div></div></div><!-- Work Experience Section --><div class=\"bg-white rounded-lg shadow p-6\"><div class=\"flex justify-between items-center mb-4\"><h2 class=\"text-lg font-semibold text-gray-900\">Work Experience</h2><button type=\"button\" onclick=\"addJob()\" class=\"bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700\">Add Job</button></div><div id=\"jobs-container\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Vantage Template - CV Form</title><script src=\"https://cdn.tailwindcss.com\"></script><script>\n\t\t\t\tfunction addJob() {\n\t\t\t\t\tconst container = document.getElementById('jobs-container');\n\t\t\t\t\tconst template = document.getElementById('job-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction addEducation() {\n\t\t\t\t\tconst container = document.getElementById('education-container');\n\t\t\t\t\tconst template = document.getElementById('education-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction addTechnicalExpertise() {\n\t\t\t\t\tconst container = document.getElementById('technical-container');\n\t\t\t\t\tconst template = document.getElementById('technical-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, select');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction addAchievement() {\n\t\t\t\t\tconst container = document.getElementById('achievements-container');\n\t\t\t\t\tconst template = document.getElementById('achievement-template').content.cloneNode(true);\n\t\t\t\t\tconst index = container.children.length;\n\n\t\t\t\t\tconst inputs = template.querySelectorAll('input, textarea');\n\t\t\t\t\tinputs.forEach(input => {\n\t\t\t\t\t\tconst name = input.getAttribute('name');\n\t\t\t\t\t\tinput.setAttribute('name', name.replace('[0]', `[${index}]`));\n\t\t\t\t\t});\n\n\t\t\t\t\tcontainer.appendChild(template);\n\t\t\t\t}\n\n\t\t\t\tfunction removeEntry(button) {\n\t\t\t\t\tbutton.closest('.entry-item').remove();\n\t\t\t\t}\n\t\t\t</script></head><body class=\"bg-gray-50 min-h-screen\"><header class=\"bg-white shadow-sm border-b\"><div class=\"max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6\"><h1 class=\"text-2xl font-bold text-gray-900\">Vantage Template - CV Form</h1><p class=\"mt-1 text-gray-600\">Fill in your details to generate your CV</p></div></header><main class=\"max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8\"><form method=\"POST\" action=\"/generate/vantage\" class=\"space-y-8\"><!-- Personal Information --><div class=\"bg-white rounded-lg shadow p-6\"><h2 class=\"text-lg font-semibold text-gray-900 mb-4\">Personal Information</h2><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Full Name *</label> <input type=\"text\" name=\"name\" required class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Professional Title *</label> <input type=\"text\" name=\"title\" required placeholder=\"Software Engineer\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Email *</label> <input type=\"email\" name=\"email\" required class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Phone</label> <input type=\"tel\" name=\"phone\" placeholder=\"+1 234 567 8900\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Address</label> <input type=\"text\" name=\"address\" placeholder=\"City, Country\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Position</label> <input type=\"text\" name=\"position\" placeholder=\"Software Engineer\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Professional Tagline</label> <textarea name=\"tagline\" rows=\"3\" placeholder=\"Software engineer with 5 years of experience and a strong foundation in computer science...\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Career Objective</label> <textarea name=\"objective\" rows=\"2\" placeholder=\"Seeking to advance my skills and build a strong career with a company that values innovation and creativity.\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div></div></div><!-- Social Links --><div class=\"bg-white rounded-lg shadow p-6\"><h2 class=\"text-lg font-semibold text-gray-900 mb-4\">Social Links</h2><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">LinkedIn URL</label> <input type=\"text\" name=\"linkedin_url\" placeholder=\"https://www.linkedin.com/in/johndoe/\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">LinkedIn Display Text</label> <input type=\"text\" name=\"linkedin_display_text\" placeholder=\"johndoe\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">GitHub URL</label> <input type=\"text\" name=\"github_url\" placeholder=\"https://github.com/johndoe/\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">GitHub Display Text</label> <input type=\"text\" name=\"github_display_text\" placeholder=\"@johndoe\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Website URL</label> <input type=\"text\" name=\"website_url\" placeholder=\"https://johndoe.com\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Website Display Text</label> <input type=\"text\" name=\"website_display_text\" placeholder=\"www.johndoe.com\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div></div></div><!-- Work Experience Section --><div class=\"bg-white rounded-lg shadow p-6\"><div class=\"flex justify-between items-center mb-4\"><h2 class=\"text-lg font-semibold text-gray-900\">Work Experience</h2><button type=\"button\" onclick=\"addJob()\" class=\"bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700\">Add Job</button></div><div id=\"jobs-container\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -214,7 +213,7 @@ func VantageJobEntry(index int) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs("jobs[" + strconv.Itoa(index) + "][position]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 319, Col: 75}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 318, Col: 75}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -227,7 +226,7 @@ func VantageJobEntry(index int) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs("jobs[" + strconv.Itoa(index) + "][company_name]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 323, Col: 79}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 322, Col: 79}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -240,7 +239,7 @@ func VantageJobEntry(index int) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("jobs[" + strconv.Itoa(index) + "][company_link]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 327, Col: 79}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 326, Col: 79}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -253,7 +252,7 @@ func VantageJobEntry(index int) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs("jobs[" + strconv.Itoa(index) + "][product_name]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 331, Col: 79}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 330, Col: 79}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -266,7 +265,7 @@ func VantageJobEntry(index int) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs("jobs[" + strconv.Itoa(index) + "][product_link]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 335, Col: 79}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 334, Col: 79}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -279,7 +278,7 @@ func VantageJobEntry(index int) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs("jobs[" + strconv.Itoa(index) + "][location]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 339, Col: 75}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 338, Col: 75}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -292,7 +291,7 @@ func VantageJobEntry(index int) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs("jobs[" + strconv.Itoa(index) + "][from]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 343, Col: 71}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 342, Col: 71}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -305,7 +304,7 @@ func VantageJobEntry(index int) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs("jobs[" + strconv.Itoa(index) + "][to]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 347, Col: 69}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 346, Col: 69}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
@@ -318,26 +317,13 @@ func VantageJobEntry(index int) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs("jobs[" + strconv.Itoa(index) + "][description]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 351, Col: 69}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 350, Col: 69}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\" rows=\"4\" placeholder=\"- Spearheaded the development of a cutting-edge quantum computing simulator&#10;- Collaborated with a team to create intuitive user interfaces&#10;- Optimized algorithms for performance\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div><div class=\"md:col-span-2\"><label class=\"block text-sm font-medium text-gray-700 mb-1\">Tags/Skills Used</label> <input type=\"text\" name=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var12 string
-		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs("jobs[" + strconv.Itoa(index) + "][tags]")
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 355, Col: 71}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\" placeholder=\"Quantum Computing, Algorithm Optimization, UI Design (separate with commas)\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\" rows=\"4\" placeholder=\"- Spearheaded the development of a cutting-edge quantum computing simulator&#10;- Collaborated with a team to create intuitive user interfaces&#10;- Optimized algorithms for performance\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -361,126 +347,126 @@ func VantageEducationEntry(index int) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var13 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var13 == nil {
-			templ_7745c5c3_Var13 = templ.NopComponent
+		templ_7745c5c3_Var12 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var12 == nil {
+			templ_7745c5c3_Var12 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div class=\"entry-item border border-gray-200 rounded-lg p-4 mb-4\"><div class=\"flex justify-between items-start mb-3\"><h3 class=\"font-medium text-gray-900\">Education Entry</h3>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<div class=\"entry-item border border-gray-200 rounded-lg p-4 mb-4\"><div class=\"flex justify-between items-start mb-3\"><h3 class=\"font-medium text-gray-900\">Education Entry</h3>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if index > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<button type=\"button\" onclick=\"removeEntry(this)\" class=\"text-red-600 hover:text-red-800 text-sm\">Remove</button>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<button type=\"button\" onclick=\"removeEntry(this)\" class=\"text-red-600 hover:text-red-800 text-sm\">Remove</button>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</div><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Institution Name</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "</div><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Institution Name</label> <input type=\"text\" name=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var13 string
+		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][place_name]")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 367, Col: 82}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\" placeholder=\"Example University\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Institution Link (optional)</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var14 string
-		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][place_name]")
+		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][place_link]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 372, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 371, Col: 82}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "\" placeholder=\"Example University\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Institution Link (optional)</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "\" placeholder=\"http://exampleuniversity.edu\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Degree</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var15 string
-		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][place_link]")
+		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][degree]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 376, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 375, Col: 78}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "\" placeholder=\"http://exampleuniversity.edu\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Degree</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "\" placeholder=\"B.Sc.\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Major</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var16 string
-		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][degree]")
+		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][major]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 380, Col: 78}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 379, Col: 77}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "\" placeholder=\"B.Sc.\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Major</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "\" placeholder=\"Computer Science\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Track/Specialization</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var17 string
-		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][major]")
+		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][track]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 384, Col: 77}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 383, Col: 77}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "\" placeholder=\"Computer Science\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Track/Specialization</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "\" placeholder=\"Computer Science\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Location</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var18 string
-		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][track]")
+		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][location]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 388, Col: 77}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 387, Col: 80}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "\" placeholder=\"Computer Science\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Location</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "\" placeholder=\"City, Country\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Start Year</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var19 string
-		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][location]")
+		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][from]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 392, Col: 80}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 391, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "\" placeholder=\"City, Country\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Start Year</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "\" placeholder=\"2015\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">End Year</label> <input type=\"text\" name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var20 string
-		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][from]")
+		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][to]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 396, Col: 76}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 395, Col: 74}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "\" placeholder=\"2015\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">End Year</label> <input type=\"text\" name=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var21 string
-		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs("education[" + strconv.Itoa(index) + "][to]")
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 400, Col: 74}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "\" placeholder=\"2019\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "\" placeholder=\"2019\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -504,48 +490,48 @@ func VantageTechnicalEntry(index int) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var22 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var22 == nil {
-			templ_7745c5c3_Var22 = templ.NopComponent
+		templ_7745c5c3_Var21 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var21 == nil {
+			templ_7745c5c3_Var21 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "<div class=\"entry-item border border-gray-200 rounded-lg p-4 mb-4\"><div class=\"flex justify-between items-start mb-3\"><h3 class=\"font-medium text-gray-900\">Technical Skill</h3>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "<div class=\"entry-item border border-gray-200 rounded-lg p-4 mb-4\"><div class=\"flex justify-between items-start mb-3\"><h3 class=\"font-medium text-gray-900\">Technical Skill</h3>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if index > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "<button type=\"button\" onclick=\"removeEntry(this)\" class=\"text-red-600 hover:text-red-800 text-sm\">Remove</button>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "<button type=\"button\" onclick=\"removeEntry(this)\" class=\"text-red-600 hover:text-red-800 text-sm\">Remove</button>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "</div><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Skill Name</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "</div><div class=\"grid grid-cols-1 md:grid-cols-2 gap-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Skill Name</label> <input type=\"text\" name=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var22 string
+		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs("technical_expertise[" + strconv.Itoa(index) + "][name]")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 412, Col: 86}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "\" placeholder=\"Kotlin\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Skill Level (1-5)</label> <select name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var23 string
-		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs("technical_expertise[" + strconv.Itoa(index) + "][name]")
+		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs("technical_expertise[" + strconv.Itoa(index) + "][level]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 417, Col: 86}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 416, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "\" placeholder=\"Kotlin\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Skill Level (1-5)</label> <select name=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var24 string
-		templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs("technical_expertise[" + strconv.Itoa(index) + "][level]")
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 421, Col: 76}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"><option value=\"1\">1 - Beginner</option> <option value=\"2\">2 - Novice</option> <option value=\"3\">3 - Intermediate</option> <option value=\"4\" selected>4 - Advanced</option> <option value=\"5\">5 - Expert</option></select></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"><option value=\"1\">1 - Beginner</option> <option value=\"2\">2 - Novice</option> <option value=\"3\">3 - Intermediate</option> <option value=\"4\" selected>4 - Advanced</option> <option value=\"5\">5 - Expert</option></select></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -569,48 +555,48 @@ func VantageAchievementEntry(index int) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var25 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var25 == nil {
-			templ_7745c5c3_Var25 = templ.NopComponent
+		templ_7745c5c3_Var24 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var24 == nil {
+			templ_7745c5c3_Var24 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "<div class=\"entry-item border border-gray-200 rounded-lg p-4 mb-4\"><div class=\"flex justify-between items-start mb-3\"><h3 class=\"font-medium text-gray-900\">Achievement Entry</h3>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "<div class=\"entry-item border border-gray-200 rounded-lg p-4 mb-4\"><div class=\"flex justify-between items-start mb-3\"><h3 class=\"font-medium text-gray-900\">Achievement Entry</h3>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if index > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "<button type=\"button\" onclick=\"removeEntry(this)\" class=\"text-red-600 hover:text-red-800 text-sm\">Remove</button>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "<button type=\"button\" onclick=\"removeEntry(this)\" class=\"text-red-600 hover:text-red-800 text-sm\">Remove</button>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "</div><div class=\"space-y-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Achievement Name</label> <input type=\"text\" name=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "</div><div class=\"space-y-4\"><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Achievement Name</label> <input type=\"text\" name=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var25 string
+		templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs("achievements[" + strconv.Itoa(index) + "][name]")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 439, Col: 79}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "\" placeholder=\"Best Project Award\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Description</label> <textarea name=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var26 string
-		templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs("achievements[" + strconv.Itoa(index) + "][name]")
+		templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs("achievements[" + strconv.Itoa(index) + "][description]")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 444, Col: 79}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 443, Col: 77}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, "\" placeholder=\"Best Project Award\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></div><div><label class=\"block text-sm font-medium text-gray-700 mb-1\">Description</label> <textarea name=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var27 string
-		templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs("achievements[" + strconv.Itoa(index) + "][description]")
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/form_vantage.templ`, Line: 448, Col: 77}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "\" rows=\"3\" placeholder=\"Developed an innovative solution for community service management and received recognition from the university.\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, "\" rows=\"3\" placeholder=\"Developed an innovative solution for community service management and received recognition from the university.\" class=\"w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500\"></textarea></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

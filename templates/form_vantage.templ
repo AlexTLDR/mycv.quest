@@ -4,11 +4,11 @@ import "strconv"
 
 type VantageFormData struct {
 	// Personal Contact Information
-	Name     string
-	Title    string
-	Email    string
-	Address  string
-	Location string
+	Name    string
+	Title   string
+	Email   string
+	Phone   string
+	Address string
 
 	// Social Links
 	LinkedInURL         string
@@ -50,7 +50,6 @@ type VantageJob struct {
 	Description []string
 	From        string
 	To          string
-	Tags        []string
 	Location    string
 }
 
@@ -171,12 +170,12 @@ templ VantageForm() {
 								<input type="email" name="email" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
-								<label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-								<input type="text" name="address" placeholder="City, Country" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+								<input type="tel" name="phone" placeholder="+1 234 567 8900" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
-								<label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-								<input type="text" name="location" placeholder="Country" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+								<label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+								<input type="text" name="address" placeholder="City, Country" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">Position</label>
@@ -349,10 +348,6 @@ templ VantageJobEntry(index int) {
 			<div class="md:col-span-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">Job Description</label>
 				<textarea name={ "jobs[" + strconv.Itoa(index) + "][description]" } rows="4" placeholder="- Spearheaded the development of a cutting-edge quantum computing simulator&#10;- Collaborated with a team to create intuitive user interfaces&#10;- Optimized algorithms for performance" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-			</div>
-			<div class="md:col-span-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Tags/Skills Used</label>
-				<input type="text" name={ "jobs[" + strconv.Itoa(index) + "][tags]" } placeholder="Quantum Computing, Algorithm Optimization, UI Design (separate with commas)" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 			</div>
 		</div>
 	</div>

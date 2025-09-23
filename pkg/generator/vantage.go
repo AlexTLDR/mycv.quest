@@ -89,11 +89,11 @@ func (cv *CVGenerator) GenerateVantageCV(template config.Template, r *http.Reque
 func (cv *CVGenerator) GenerateVantageYAMLContent(r *http.Request) []byte {
 	data := map[string]interface{}{
 		"contacts": map[string]interface{}{
-			"name":     utils.SanitizeFormValue(r.FormValue("name")),
-			"title":    utils.SanitizeFormValue(r.FormValue("title")),
-			"email":    utils.SanitizeFormValue(r.FormValue("email")),
-			"address":  utils.SanitizeFormValue(r.FormValue("address")),
-			"location": utils.SanitizeFormValue(r.FormValue("location")),
+			"name":    utils.SanitizeFormValue(r.FormValue("name")),
+			"title":   utils.SanitizeFormValue(r.FormValue("title")),
+			"email":   utils.SanitizeFormValue(r.FormValue("email")),
+			"phone":   utils.SanitizeFormValue(r.FormValue("phone")),
+			"address": utils.SanitizeFormValue(r.FormValue("address")),
 			"linkedin": map[string]string{
 				"url":         utils.NormalizeURL(utils.SanitizeFormValue(r.FormValue("linkedin_url"))),
 				"displayText": utils.SanitizeFormValue(r.FormValue("linkedin_display_text")),
@@ -150,20 +150,6 @@ func (cv *CVGenerator) GenerateVantageYAMLContent(r *http.Request) []byte {
 				}
 			}
 			job["description"] = descList
-		}
-
-		// Parse tags
-		tags := utils.SanitizeFormValue(r.FormValue(fmt.Sprintf("jobs[%d][tags]", i)))
-		if tags != "" {
-			tagList := strings.Split(tags, ",")
-			var cleanTags []string
-			for _, tag := range tagList {
-				tag = strings.TrimSpace(tag)
-				if tag != "" {
-					cleanTags = append(cleanTags, tag)
-				}
-			}
-			job["tags"] = cleanTags
 		}
 
 		jobs = append(jobs, job)
