@@ -188,26 +188,6 @@ func (cv *CVGenerator) CopyPhoto(templateDir string) error {
 	return nil
 }
 
-func (cv *CVGenerator) handlePhotoUpload(r *http.Request, templateDir string) error {
-	file, _, err := r.FormFile("avatar")
-	if err != nil {
-		// No file uploaded, use existing avatar if available
-		return nil
-	}
-	defer file.Close()
-
-	// Save uploaded file as avatar.png in template directory
-	avatarPath := filepath.Join(templateDir, "avatar.png")
-	dest, err := os.Create(avatarPath)
-	if err != nil {
-		return err
-	}
-	defer dest.Close()
-
-	_, err = io.Copy(dest, file)
-	return err
-}
-
 func (cv *CVGenerator) HandlePhotoUploadToWorkDir(r *http.Request, workDir string) (string, error) {
 	file, _, err := r.FormFile("avatar")
 	if err != nil {

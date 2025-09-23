@@ -35,7 +35,7 @@ func IfElse[T any](condition bool, trueValue T, falseValue T) T {
 }
 
 // MergeAttributes combines multiple Attributes into one.
-// Example: MergeAttributes(attr1, attr2) → combined attributes
+// Example: MergeAttributes(attr1, attr2) → combined attributes.
 func MergeAttributes(attrs ...templ.Attributes) templ.Attributes {
 	merged := templ.Attributes{}
 	for _, attr := range attrs {
@@ -47,7 +47,7 @@ func MergeAttributes(attrs ...templ.Attributes) templ.Attributes {
 }
 
 // RandomID generates a random ID string.
-// Example: RandomID() → "id-1a2b3c"
+// Example: RandomID() → "id-1a2b3c".
 func RandomID() string {
 	return fmt.Sprintf("id-%s", rand.Text())
 }
