@@ -428,7 +428,7 @@ func FeatureItem(icon, title, description string) templ.Component {
 			templ_7745c5c3_Var20 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "<div class=\"bg-white rounded-lg shadow-md overflow-hidden p-6\"><div class=\"flex items-center gap-3 mb-4\"><div class=\"w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xl\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "<div class=\"rounded-lg shadow-md overflow-hidden p-6\" style=\"background-color: #0099CC;\"><div class=\"flex items-center gap-3 mb-4\"><div class=\"w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xl\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
