@@ -18,7 +18,7 @@ templ Index(templates []CVTemplate) {
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>mycv.quest</title>
 			<link rel="icon" type="image/svg+xml" href="/assets/images/logo.svg"/>
-			<script src="https://cdn.tailwindcss.com"></script>
+			<link rel="stylesheet" href="/assets/css/output.css"/>
 			<style>
 				.pdf-preview {
 					aspect-ratio: 3/4;
@@ -34,8 +34,8 @@ templ Index(templates []CVTemplate) {
 				}
 			</style>
 		</head>
-		<body class="bg-gray-50 min-h-screen">
-			<header class="bg-white shadow-sm border-b">
+		<body class="min-h-screen" style="background-color: #006699;">
+			<header class="shadow-sm border-b" style="background-color: #0099CC;">
 				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 					<table width="100%">
 						<tr>
@@ -53,7 +53,7 @@ templ Index(templates []CVTemplate) {
 					}
 				</div>
 			</main>
-			<footer class="bg-white border-t mt-20">
+			<footer class="border-t mt-20" style="background-color: #0099CC;">
 				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 					<p class="text-center text-gray-500">© 2025 mycv.quest - Professional CV Generation</p>
 				</div>
@@ -63,8 +63,8 @@ templ Index(templates []CVTemplate) {
 }
 
 templ TemplateCard(template CVTemplate) {
-	<div class={ utils.TwMerge("template-card bg-white rounded-lg shadow-md overflow-hidden") }>
-		<div class="pdf-preview p-4">
+	<div class={ utils.TwMerge("template-card rounded-lg shadow-md overflow-hidden") } style="background-color: #006699;">
+		<div class="pdf-preview p-4" style="background-color: #0099CC;">
 			if template.ThumbnailPath != "" {
 				<img
 					src={ template.ThumbnailPath }
@@ -89,13 +89,13 @@ templ TemplateCard(template CVTemplate) {
 			}
 		</div>
 		<div class="p-6">
-			<h3 class="text-xl font-semibold text-gray-900 mb-2">{ template.Name }</h3>
-			<p class="text-gray-600 mb-4">{ template.Description }</p>
+			<h3 class="text-xl font-semibold text-white mb-2">{ template.Name }</h3>
+			<p class="text-gray-200 mb-4">{ template.Description }</p>
 			<div class="flex gap-3">
 				<a
 					href={ templ.URL("/generate/" + template.Key) }
 					class={ utils.TwMerge(
-						"flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded-md",
+						"flex-1 bg-primary hover:bg-primary/90 text-primary-foreground text-center py-2 px-4 rounded-md",
 						"transition-colors duration-200 font-medium",
 					) }
 				>
@@ -106,7 +106,7 @@ templ TemplateCard(template CVTemplate) {
 						href={ templ.URL(template.PDFPath) }
 						target="_blank"
 						class={ utils.TwMerge(
-							"bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md",
+							"bg-secondary hover:bg-secondary/80 text-secondary-foreground py-2 px-4 rounded-md",
 							"transition-colors duration-200 font-medium",
 						) }
 					>
