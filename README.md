@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="./assets/logo.svg" alt="mycv.quest Logo" width="120" height="120">
-</p>
-
-# mycv.quest
+# <img src="./assets/images/logo.svg" alt="mycv.quest Logo" width="48" height="48" style="vertical-align: middle;"> mycv.quest
 
 A modern CV generator that transforms your data into beautiful, professional CVs using Typst templates.
 
