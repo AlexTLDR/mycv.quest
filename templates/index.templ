@@ -32,6 +32,10 @@ templ Index(templates []CVTemplate) {
 					transform: translateY(-4px);
 					box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 				}
+				.footer-link:hover {
+					color: white !important;
+					text-decoration: underline;
+				}
 			</style>
 		</head>
 		<body class="min-h-screen" style="background-color: #006699;">
@@ -55,7 +59,7 @@ templ Index(templates []CVTemplate) {
 			</main>
 			<footer class="border-t mt-20" style="background-color: #0099CC;">
 				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-					<p class="text-center text-gray-500">© 2025 mycv.quest - Professional CV Generation</p>
+					<p class="text-center text-black">Made with ♥ by <a href="https://alextldr.com" target="_blank" class="footer-link">AlexTLDR</a></p>
 				</div>
 			</footer>
 		</body>
