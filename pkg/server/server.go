@@ -25,6 +25,9 @@ func (s *Server) SetupRoutes() {
 	// Serve static files
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("."))))
 
+	// Serve assets
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("assets/"))))
+
 	// Home page
 	http.HandleFunc("/", s.HandleIndex)
 
