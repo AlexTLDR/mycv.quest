@@ -18,7 +18,7 @@ templ Index(templates []CVTemplate) {
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>mycv.quest</title>
 			<link rel="icon" type="image/svg+xml" href="/assets/images/logo.svg"/>
-			<script src="https://cdn.tailwindcss.com"></script>
+			<link rel="stylesheet" href="/assets/css/output.css"/>
 			<style>
 				.pdf-preview {
 					aspect-ratio: 3/4;
@@ -32,10 +32,33 @@ templ Index(templates []CVTemplate) {
 					transform: translateY(-4px);
 					box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 				}
+				.footer-link:hover {
+					color: white !important;
+				}
+				.footer-container:hover .heart {
+					color: red !important;
+				}
+				.heart {
+					transition: color 0.3s ease;
+				}
+				.coming-soon-stamp {
+					position: absolute;
+					top: 20px;
+					right: -35px;
+					background: #10B981;
+					color: white;
+					padding: 8px 40px;
+					font-size: 12px;
+					font-weight: bold;
+					transform: rotate(45deg);
+					box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+				}
 			</style>
 		</head>
-		<body class="bg-gray-50 min-h-screen">
-			<header class="bg-white shadow-sm border-b">
+		<body class="min-h-screen" style="background-color: #006699;">
+			<header class="shadow-sm border-b" style="background-color: #0099CC;">
 				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 					<table width="100%">
 						<tr>
@@ -53,9 +76,10 @@ templ Index(templates []CVTemplate) {
 					}
 				</div>
 			</main>
-			<footer class="bg-white border-t mt-20">
+			@FeatureSection()
+			<footer class="border-t mt-20" style="background-color: #0099CC;">
 				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-					<p class="text-center text-gray-500">© 2025 mycv.quest - Professional CV Generation</p>
+					<p class="text-center text-black">Made with <span class="footer-container"><span class="heart">♥</span> by <a href="https://alextldr.com" target="_blank" class="footer-link">AlexTLDR</a></span></p>
 				</div>
 			</footer>
 		</body>
@@ -63,8 +87,8 @@ templ Index(templates []CVTemplate) {
 }
 
 templ TemplateCard(template CVTemplate) {
-	<div class={ utils.TwMerge("template-card bg-white rounded-lg shadow-md overflow-hidden") }>
-		<div class="pdf-preview p-4">
+	<div class={ utils.TwMerge("template-card rounded-lg shadow-md overflow-hidden") } style="background-color: #006699;">
+		<div class="pdf-preview p-4" style="background-color: #0099CC;">
 			if template.ThumbnailPath != "" {
 				<img
 					src={ template.ThumbnailPath }
@@ -89,13 +113,13 @@ templ TemplateCard(template CVTemplate) {
 			}
 		</div>
 		<div class="p-6">
-			<h3 class="text-xl font-semibold text-gray-900 mb-2">{ template.Name }</h3>
-			<p class="text-gray-600 mb-4">{ template.Description }</p>
+			<h3 class="text-xl font-semibold text-white mb-2">{ template.Name }</h3>
+			<p class="text-gray-200 mb-4">{ template.Description }</p>
 			<div class="flex gap-3">
 				<a
 					href={ templ.URL("/generate/" + template.Key) }
 					class={ utils.TwMerge(
-						"flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded-md",
+						"flex-1 bg-primary hover:bg-primary/90 text-primary-foreground text-center py-2 px-4 rounded-md",
 						"transition-colors duration-200 font-medium",
 					) }
 				>
@@ -106,7 +130,7 @@ templ TemplateCard(template CVTemplate) {
 						href={ templ.URL(template.PDFPath) }
 						target="_blank"
 						class={ utils.TwMerge(
-							"bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md",
+							"bg-secondary hover:bg-secondary/80 text-secondary-foreground py-2 px-4 rounded-md",
 							"transition-colors duration-200 font-medium",
 						) }
 					>
@@ -115,5 +139,61 @@ templ TemplateCard(template CVTemplate) {
 				}
 			</div>
 		</div>
+	</div>
+}
+
+templ FeatureSection() {
+	<div class="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+		<div class="py-16 lg:py-24 max-w-7xl w-full">
+			@FeatureHeader()
+			<div style="height: 120px;"></div>
+			@FeatureGrid()
+		</div>
+	</div>
+}
+
+templ FeatureHeader() {
+	<div class="text-center max-w-3xl mx-auto">
+		<h2 class="text-3xl font-extrabold sm:text-4xl text-white">
+			Everything you need to build <span class="text-primary">professional CVs</span>
+		</h2>
+		<div style="height: 40px;"></div>
+		<p class="text-xl text-gray-200">
+			Our platform provides all the tools and templates you need to create beautiful,
+			professional, and modern CV documents that stand out.
+		</p>
+	</div>
+}
+
+templ FeatureGrid() {
+	<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+		@FeatureItem("⚡", "Lightning Fast", "Generate your CV in seconds with our optimized template engine and instant preview.")
+		@FeatureItemWithStamp("🎨", "Customizable", "Every template can be easily customized to match your style and professional needs.")
+		@FeatureItem("🛡️", "Privacy", "CVs are generated in memory — no data is stored.")
+	</div>
+}
+
+templ FeatureItem(icon, title, description string) {
+	<div class="rounded-lg shadow-md overflow-hidden p-6" style="background-color: #0099CC;">
+		<div class="flex items-center gap-3 mb-4">
+			<div class="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xl">
+				{ icon }
+			</div>
+			<h3 class="text-xl font-medium text-gray-900">{ title }</h3>
+		</div>
+		<p class="text-gray-600">{ description }</p>
+	</div>
+}
+
+templ FeatureItemWithStamp(icon, title, description string) {
+	<div class="rounded-lg shadow-md overflow-hidden p-6 relative" style="background-color: #0099CC;">
+		<div class="coming-soon-stamp">Coming Soon</div>
+		<div class="flex items-center gap-3 mb-4">
+			<div class="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xl">
+				{ icon }
+			</div>
+			<h3 class="text-xl font-medium text-gray-900">{ title }</h3>
+		</div>
+		<p class="text-gray-600">{ description }</p>
 	</div>
 }
