@@ -41,6 +41,20 @@ templ Index(templates []CVTemplate) {
 				.heart {
 					transition: color 0.3s ease;
 				}
+				.coming-soon-stamp {
+					position: absolute;
+					top: 20px;
+					right: -35px;
+					background: #10B981;
+					color: white;
+					padding: 8px 40px;
+					font-size: 12px;
+					font-weight: bold;
+					transform: rotate(45deg);
+					box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+				}
 			</style>
 		</head>
 		<body class="min-h-screen" style="background-color: #006699;">
@@ -152,13 +166,26 @@ templ FeatureHeader() {
 templ FeatureGrid() {
 	<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 		@FeatureItem("⚡", "Lightning Fast", "Generate your CV in seconds with our optimized template engine and instant preview.")
-		@FeatureItem("🎨", "Customizable", "Every template can be easily customized to match your style and professional needs.")
-		@FeatureItem("🛡️", "Professional Quality", "All templates are designed with industry best practices for maximum impact.")
+		@FeatureItemWithStamp("🎨", "Customizable", "Every template can be easily customized to match your style and professional needs.")
+		@FeatureItem("🛡️", "Privacy", "CVs are generated in memory — no data is stored.")
 	</div>
 }
 
 templ FeatureItem(icon, title, description string) {
 	<div class="rounded-lg shadow-md overflow-hidden p-6" style="background-color: #0099CC;">
+		<div class="flex items-center gap-3 mb-4">
+			<div class="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xl">
+				{ icon }
+			</div>
+			<h3 class="text-xl font-medium text-gray-900">{ title }</h3>
+		</div>
+		<p class="text-gray-600">{ description }</p>
+	</div>
+}
+
+templ FeatureItemWithStamp(icon, title, description string) {
+	<div class="rounded-lg shadow-md overflow-hidden p-6 relative" style="background-color: #0099CC;">
+		<div class="coming-soon-stamp">Coming Soon</div>
 		<div class="flex items-center gap-3 mb-4">
 			<div class="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xl">
 				{ icon }
