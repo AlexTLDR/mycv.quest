@@ -16,7 +16,8 @@ templ Index(templates []CVTemplate) {
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<title>CV Templates - mycv.quest</title>
+			<title>mycv.quest</title>
+			<link rel="icon" type="image/svg+xml" href="/assets/images/logo.svg"/>
 			<script src="https://cdn.tailwindcss.com"></script>
 			<style>
 				.pdf-preview {
@@ -36,7 +37,12 @@ templ Index(templates []CVTemplate) {
 		<body class="bg-gray-50 min-h-screen">
 			<header class="bg-white shadow-sm border-b">
 				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-					<h1 class="text-3xl font-bold text-gray-900">CV Templates</h1>
+					<table width="100%">
+						<tr>
+							<td align="left"><h1 class="text-3xl font-bold text-gray-900">mycv.quest</h1></td>
+							<td align="right"><img src="./assets/images/logo.svg" alt="mycv.quest Logo" width="96" height="96"/></td>
+						</tr>
+					</table>
 					<p class="mt-2 text-gray-600">Choose from our professional CV templates</p>
 				</div>
 			</header>
