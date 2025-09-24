@@ -1,4 +1,7 @@
-# <img src="./assets/images/logo.svg" alt="mycv.quest Logo" width="48" height="48" style="vertical-align: middle;"> mycv.quest
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <h1 style="margin: 0;">mycv.quest</h1>
+  <img src="./assets/images/logo.svg" alt="mycv.quest Logo" width="96" height="96">
+</div>
 
 A modern CV generator that transforms your data into beautiful, professional CVs using Typst templates.
 
