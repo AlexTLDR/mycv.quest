@@ -143,20 +143,22 @@ templ TemplateCard(template CVTemplate) {
 }
 
 templ FeatureSection() {
-	<div class="py-16 lg:py-24">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+	<div class="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+		<div class="py-16 lg:py-24 max-w-7xl w-full">
 			@FeatureHeader()
+			<div style="height: 120px;"></div>
 			@FeatureGrid()
 		</div>
 	</div>
 }
 
 templ FeatureHeader() {
-	<div class="text-center mb-16">
+	<div class="text-center max-w-3xl mx-auto">
 		<h2 class="text-3xl font-extrabold sm:text-4xl text-white">
 			Everything you need to build <span class="text-primary">professional CVs</span>
 		</h2>
-		<p class="mt-4 text-xl text-gray-200">
+		<div style="height: 40px;"></div>
+		<p class="text-xl text-gray-200">
 			Our platform provides all the tools and templates you need to create beautiful,
 			professional, and modern CV documents that stand out.
 		</p>
