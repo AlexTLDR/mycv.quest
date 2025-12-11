@@ -14,7 +14,7 @@
   set text(8pt)
   let icon = icon.with(shift: 2.5pt)
 
-  services.map(service => {
+  services.filter(service => service.link != "").map(service => {
       icon(service.name)
 
       if "display" in service.keys() {

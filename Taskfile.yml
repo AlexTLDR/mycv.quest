@@ -40,7 +40,7 @@ tasks:
         deps: [build]
         cmd: ./{{.BUILD_DIR}}/{{.APP_NAME}}
 
-    # Run with specific template
+    # Run with a specific template
     run-template:
         desc: "Run with specific template (usage: task run-template TEMPLATE=basic)"
         deps: [build]
@@ -78,7 +78,7 @@ tasks:
         desc: Format Go code
         cmd: go fmt ./...
 
-    # Start development server with all watchers
+    # Start a development server with all watchers
     dev:
         desc: Start development server with all watchers
         deps: [tailwind, templ, server]
